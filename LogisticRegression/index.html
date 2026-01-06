@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>邏輯回歸互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習邏輯回歸 (Logistic Regression) 的運作原理與二元分類">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>📈 邏輯回歸 (Logistic Regression)</h1>
+            <p class="subtitle">互動式機器學習分類教學</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <div class="canvas-container">
+                    <canvas id="lrCanvas" width="600" height="500"></canvas>
+                    <div class="canvas-hint">👆 點擊畫布新增訓練資料（左鍵：類別 A / 右鍵：類別 B）</div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板與分類結果 -->
+            <aside class="control-section">
+                <!-- 圖例 -->
+                <div class="card legend-card">
+                    <h3>📊 圖例說明</h3>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <span class="dot class-a"></span>
+                            <span>類別 A（標籤 0）</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot class-b"></span>
+                            <span>類別 B（標籤 1）</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="line decision-line"></span>
+                            <span>決策邊界（P=0.5）</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="gradient-bar"></span>
+                            <span>機率梯度</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 參數控制器 -->
+                <div class="card control-panel">
+                    <h3>⚙️ 參數設定</h3>
+                    <div class="slider-container">
+                        <label for="lrSlider">
+                            <span class="label-text">學習率</span>
+                            <span class="param-value" id="lrValue">0.1</span>
+                        </label>
+                        <input type="range" id="lrSlider" min="0.001" max="1" value="0.1" step="0.001">
+                        <div class="slider-labels">
+                            <span>0.001</span>
+                            <span>1.0</span>
+                        </div>
+                    </div>
+                    <div class="slider-container">
+                        <label for="epochSlider">
+                            <span class="label-text">訓練週期</span>
+                            <span class="param-value" id="epochValue">100</span>
+                        </label>
+                        <input type="range" id="epochSlider" min="10" max="5000" value="100" step="10">
+                        <div class="slider-labels">
+                            <span>10</span>
+                            <span>5000</span>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button id="trainBtn" class="btn-train">🚀 開始訓練</button>
+                    </div>
+                    <div class="button-group">
+                        <button id="resetBtn" class="btn-reset">🔄 重置畫布</button>
+                        <button id="randomBtn" class="btn-random">🎲 隨機資料</button>
+                    </div>
+                </div>
+
+                <!-- 訓練結果 -->
+                <div class="card result-panel" id="resultPanel">
+                    <h3>📋 訓練結果</h3>
+                    <div class="result-placeholder">
+                        <span class="icon">🎯</span>
+                        <p>點擊「開始訓練」查看分類結果</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 邏輯回歸原理說明 -->
+                <div class="card info-card">
+                    <h3>🧠 什麼是邏輯回歸？</h3>
+                    <p>邏輯回歸是一種<strong>監督式學習</strong>的分類演算法，雖然名稱有「回歸」，但主要用於<strong>二元分類</strong>問題。</p>
+                    <p>核心概念：使用 <em>Sigmoid 函數</em>將線性組合轉換為 0~1 之間的機率值。</p>
+                </div>
+
+                <!-- Sigmoid 函數 -->
+                <div class="card formula-card">
+                    <h3>📐 Sigmoid 函數</h3>
+                    <div class="formula">
+                        σ(z) = 1 / (1 + e<sup>-z</sup>)
+                    </div>
+                    <p class="formula-desc">將任意實數轉換為 0~1 的機率值</p>
+                    <div class="sigmoid-graph" id="sigmoidGraph"></div>
+                </div>
+
+                <!-- 決策規則 -->
+                <div class="card steps-card">
+                    <h3>📝 分類步驟</h3>
+                    <ol class="steps-list">
+                        <li>
+                            <span class="step-num">1</span>
+                            <span>計算線性組合 z = w₀ + w₁x₁ + w₂x₂</span>
+                        </li>
+                        <li>
+                            <span class="step-num">2</span>
+                            <span>通過 Sigmoid 函數得到機率 P</span>
+                        </li>
+                        <li>
+                            <span class="step-num">3</span>
+                            <span>若 P ≥ 0.5 → 預測類別 B</span>
+                        </li>
+                        <li>
+                            <span class="step-num">4</span>
+                            <span>若 P < 0.5 → 預測類別 A</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- 學習率影響 -->
+                <div class="card tips-card">
+                    <h3>💡 學習率如何影響結果？</h3>
+                    <ul class="tips-list">
+                        <li><strong>學習率太小</strong>：收斂速度慢，需要更多訓練週期</li>
+                        <li><strong>學習率太大</strong>：可能震盪或發散，無法收斂</li>
+                        <li><strong>建議</strong>：從 0.1 開始，觀察損失函數變化調整</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 互動式機器學習教學 | 調整參數觀察決策邊界變化，點擊畫布進行分類</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

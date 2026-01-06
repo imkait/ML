@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>線性回歸 (Linear Regression) 互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習線性回歸 (Linear Regression) 與梯度下降法 (Gradient Descent) 的運作原理">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>📈 線性回歸 (Linear Regression)</h1>
+            <p class="subtitle">互動式機器學習教學：梯度下降法視覺化</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <div class="canvas-container">
+                    <canvas id="regressionCanvas" width="600" height="450"></canvas>
+                    <div class="canvas-hint" id="canvasHint">👆 點擊畫布新增資料點</div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板與狀態 -->
+            <aside class="control-section">
+                <!-- 圖例 -->
+                <div class="card legend-card">
+                    <h3>📊 圖例說明</h3>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <span class="dot data-point"></span>
+                            <span>訓練資料點 (Data Points)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="line-icon"></span>
+                            <span>回歸線 (Regression Line)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="line-icon residual"></span>
+                            <span>誤差 (Residuals)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot prediction-point"></span>
+                            <span>預測點 (Prediction)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 參數控制 -->
+                <div class="card control-panel">
+                    <h3>⚙️ 參數設定</h3>
+
+                    <div class="input-group">
+                        <label for="polyDegree" class="label-text">模型複雜度 (Degree)</label>
+                        <select id="polyDegree" class="select-input">
+                            <option value="1">1次 (Linear: y = mx + b)</option>
+                            <option value="2">2次 (Quadratic: y = ax² + bx + c)</option>
+                            <option value="3">3次 (Cubic: y = ax³ + ...)</option>
+                            <option value="4">4次 (Quartic)</option>
+                        </select>
+                    </div>
+
+                    <div class="slider-container">
+                        <label for="learningRate">
+                            <span class="label-text">學習率 (Learning Rate)</span>
+                            <span class="value-display" id="lrValue">0.05</span>
+                        </label>
+                        <input type="range" id="learningRate" min="0.001" max="0.2" value="0.05" step="0.001">
+                    </div>
+
+                    <div class="button-group">
+                        <button id="resetBtn" class="btn-secondary">🔄 重置畫布</button>
+                        <button id="randomBtn" class="btn-secondary">🎲 隨機資料</button>
+                        <button id="trainBtn" class="btn-primary">▶ 開始訓練</button>
+                    </div>
+
+                    <div class="mode-switch">
+                        <button class="mode-btn active" id="modeTrain" data-mode="training">訓練模式</button>
+                        <button class="mode-btn" id="modePredict" data-mode="prediction">預測模式</button>
+                    </div>
+                </div>
+
+                <!-- 狀態顯示 -->
+                <div class="card status-panel">
+                    <h3>📉 訓練狀態</h3>
+                    <div class="status-grid" id="statusGrid">
+                        <div class="status-item">
+                            <div class="status-label">Loss (MSE)</div>
+                            <div class="status-value loss" id="lossValue">0.00</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">迭代次數 (Step)</div>
+                            <div class="status-value" id="stepValue">0</div>
+                        </div>
+                        <!-- Weights will be injected here via JS -->
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 線性回歸原理 -->
+                <div class="card info-card">
+                    <h3>🧠 什麼是線性回歸？</h3>
+                    <p>線性回歸是一種尋找變數間<strong>線性關係</strong>的方法。</p>
+                    <p>目標是找到一條直線 <code>y = mx + b</code>，使得所有資料點到這條線的誤差總和最小。</p>
+                </div>
+
+                <!-- 梯度下降法 -->
+                <div class="card info-card">
+                    <h3>⛰️ 梯度下降法</h3>
+                    <p>想像在下山，我們沿著最陡的方向（梯度）一步步往下走。</p>
+                    <p><strong>學習率</strong>決定了步長：太大可能走過頭，太小則走太慢。</p>
+                </div>
+
+                <!-- 演算法步驟 -->
+                <div class="card steps-card">
+                    <h3>📝 運算步驟</h3>
+                    <ol class="steps-list">
+                        <li>
+                            <span class="step-num">1</span>
+                            <span>隨機初始化 m 和 b</span>
+                        </li>
+                        <li>
+                            <span class="step-num">2</span>
+                            <span>計算預測值與真實值的誤差</span>
+                        </li>
+                        <li>
+                            <span class="step-num">3</span>
+                            <span>計算梯度 (Gradient)</span>
+                        </li>
+                        <li>
+                            <span class="step-num">4</span>
+                            <span>更新參數 (m, b) 減少 Loss</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- 公式 -->
+                <div class="card formula-card">
+                    <h3>📐 均方誤差 (MSE)</h3>
+                    <div class="formula">
+                        Loss = &Sigma;(y - y_pred)² / n
+                    </div>
+                    <p class="formula-desc">衡量預測值與真實值的差距平均</p>
+                    <div class="formula" style="margin-top: 0.5rem;">
+                        y = mx + b
+                    </div>
+                    <p class="formula-desc">線性方程式</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 互動式機器學習教學 | Designed for Learning Linear Regression Concepts</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

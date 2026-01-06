@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KNN 演算法互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習 K-最近鄰演算法 (KNN) 的運作原理">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>🎯 K-最近鄰演算法 (KNN)</h1>
+            <p class="subtitle">互動式機器學習教學</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <div class="canvas-container">
+                    <canvas id="knnCanvas" width="600" height="500"></canvas>
+                    <div class="canvas-hint">👆 點擊畫布新增測試點</div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板與分類結果 -->
+            <aside class="control-section">
+                <!-- 圖例 -->
+                <div class="card legend-card">
+                    <h3>📊 圖例說明</h3>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <span class="dot class-a"></span>
+                            <span>類別 A（訓練資料）</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot class-b"></span>
+                            <span>類別 B（訓練資料）</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot test-point"></span>
+                            <span>測試點（待分類）</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="line neighbor-line"></span>
+                            <span>K 個最近鄰居連線</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- K 值控制器 -->
+                <div class="card control-panel">
+                    <h3>⚙️ 參數設定</h3>
+                    <div class="slider-container">
+                        <label for="kSlider">
+                            <span class="label-text">K 值</span>
+                            <span class="k-value" id="kValue">3</span>
+                        </label>
+                        <input type="range" id="kSlider" min="1" max="15" value="3" step="1">
+                        <div class="slider-labels">
+                            <span>1</span>
+                            <span>15</span>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button id="resetBtn" class="btn-reset">🔄 重置畫布</button>
+                        <button id="randomBtn" class="btn-random">🎲 隨機資料</button>
+                    </div>
+                </div>
+
+                <!-- 分類結果 -->
+                <div class="card result-panel" id="resultPanel">
+                    <h3>📋 分類結果</h3>
+                    <div class="result-placeholder">
+                        <span class="icon">🔍</span>
+                        <p>點擊畫布新增測試點以查看分類結果</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- KNN 原理說明 -->
+                <div class="card info-card">
+                    <h3>🧠 什麼是 KNN？</h3>
+                    <p>K-最近鄰演算法 (K-Nearest Neighbors) 是一種<strong>監督式學習</strong>的分類演算法。</p>
+                    <p>核心概念：<em>「物以類聚」</em>——一個資料點可能與它最近的鄰居屬於同一類別。</p>
+                </div>
+
+                <!-- 演算法步驟 -->
+                <div class="card steps-card">
+                    <h3>📝 演算法步驟</h3>
+                    <ol class="steps-list">
+                        <li>
+                            <span class="step-num">1</span>
+                            <span>選擇 K 值（鄰居數量）</span>
+                        </li>
+                        <li>
+                            <span class="step-num">2</span>
+                            <span>計算測試點到所有訓練資料的距離</span>
+                        </li>
+                        <li>
+                            <span class="step-num">3</span>
+                            <span>找出距離最近的 K 個鄰居</span>
+                        </li>
+                        <li>
+                            <span class="step-num">4</span>
+                            <span>統計 K 個鄰居中各類別的數量</span>
+                        </li>
+                        <li>
+                            <span class="step-num">5</span>
+                            <span>將測試點歸類為數量最多的類別</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- 距離公式 -->
+                <div class="card formula-card">
+                    <h3>📐 歐幾里得距離</h3>
+                    <div class="formula">
+                        d = √[(x₂-x₁)² + (y₂-y₁)²]
+                    </div>
+                    <p class="formula-desc">計算兩點間的直線距離</p>
+                </div>
+
+                <!-- K 值影響 -->
+                <div class="card tips-card">
+                    <h3>💡 K 值如何影響結果？</h3>
+                    <ul class="tips-list">
+                        <li><strong>K 太小</strong>：容易受雜訊影響，過度擬合</li>
+                        <li><strong>K 太大</strong>：決策邊界過於平滑，可能忽略局部特徵</li>
+                        <li><strong>建議</strong>：選擇奇數 K 值避免平票</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 互動式機器學習教學 | 拖曳滑桿調整 K 值，點擊畫布進行分類</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

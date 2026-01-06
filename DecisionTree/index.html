@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>決策樹 (Decision Tree) 互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習決策樹 (Decision Tree) 的運作原理">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>🌳 決策樹 (Decision Tree)</h1>
+            <p class="subtitle">互動式機器學習教學</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <div class="canvas-container">
+                    <canvas id="treeCanvas" width="600" height="500"></canvas>
+                    <div class="canvas-hint">背景顏色代表決策邊界，點擊「隨機資料」生成新數據</div>
+                </div>
+
+                <!-- 樹狀圖顯示區域 -->
+                <div class="tree-container-wrapper">
+                    <h3>🌳 決策路徑可視化</h3>
+                    <div id="treeStructure" class="tree-structure"></div>
+                </div>
+
+            </section>
+
+            <!-- 右側：控制面板與說明 -->
+            <aside class="control-section">
+                <!-- 圖例 -->
+                <div class="card legend-card">
+                    <h3>📊 圖例說明</h3>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <span class="dot class-a"></span>
+                            <span>類別 A (紅色區域)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot class-b"></span>
+                            <span>類別 B (藍色區域)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 參數設定 -->
+                <div class="card control-panel">
+                    <h3>⚙️ 參數設定</h3>
+
+                    <!-- 樹的深度 -->
+                    <div class="slider-container">
+                        <label for="depthSlider">
+                            <span class="label-text">最大深度 (Max Depth)</span>
+                            <span class="k-value" id="depthValue">3</span>
+                        </label>
+                        <input type="range" id="depthSlider" min="1" max="10" value="3" step="1">
+                        <div class="slider-labels">
+                            <span>1 (簡單)</span>
+                            <span>10 (複雜)</span>
+                        </div>
+                    </div>
+
+                    <!-- 分割準則 -->
+                    <div class="select-container">
+                        <label for="criterionSelect" class="label-text">分割準則 (Criterion)</label>
+                        <select id="criterionSelect" class="custom-select">
+                            <option value="gini">Gini 不純度 (Gini Impurity)</option>
+                            <option value="entropy">熵 (Entropy)</option>
+                        </select>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="resetBtn" class="btn-reset">🔄 重置</button>
+                        <button id="randomBtn" class="btn-random">🎲 隨機資料</button>
+                    </div>
+                </div>
+
+                <!-- 當前狀態 -->
+                <div class="card result-panel">
+                    <h3>📈 當前模型狀態</h3>
+                    <div class="result-details">
+                        <div class="detail-item">
+                            <div class="detail-label">總節點數</div>
+                            <div class="detail-value" id="nodeCount">0</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">葉節點數</div>
+                            <div class="detail-value" id="leafCount">0</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">訓練準確率</div>
+                            <div class="detail-value" id="accuracy">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 什麼是決策樹 -->
+                <div class="card info-card">
+                    <h3>🌲 什麼是決策樹？</h3>
+                    <p>決策樹是一種像流程圖一樣的結構，透過一系列的<strong>「是非問答」</strong>將資料進行分類。</p>
+                    <p>每個<strong>節點</strong>代表一個特徵的判斷，<strong>葉節點</strong>代表最終的分類結果。</p>
+                </div>
+
+                <!-- 運作原理 -->
+                <div class="card steps-card">
+                    <h3>📝 運作原理</h3>
+                    <ol class="steps-list">
+                        <li>
+                            <span class="step-num">1</span>
+                            <span>從根節點開始，包含所有資料</span>
+                        </li>
+                        <li>
+                            <span class="step-num">2</span>
+                            <span>尋找最佳特徵與切分點 (如 x > 5)</span>
+                        </li>
+                        <li>
+                            <span class="step-num">3</span>
+                            <span>將資料分成兩群，使「不純度」最小</span>
+                        </li>
+                        <li>
+                            <span class="step-num">4</span>
+                            <span>重複上述步驟，直到達到最大深度</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- 不純度 -->
+                <div class="card formula-card">
+                    <h3>📉 Gini 不純度</h3>
+                    <div class="formula">
+                        1 - ∑(pᵢ)²
+                    </div>
+                    <p class="formula-desc">數值越小代表分類越乾淨<br>0 = 完美分類 (全屬同一類)</p>
+                </div>
+
+                <!-- 優缺點 -->
+                <div class="card tips-card">
+                    <h3>💡 優缺點分析</h3>
+                    <ul class="tips-list">
+                        <li><strong>優點</strong>：直觀易懂，可解釋性高</li>
+                        <li><strong>缺點</strong>：深度過深容易<strong>過度擬合 (Overfitting)</strong></li>
+                        <li><strong>解決</strong>：限制樹的深度 (剪枝)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 互動式機器學習教學 | 拖曳滑桿觀察決策邊界的變化</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

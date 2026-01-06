@@ -1,0 +1,490 @@
+/* ===========================
+   CSS 變數與基礎設定 (保持一致性)
+   =========================== */
+:root {
+    /* 主色調 */
+    --primary: #8b5cf6; /* SVM 使用紫色系 */
+    --primary-light: #a78bfa;
+    --primary-dark: #7c3aed;
+    
+    /* 類別顏色 */
+    --class-a: #f43f5e; /* Red (+1) */
+    --class-a-light: rgba(244, 63, 94, 0.3);
+    --class-b: #06b6d4; /* Cyan (-1) */
+    --class-b-light: rgba(6, 182, 212, 0.3);
+    
+    /* SVM 特有 */
+    --decision-line: #f1f5f9;
+    --margin-line: rgba(241, 245, 249, 0.5);
+    --sv-highlight: #fbbf24; /* Amber */
+
+    /* 背景與表面 */
+    --bg-gradient-start: #0f172a;
+    --bg-gradient-end: #1e293b;
+    --surface: rgba(30, 41, 59, 0.8);
+    --surface-light: rgba(51, 65, 85, 0.6);
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+
+    /* 文字 */
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    
+    /* 功能色 */
+    --success: #10b981;
+    --danger: #ef4444;
+
+    /* 其他 */
+    --radius: 16px;
+    --radius-sm: 8px;
+    --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* ===========================
+   容器佈局
+   =========================== */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===========================
+   頁首
+   =========================== */
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary)); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* ===========================
+   主要內容區
+   =========================== */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+}
+
+/* ===========================
+   視覺化區域
+   =========================== */
+.visualization-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.canvas-container {
+    position: relative;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+#svmCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 350px; /* 統一高度 */
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+.canvas-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--glass);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* 狀態顯示條 */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    background: var(--surface);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.status-value {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.status-highlight {
+    color: var(--primary-light);
+}
+
+/* ===========================
+   右側控制面板區域
+   =========================== */
+.control-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* 參數設定 */
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* 下拉選單 */
+.select-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.custom-select {
+    appearance: none;
+    background-color: var(--surface-light);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    width: 100%;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    transition: var(--transition);
+}
+
+.custom-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+/* 滑桿 */
+.slider-container {
+    width: 100%;
+}
+
+.slider-container label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.label-text {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.k-value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem 0.6rem;
+    min-width: 40px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 12px;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: var(--surface-light);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    border-radius: 50%;
+    cursor: grab;
+    transition: var(--transition);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* 按鈕群組 */
+.control-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.button-row {
+    display: flex;
+    gap: 0.75rem;
+}
+
+button {
+    flex: 1;
+    padding: 0.75rem 0.5rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.btn-secondary {
+    background: var(--surface-light);
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+}
+
+.btn-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+/* 圖例樣式 */
+.legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.dot.class-a {
+    background: var(--class-a);
+    box-shadow: 0 0 10px var(--class-a);
+}
+
+.dot.class-b {
+    background: var(--class-b);
+    box-shadow: 0 0 10px var(--class-b);
+}
+
+.dot.sv-indicator {
+    background: transparent;
+    border: 2px solid var(--sv-highlight);
+    width: 16px;
+    height: 16px;
+    box-shadow: 0 0 10px var(--sv-highlight);
+}
+
+.line-solid {
+    width: 24px;
+    height: 2px;
+    background: var(--decision-line);
+}
+
+.line-dashed {
+    width: 24px;
+    height: 2px;
+    border-bottom: 2px dashed var(--margin-line);
+}
+
+/* ===========================
+   卡片通用樣式
+   =========================== */
+.card {
+    background: var(--surface);
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+/* ===========================
+   下方教學說明區域
+   =========================== */
+.info-section {
+    margin-top: 2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+}
+
+.tips-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.tips-list li {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    padding-left: 1rem;
+    position: relative;
+}
+
+.tips-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--primary-light);
+}
+
+/* ===========================
+   頁尾
+   =========================== */
+.footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+/* ===========================
+   響應式設計
+   =========================== */
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .button-row {
+        flex-direction: column;
+    }
+}

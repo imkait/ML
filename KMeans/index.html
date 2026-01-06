@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Means 聚類演算法互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習 K-Means 聚類演算法 (Clustering) 的運作原理">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>💠 K-Means 聚類演算法</h1>
+            <p class="subtitle">互動式非監督式學習教學</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <div class="canvas-container">
+                    <canvas id="kmeansCanvas" width="600" height="400"></canvas>
+                    <div class="canvas-hint">背景顏色代表各個中心點 (Centroid) 的管轄範圍</div>
+                </div>
+
+                <!-- 狀態顯示條 -->
+                <div class="status-bar">
+                    <div class="status-item">
+                        <span class="status-label">迭代次數 (Iteration):</span>
+                        <span class="status-value" id="iterationCount">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">目前狀態:</span>
+                        <span class="status-value status-highlight" id="currentStatus">等待開始</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板與說明 -->
+            <aside class="control-section">
+                <!-- 參數設定 -->
+                <div class="card control-panel">
+                    <h3>⚙️ 參數設定</h3>
+
+                    <!-- K 值滑桿 -->
+                    <div class="slider-container">
+                        <label for="kSlider">
+                            <span class="label-text">K 值 (群集數量)</span>
+                            <span class="k-value" id="kValue">3</span>
+                        </label>
+                        <input type="range" id="kSlider" min="2" max="6" value="3" step="1">
+                        <div class="slider-labels">
+                            <span>2</span>
+                            <span>6</span>
+                        </div>
+                    </div>
+
+                    <!-- 控制按鈕 -->
+                    <div class="control-buttons">
+                        <div class="button-row">
+                            <button id="nextStepBtn" class="btn-primary">👣 下一步 (Step)</button>
+                            <button id="autoRunBtn" class="btn-success">▶ 自動執行</button>
+                        </div>
+                        <div class="button-row">
+                            <button id="randomDataBtn" class="btn-secondary">🎲 隨機資料</button>
+                            <button id="resetBtn" class="btn-danger">🔄 重置</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 演算法步驟說明 -->
+                <div class="card steps-card">
+                    <h3>📝 演算法步驟</h3>
+                    <ol class="steps-list" id="stepsList">
+                        <li id="step-init" class="step-item">
+                            <span class="step-num">1</span>
+                            <span>初始化：隨機選擇 K 個中心點</span>
+                        </li>
+                        <li id="step-assign" class="step-item">
+                            <span class="step-num">2</span>
+                            <span>分配：將每個點歸類給最近的中心點</span>
+                        </li>
+                        <li id="step-update" class="step-item">
+                            <span class="step-num">3</span>
+                            <span>更新：計算每個群集的新平均中心</span>
+                        </li>
+                        <li id="step-check" class="step-item">
+                            <span class="step-num">4</span>
+                            <span>檢查：中心點是否不再移動？(收斂)</span>
+                        </li>
+                    </ol>
+                </div>
+
+
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 概念說明 (從右側移至此) -->
+                <div class="card info-card">
+                    <h3>🧠 什麼是 K-Means？</h3>
+                    <p>這是一種<strong>非監督式學習</strong>演算法，目的是將相似的資料自動分組。</p>
+                    <p>核心概念：透過不斷調整中心點的位置，讓群集內的差異最小化。</p>
+                </div>
+
+                <!-- 應用場景 -->
+                <div class="card">
+                    <h3>🌏 應用場景</h3>
+                    <ul class="tips-list">
+                        <li><strong>客戶分群</strong>：根據消費行為將客戶分類</li>
+                        <li><strong>影像壓縮</strong>：減少圖片使用的顏色數量</li>
+                        <li><strong>異常偵測</strong>：找出不屬於任何主要群集的資料</li>
+                    </ul>
+                </div>
+
+                <!-- K 值選擇 -->
+                <div class="card">
+                    <h3>🤔 如何選擇 K 值？</h3>
+                    <p>通常使用<strong>手肘法 (Elbow Method)</strong>。</p>
+                    <p>隨著 K 增加，誤差會下降，但在某個點下降幅度會變緩（轉折點），該點通常是最佳 K 值。</p>
+                </div>
+            </div>
+    </div>
+    </section>
+
+    <!-- CSS 調整：讓 info-grid 變成 3 欄 -->
+    <style>
+        .info-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+        }
+
+        @media (max-width: 1024px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+
+    <!-- 頁尾 -->
+    <footer class="footer">
+        <p>🎓 互動式機器學習教學 | 觀察中心點如何像磁鐵一樣吸引資料點</p>
+    </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

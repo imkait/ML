@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVM 支援向量機互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習支援向量機 (SVM) 的運作原理，包含超平面、邊界與核函數">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>📏 支援向量機 (SVM)</h1>
+            <p class="subtitle">互動式監督式學習教學</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <div class="canvas-container">
+                    <canvas id="svmCanvas" width="600" height="400"></canvas>
+                    <div class="canvas-hint">實線為決策邊界，虛線為邊距 (Margin)</div>
+                </div>
+
+                <!-- 狀態顯示條 -->
+                <div class="status-bar">
+                    <div class="status-item">
+                        <span class="status-label">訓練狀態:</span>
+                        <span class="status-value status-highlight" id="trainStatus">等待訓練</span>
+                    </div>
+                     <div class="status-item">
+                        <span class="status-label">支持向量數:</span>
+                        <span class="status-value" id="svCount">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板與說明 -->
+            <aside class="control-section">
+                <!-- 參數設定 -->
+                <div class="card control-panel">
+                    <h3>⚙️ 參數設定</h3>
+                    
+                    <!-- Kernel 選擇 -->
+                    <div class="select-container">
+                        <label for="kernelSelect" class="label-text">核函數 (Kernel)</label>
+                        <select id="kernelSelect" class="custom-select">
+                            <option value="linear">線性 (Linear)</option>
+                            <option value="rbf">徑向基函數 (RBF)</option>
+                        </select>
+                    </div>
+
+                    <!-- C 值 (Regularization) -->
+                    <div class="slider-container">
+                        <label for="cSlider">
+                            <span class="label-text">正則化參數 (C)</span>
+                            <span class="k-value" id="cValue">1.0</span>
+                        </label>
+                        <input type="range" id="cSlider" min="0.1" max="10" value="1.0" step="0.1">
+                        <div class="slider-labels">
+                            <span>0.1 (寬鬆)</span>
+                            <span>10 (嚴格)</span>
+                        </div>
+                    </div>
+
+                    <!-- 控制按鈕 -->
+                    <div class="control-buttons">
+                        <div class="button-row">
+                            <button id="trainBtn" class="btn-primary">🚀 開始訓練</button>
+                            <button id="randomBtn" class="btn-secondary">🎲 隨機資料</button>
+                        </div>
+                        <div class="button-row">
+                             <button id="resetBtn" class="btn-danger">🔄 重置</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 圖例 -->
+                 <div class="card legend-card">
+                    <h3>📊 圖例說明</h3>
+                    <div class="legend-items">
+                         <div class="legend-item">
+                            <span class="dot class-a"></span>
+                            <span>類別 A (+1)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot class-b"></span>
+                            <span>類別 B (-1)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="line-solid"></span>
+                            <span>超平面 (決策邊界)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="line-dashed"></span>
+                            <span>邊距 (Margin)</span>
+                        </div>
+                        <div class="legend-item">
+                             <span class="dot sv-indicator"></span>
+                            <span>支持向量 (Support Vector)</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 什麼是 SVM -->
+                <div class="card info-card">
+                    <h3>🧠 什麼是 SVM？</h3>
+                    <p>支援向量機是一種試圖找到<strong>「最寬街道」</strong>(最大邊距) 來區分不同類別資料的演算法。</p>
+                    <p>那些落在街道邊緣的關鍵資料點，就被稱為<strong>「支持向量」</strong>。</p>
+                </div>
+
+                <!-- 核函數技巧 -->
+                <div class="card">
+                    <h3>🔮 核函數技巧 (Kernel Trick)</h3>
+                    <p>當資料無法用直線分開時，SVM 可以將資料投影到更高維度，就像把一張紙捲起來剪開一樣。</p>
+                    <p><strong>RBF Kernel</strong> 就像是在資料周圍畫圈圈。</p>
+                </div>
+
+                <!-- C 值的影響 -->
+                <div class="card">
+                    <h3>🎚️ C 值的影響</h3>
+                    <ul class="tips-list">
+                        <li><strong>C 很大</strong>：對錯誤分類容忍度低，邊界較窄 (Hard Margin)。</li>
+                        <li><strong>C 很小</strong>：容許一些錯誤，邊界較寬 (Soft Margin)，較不易過度擬合。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 互動式機器學習教學 | 嘗試切換核函數來解決複雜的分類問題</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

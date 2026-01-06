@@ -1,0 +1,556 @@
+/* ===========================
+   CSS 變數與基礎設定
+   =========================== */
+:root {
+    /* 主色調 */
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+
+    /* 類別顏色 (沿用 KNN 變數名，但用途不同) */
+    --point-color: #f43f5e;
+    --point-glow: rgba(244, 63, 94, 0.4);
+    --line-color: #06b6d4;
+    --prediction-point: #fbbf24;
+
+    /* 背景與表面 */
+    --bg-gradient-start: #0f172a;
+    --bg-gradient-end: #1e293b;
+    --surface: rgba(30, 41, 59, 0.8);
+    --surface-light: rgba(51, 65, 85, 0.6);
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+
+    /* 文字 */
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    /* 其他 */
+    --success: #22c55e;
+    --radius: 16px;
+    --radius-sm: 8px;
+    --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* ===========================
+   容器佈局
+   =========================== */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===========================
+   頁首
+   =========================== */
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-light), var(--line-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* ===========================
+   主要內容區
+   =========================== */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+}
+
+/* ===========================
+   視覺化區域
+   =========================== */
+.visualization-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    height: 100%;
+}
+
+.canvas-container {
+    position: relative;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#regressionCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 450px;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: var(--radius-sm);
+    cursor: crosshair;
+    transition: var(--transition);
+}
+
+#regressionCanvas:hover {
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
+}
+
+.canvas-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--glass);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.7;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* ===========================
+   右側控制面板區域
+   =========================== */
+.control-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ===========================
+   控制面板卡片
+   =========================== */
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.control-panel h3 {
+    margin-bottom: 0.25rem;
+}
+
+.slider-container {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.slider-container label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.label-text {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.value-display {
+    font-family: monospace;
+    color: var(--primary-light);
+    font-weight: bold;
+}
+
+/* 自訂下拉選單 */
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.select-input {
+    width: 100%;
+    padding: 0.6rem;
+    background: var(--surface-light);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    transition: var(--transition);
+}
+
+.select-input:hover {
+    border-color: var(--primary-light);
+}
+
+.select-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* 自訂滑桿 - 稍作調整以保持一致間距 */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: var(--surface-light);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.5);
+    transition: var(--transition);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.6);
+}
+
+/* 按鈕群組 */
+.button-group {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+button {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.btn-secondary {
+    background: var(--surface-light);
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+}
+
+.btn-secondary:hover {
+    background: var(--glass-border);
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    flex-basis: 100%;
+    /* 讓主要按鈕佔滿一行 */
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 預測模式開關 */
+.mode-switch {
+    display: flex;
+    background: var(--surface-light);
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    margin-top: 0.5rem;
+}
+
+.mode-btn {
+    flex: 1;
+    background: transparent;
+    color: var(--text-secondary);
+    box-shadow: none;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+}
+
+.mode-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* ===========================
+   狀態面板
+   =========================== */
+.status-panel {
+    flex: 1;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+}
+
+.status-item {
+    background: var(--glass);
+    padding: 0.6rem;
+    border-radius: var(--radius-sm);
+    text-align: center;
+}
+
+.status-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+}
+
+.status-value {
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: monospace;
+}
+
+.status-value.loss {
+    color: #f87171;
+}
+
+.status-value.slope {
+    color: #60a5fa;
+}
+
+.status-value.intercept {
+    color: #a78bfa;
+}
+
+/* ===========================
+   卡片通用樣式
+   =========================== */
+.card {
+    background: var(--surface);
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+/* 圖例卡片 */
+.legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dot.data-point {
+    background: var(--point-color);
+    box-shadow: 0 0 8px var(--point-glow);
+}
+
+.dot.prediction-point {
+    background: var(--prediction-point);
+    border: 2px solid white;
+}
+
+.line-icon {
+    width: 20px;
+    height: 3px;
+    background: var(--line-color);
+    border-radius: 2px;
+}
+
+.line-icon.residual {
+    background: rgba(255, 255, 255, 0.2);
+    border-top: 1px dashed rgba(255, 255, 255, 0.5);
+    height: 1px;
+}
+
+/* ===========================
+   下方教學說明區域
+   =========================== */
+.info-section {
+    margin-top: 2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+}
+
+.info-card p,
+.steps-card li {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.steps-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.steps-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.formula {
+    background: var(--glass);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: var(--primary-light);
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+.formula-desc {
+    text-align: center;
+    font-size: 0.8rem !important;
+    color: var(--text-muted) !important;
+}
+
+/* ===========================
+   頁尾
+   =========================== */
+.footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+/* ===========================
+   響應式設計
+   =========================== */
+@media (max-width: 1200px) {
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .control-section {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .header h1 {
+        font-size: 1.75rem;
+    }
+
+    .control-section {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
