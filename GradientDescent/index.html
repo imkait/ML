@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>梯度下降法 (Gradient Descent) 互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習梯度下降法 (Gradient Descent) 的運作原理">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>📉 梯度下降法 (Gradient Descent)</h1>
+            <p class="subtitle">互動式最佳化演算法教學</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <div class="canvas-container">
+                    <canvas id="gdCanvas" width="600" height="500"></canvas>
+                    <div class="canvas-hint">👆 點擊畫布設定起始點</div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板與數據顯示 -->
+            <aside class="control-section">
+                <!-- 狀態顯示 -->
+                <div class="card status-card">
+                    <h3>📊 當前狀態</h3>
+                    <div class="status-items">
+                        <div class="status-item">
+                            <span class="status-label">迭代次數 (Step)</span>
+                            <span class="status-value" id="stepCount">0</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">損失函數 (Cost)</span>
+                            <span class="status-value" id="currentCost">0.0000</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">參數 (Parameter x)</span>
+                            <span class="status-value" id="currentPos">0.0000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 參數控制 -->
+                <div class="card control-panel">
+                    <h3>⚙️ 參數設定</h3>
+
+                    <!-- 函數選擇 -->
+                    <div class="control-group">
+                        <label for="funcSelect" class="label-text">目標函數 (Cost Function)</label>
+                        <select id="funcSelect" class="func-select">
+                            <option value="deg2">2次方 (二次函數)</option>
+                            <option value="deg4">4次方 (雙井函數)</option>
+                        </select>
+                    </div>
+
+                    <div class="slider-container">
+                        <label for="lrSlider">
+                            <span class="label-text">學習率 (Learning Rate)</span>
+                            <span class="k-value" id="lrValue">0.1</span>
+                        </label>
+                        <input type="range" id="lrSlider" min="0.001" max="1.0" value="0.1" step="0.001">
+                        <div class="slider-labels">
+                            <span>0.001</span>
+                            <span>1.0</span>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button id="startBtn" class="btn-primary">▶ 開始下降</button>
+                        <button id="resetBtn" class="btn-reset">🔄 重置</button>
+                        <button id="randomBtn" class="btn-random">🎲 隨機起點</button>
+                    </div>
+                </div>
+
+                <!-- 訊息面板 -->
+                <div class="card message-panel" id="messagePanel">
+                    <h3>💡 提示</h3>
+                    <p id="messageText">請點擊「開始下降」或在畫布上點擊設起點。</p>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 梯度下降原理 -->
+                <div class="card info-card">
+                    <h3>🧠 什麼是梯度下降？</h3>
+                    <p>這是一種用來尋找函數最小值的<strong>最佳化演算法</strong>。</p>
+                    <p>想像你在山上（高 Cost），想要下山（低 Cost），你會沿著最陡峭的方向往下走。</p>
+                </div>
+
+                <!-- 演算法步驟 -->
+                <div class="card steps-card">
+                    <h3>📝 運作步驟</h3>
+                    <ol class="steps-list">
+                        <li>
+                            <span class="step-num">1</span>
+                            <span>隨機選擇一個起始點</span>
+                        </li>
+                        <li>
+                            <span class="step-num">2</span>
+                            <span>計算該點的梯度（坡度方向）</span>
+                        </li>
+                        <li>
+                            <span class="step-num">3</span>
+                            <span>往梯度的反方向移動一小步</span>
+                        </li>
+                        <li>
+                            <span class="step-num">4</span>
+                            <span>重複直到到達最低點（山谷）</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- 數學公式 -->
+                <div class="card formula-card">
+                    <h3>📐 更新公式</h3>
+                    <div class="formula">
+                        θ = θ - α · ∇J(θ)
+                    </div>
+                    <p class="formula-desc">θ: 參數, α: 學習率, ∇J: 梯度</p>
+                </div>
+
+                <!-- 學習率影響 -->
+                <div class="card tips-card">
+                    <h3>💡 學習率的影響</h3>
+                    <ul class="tips-list">
+                        <li><strong>過大</strong>：步伐太大，可能跨過最低點甚至發散</li>
+                        <li><strong>過小</strong>：步伐太小，下降速度非常慢</li>
+                        <li><strong>適中</strong>：穩定且快速地收斂到最小值</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 互動式機器學習教學 | 調整學習率觀察收斂過程</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

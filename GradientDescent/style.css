@@ -1,0 +1,534 @@
+/* ===========================
+   CSS 變數與基礎設定
+   =========================== */
+:root {
+    /* 主色調 */
+    --primary: #8b5cf6;
+    /* Violet */
+    --primary-light: #a78bfa;
+    --primary-dark: #7c3aed;
+
+    /* 梯度下降特定顏色 */
+    --gradient-high: #ef4444;
+    /* High cost (Red) */
+    --gradient-low: #3b82f6;
+    /* Low cost (Blue) */
+    --path-color: #fbbf24;
+    /* Path (Amber) */
+    --start-point: #10b981;
+    /* Start (Green) */
+    --end-point: #f43f5e;
+    /* End (Rose) */
+
+    /* 背景與表面 */
+    --bg-gradient-start: #0f172a;
+    --bg-gradient-end: #1e293b;
+    --surface: rgba(30, 41, 59, 0.8);
+    --surface-light: rgba(51, 65, 85, 0.6);
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+
+    /* 文字 */
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    /* 其他 */
+    --radius: 16px;
+    --radius-sm: 8px;
+    --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* ===========================
+   容器佈局
+   =========================== */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===========================
+   頁首
+   =========================== */
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-light), var(--gradient-low));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* ===========================
+   主要內容區
+   =========================== */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+}
+
+/* ===========================
+   視覺化區域
+   =========================== */
+.visualization-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.canvas-container {
+    position: relative;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gdCanvas {
+    display: block;
+    width: 600px;
+    /* Fixed width for better control */
+    height: 500px;
+    background: #000;
+    border-radius: var(--radius-sm);
+    cursor: crosshair;
+    transition: var(--transition);
+}
+
+#gdCanvas:hover {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.2);
+}
+
+.canvas-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--glass);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.7;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* ===========================
+   右側控制面板區域
+   =========================== */
+.control-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ===========================
+   卡片通用樣式
+   =========================== */
+.card {
+    background: var(--surface);
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+/* 狀態卡片 */
+.status-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.5rem;
+}
+
+.status-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.status-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.status-value {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: var(--primary-light);
+}
+
+/* 控制面板 */
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    /* Increased gap for better spacing */
+}
+
+.slider-container {
+    width: 100%;
+}
+
+.slider-container label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Space between label and value */
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.control-group {
+    margin-bottom: 1.5rem;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.func-select {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--surface-light);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.func-select:hover {
+    border-color: var(--primary-light);
+}
+
+.func-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.label-text {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.k-value {
+    /* Reusing k-value style for lr-value */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    /* Slightly wider for decimals */
+    height: 32px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border-radius: 12px;
+}
+
+/* 滑桿樣式 */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: var(--surface-light);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    border-radius: 50%;
+    cursor: grab;
+    transition: var(--transition);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* 按鈕群組 */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    /* Stack buttons vertically */
+    gap: 0.75rem;
+}
+
+.btn-primary,
+.btn-reset,
+.btn-random {
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-reset {
+    background: var(--surface-light);
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+}
+
+.btn-reset:hover {
+    background: var(--glass-border);
+}
+
+.btn-random {
+    background: rgba(16, 185, 129, 0.2);
+    /* Green tint */
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.btn-random:hover {
+    background: rgba(16, 185, 129, 0.3);
+}
+
+/* 訊息面板 */
+.message-panel p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* ===========================
+   下方教學說明區域
+   =========================== */
+.info-section {
+    margin-top: 2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+}
+
+/* 步驟列表 */
+.steps-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.steps-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* 公式卡片 */
+.formula {
+    background: var(--glass);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+    color: var(--primary-light);
+    margin-bottom: 0.5rem;
+}
+
+.formula-desc {
+    text-align: center;
+    font-size: 0.8rem !important;
+    color: var(--text-muted) !important;
+}
+
+/* 提示列表 */
+.tips-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.tips-list li {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    padding-left: 1rem;
+    position: relative;
+}
+
+.tips-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--primary-light);
+}
+
+/* ===========================
+   頁尾
+   =========================== */
+.footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+/* ===========================
+   響應式設計
+   =========================== */
+@media (max-width: 1200px) {
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .control-section {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .header h1 {
+        font-size: 1.75rem;
+    }
+
+    .control-section {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #gdCanvas {
+        width: 100%;
+        height: 350px;
+    }
+}
