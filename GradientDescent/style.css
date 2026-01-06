@@ -490,6 +490,25 @@ input[type="range"]::-webkit-slider-thumb:hover {
     border-top: 1px solid var(--glass-border);
 }
 
+.back-home {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.6rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.back-home:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
+}
+
 /* ===========================
    響應式設計
    =========================== */
