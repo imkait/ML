@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>損失函數 (Loss Functions) 互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習各種損失函數的特性與應用">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>📉 損失函數 (Loss Functions)</h1>
+            <p class="subtitle">互動式機器學習基礎教學</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <div class="canvas-container">
+                    <canvas id="lossCanvas" width="600" height="500"></canvas>
+                    <div class="canvas-hint">👆 滑鼠移動查看損失值</div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板與資訊顯示 -->
+            <aside class="control-section">
+                <!-- 函數選擇 -->
+                <div class="card control-panel">
+                    <h3>⚙️ 函數選擇</h3>
+                    <div class="control-group">
+                        <label for="funcSelect" class="label-text">損失函數類型</label>
+                        <select id="funcSelect" class="func-select">
+                            <option value="mse" selected>MSE (均方誤差)</option>
+                            <option value="mae">MAE (平均絕對誤差)</option>
+                            <option value="bce">Binary Cross-Entropy</option>
+                            <option value="huber">Huber Loss</option>
+                            <option value="hinge">Hinge Loss</option>
+                        </select>
+                    </div>
+
+                    <!-- 真實值 y 調整 -->
+                    <div class="slider-container">
+                        <label for="ySlider">
+                            <span class="label-text">真實值 y</span>
+                            <span class="k-value" id="yValue">1.00</span>
+                        </label>
+                        <input type="range" id="ySlider" min="-2" max="2" value="1" step="0.1">
+                        <div class="slider-labels">
+                            <span>-2</span>
+                            <span>2</span>
+                        </div>
+                    </div>
+
+                    <!-- Huber delta 參數 -->
+                    <div id="deltaContainer" class="slider-container hidden">
+                        <label for="deltaSlider">
+                            <span class="label-text">δ (delta) 值</span>
+                            <span class="k-value" id="deltaValue">1.00</span>
+                        </label>
+                        <input type="range" id="deltaSlider" min="0.1" max="2" value="1" step="0.1">
+                        <div class="slider-labels">
+                            <span>0.1</span>
+                            <span>2.0</span>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="resetBtn" class="btn-reset">🔄 重置參數</button>
+                    </div>
+                </div>
+
+                <!-- 當前數值顯示 -->
+                <div class="card value-panel">
+                    <h3>📊 當前數值</h3>
+                    <div class="value-items">
+                        <div class="value-item">
+                            <span class="value-label">真實值 y</span>
+                            <span class="value-number" id="displayY">1.00</span>
+                        </div>
+                        <div class="value-item">
+                            <span class="value-label">預測值 ŷ</span>
+                            <span class="value-number highlight-secondary" id="displayYHat">0.00</span>
+                        </div>
+                        <div class="value-item">
+                            <span class="value-label">損失值 L</span>
+                            <span class="value-number highlight-primary" id="displayLoss">0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 函數公式 -->
+                <div class="card formula-panel">
+                    <h3>📐 數學公式</h3>
+                    <div class="formula-content">
+                        <div class="formula-label">單一樣本損失：</div>
+                        <div class="formula" id="formulaDisplay">L = (y - ŷ)²</div>
+                    </div>
+                    <div class="formula-content formula-full">
+                        <div class="formula-label">完整公式（多樣本）：</div>
+                        <div class="formula formula-small" id="formulaFullDisplay">L = (1/n) Σᵢ (yᵢ - ŷᵢ)²</div>
+                    </div>
+                    <div class="usage-info">
+                        <span class="usage-label">適用場景：</span>
+                        <span class="usage-value" id="usageDisplay">迴歸問題</span>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 什麼是損失函數 -->
+                <div class="card info-card">
+                    <h3>🧠 什麼是損失函數？</h3>
+                    <p>損失函數用來衡量模型的<strong>預測值</strong>與<strong>真實值</strong>之間的差距。</p>
+                    <p>機器學習的目標就是<em>最小化損失函數</em>，讓模型預測更準確。</p>
+                </div>
+
+                <!-- 迴歸 vs 分類 -->
+                <div class="card compare-card">
+                    <h3>⚖️ 迴歸 vs 分類</h3>
+                    <ul class="compare-list">
+                        <li><strong>迴歸問題</strong>：預測連續數值，使用 MSE、MAE</li>
+                        <li><strong>二元分類</strong>：預測機率，使用 Binary Cross-Entropy</li>
+                        <li><strong>SVM 分類</strong>：最大化邊界，使用 Hinge Loss</li>
+                    </ul>
+                </div>
+
+                <!-- MSE vs MAE -->
+                <div class="card gradient-card">
+                    <h3>📊 MSE vs MAE</h3>
+                    <p><strong>MSE</strong>：對大誤差敏感，會「懲罰」離群值。</p>
+                    <p><strong>MAE</strong>：對異常值較穩健，但梯度固定。</p>
+                    <p><strong>Huber</strong>：結合兩者優點。</p>
+                </div>
+
+                <!-- 選擇建議 -->
+                <div class="card tips-card">
+                    <h3>💡 選擇建議</h3>
+                    <ul class="tips-list">
+                        <li><strong>資料乾淨</strong>：MSE 學習較快</li>
+                        <li><strong>有離群值</strong>：MAE 或 Huber</li>
+                        <li><strong>機率輸出</strong>：Cross-Entropy</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+            <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

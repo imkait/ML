@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>激活函數 (Activation Functions) 互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習各種激活函數的特性與應用">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>⚡ 激活函數 (Activation Functions)</h1>
+            <p class="subtitle">互動式深度學習基礎教學</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <div class="canvas-container">
+                    <canvas id="activationCanvas" width="600" height="500"></canvas>
+                    <div class="canvas-hint">👆 滑鼠移動查看函數值</div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板與資訊顯示 -->
+            <aside class="control-section">
+                <!-- 函數選擇 -->
+                <div class="card control-panel">
+                    <h3>⚙️ 函數選擇</h3>
+                    <div class="control-group">
+                        <label for="funcSelect" class="label-text">激活函數類型</label>
+                        <select id="funcSelect" class="func-select">
+                            <option value="sigmoid">Sigmoid</option>
+                            <option value="tanh">Tanh (雙曲正切)</option>
+                            <option value="relu" selected>ReLU</option>
+                            <option value="leakyRelu">Leaky ReLU</option>
+                            <option value="elu">ELU</option>
+                            <option value="swish">Swish</option>
+                        </select>
+                    </div>
+
+                    <!-- 參數調整 -->
+                    <div id="paramContainer" class="slider-container hidden">
+                        <label for="paramSlider">
+                            <span class="label-text" id="paramLabel">α 值</span>
+                            <span class="k-value" id="paramValue">0.01</span>
+                        </label>
+                        <input type="range" id="paramSlider" min="0.01" max="0.5" value="0.01" step="0.01">
+                        <div class="slider-labels">
+                            <span>0.01</span>
+                            <span>0.5</span>
+                        </div>
+                    </div>
+
+                    <!-- 導函數切換 -->
+                    <div class="checkbox-container">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="showDerivative" checked>
+                            <span class="checkbox-custom"></span>
+                            <span>顯示導函數 f'(x)</span>
+                        </label>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="resetViewBtn" class="btn-reset">🔄 重置視圖</button>
+                    </div>
+                </div>
+
+                <!-- 當前數值顯示 -->
+                <div class="card value-panel">
+                    <h3>📊 當前數值</h3>
+                    <div class="value-items">
+                        <div class="value-item">
+                            <span class="value-label">輸入 x</span>
+                            <span class="value-number" id="xValue">0.00</span>
+                        </div>
+                        <div class="value-item">
+                            <span class="value-label">輸出 f(x)</span>
+                            <span class="value-number highlight-primary" id="fxValue">0.00</span>
+                        </div>
+                        <div class="value-item">
+                            <span class="value-label">導數 f'(x)</span>
+                            <span class="value-number highlight-secondary" id="dfxValue">0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 函數公式 -->
+                <div class="card formula-panel">
+                    <h3>📐 數學公式</h3>
+                    <div class="formula-content">
+                        <div class="formula" id="formulaDisplay">f(x) = max(0, x)</div>
+                        <div class="formula derivative" id="derivativeDisplay">f'(x) = 0 if x<0 else 1</div>
+                    </div>
+                    <div class="output-range">
+                        <span class="range-label">輸出範圍：</span>
+                        <span class="range-value" id="rangeDisplay">[0, +∞)</span>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 什麼是激活函數 -->
+                <div class="card info-card">
+                    <h3>🧠 什麼是激活函數？</h3>
+                    <p>激活函數是神經網路中的<strong>非線性轉換</strong>，用於決定神經元是否應該被「激活」。</p>
+                    <p>沒有激活函數，神經網路只能學習<em>線性關係</em>，無法處理複雜問題。</p>
+                </div>
+
+                <!-- 函數比較 -->
+                <div class="card compare-card">
+                    <h3>⚖️ 函數比較</h3>
+                    <ul class="compare-list">
+                        <li><strong>Sigmoid/Tanh</strong>：早期常用，但有梯度消失問題</li>
+                        <li><strong>ReLU</strong>：計算快速，是目前最常用的選擇</li>
+                        <li><strong>Leaky ReLU</strong>：解決 ReLU 的「死亡」問題</li>
+                    </ul>
+                </div>
+
+                <!-- 梯度消失 -->
+                <div class="card gradient-card">
+                    <h3>⚠️ 梯度消失問題</h3>
+                    <p>當使用 Sigmoid 或 Tanh 時，輸入值很大或很小時，導數接近 0。</p>
+                    <p>這會導致深層網路的權重<strong>無法有效更新</strong>，訓練變得困難。</p>
+                </div>
+
+                <!-- 選擇建議 -->
+                <div class="card tips-card">
+                    <h3>💡 選擇建議</h3>
+                    <ul class="tips-list">
+                        <li><strong>隱藏層</strong>：優先使用 ReLU 或其變體</li>
+                        <li><strong>輸出層分類</strong>：使用 Sigmoid（二元）或 Softmax（多元）</li>
+                        <li><strong>輸出層迴歸</strong>：通常不使用激活函數</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+            <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

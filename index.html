@@ -355,11 +355,36 @@
             animation-delay: 0.7s;
         }
 
+        .course-card:nth-child(8) {
+            animation-delay: 0.8s;
+        }
+
+        .course-card:nth-child(9) {
+            animation-delay: 0.9s;
+        }
+
+        .course-card:nth-child(10) {
+            animation-delay: 1.0s;
+        }
+
         @keyframes fadeInUp {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        /* 新增課程卡片顏色 */
+        .course-card.actfun {
+            --card-accent: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .course-card.lossfun {
+            --card-accent: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+        }
+
+        .course-card.mlp {
+            --card-accent: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%);
         }
     </style>
 </head>
@@ -492,7 +517,56 @@
                         <span class="arrow">→</span>
                     </div>
                 </div>
-            </a>
+                <!-- 激活函數 -->
+                <a href="ActFun/index.html" class="course-card actfun">
+                    <div class="card-content">
+                        <span class="card-icon">⚡</span>
+                        <h2 class="card-title">激活函數</h2>
+                        <p class="card-subtitle">了解神經網路中常用的激活函數及其特性</p>
+                        <div class="card-tags">
+                            <span class="tag">深度學習</span>
+                            <span class="tag">基礎概念</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- 損失函數 -->
+                <a href="LossFun/index.html" class="course-card lossfun">
+                    <div class="card-content">
+                        <span class="card-icon">📊</span>
+                        <h2 class="card-title">損失函數</h2>
+                        <p class="card-subtitle">評估模型預測誤差的各種損失函數比較</p>
+                        <div class="card-tags">
+                            <span class="tag">深度學習</span>
+                            <span class="tag">優化方法</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- 多重感知器 -->
+                <a href="MLP/index.html" class="course-card mlp">
+                    <div class="card-content">
+                        <span class="card-icon">🧠</span>
+                        <h2 class="card-title">多重感知器 (MLP)</h2>
+                        <p class="card-subtitle">前饋神經網路的基礎架構與前向傳播</p>
+                        <div class="card-tags">
+                            <span class="tag">深度學習</span>
+                            <span class="tag">神經網路</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
+                    </div>
+                </a>
         </section>
 
         <!-- 頁尾 -->
@@ -504,5 +578,3 @@
 </body>
 
 </html>
-</CodeContent>
-<parameter name="EmptyFile">false

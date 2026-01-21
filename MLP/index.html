@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多重感知器 (MLP) 互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習多重感知器神經網路的基本概念">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>🧠 多重感知器 (MLP)</h1>
+            <p class="subtitle">互動式深度學習基礎教學</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <div class="canvas-container">
+                    <canvas id="networkCanvas" width="700" height="400"></canvas>
+                    <div class="canvas-hint">👆 點擊節點查看詳細資訊 | 懸停連線查看權重</div>
+                </div>
+                <!-- 圖例說明（横向佈局） -->
+                <div class="legend-bar">
+                    <div class="legend-item">
+                        <span class="legend-dot input"></span>
+                        <span>輸入層</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot hidden"></span>
+                        <span>隱藏層</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot output"></span>
+                        <span>輸出層</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-line positive"></span>
+                        <span>正權重</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-line negative"></span>
+                        <span>負權重</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板與資訊顯示 -->
+            <aside class="control-section">
+                <!-- 網路設定 -->
+                <div class="card control-panel">
+                    <h3>⚙️ 網路結構</h3>
+
+                    <!-- 隱藏層節點數 -->
+                    <div class="slider-container">
+                        <label for="hiddenSlider">
+                            <span class="label-text">隱藏層節點數</span>
+                            <span class="k-value" id="hiddenValue">4</span>
+                        </label>
+                        <input type="range" id="hiddenSlider" min="2" max="6" value="4" step="1">
+                        <div class="slider-labels">
+                            <span>2</span>
+                            <span>6</span>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="forwardBtn" class="btn-primary">▶️ 前向傳播</button>
+                        <button id="resetBtn" class="btn-reset">🔄 重置權重</button>
+                    </div>
+                </div>
+
+                <!-- 節點資訊 -->
+                <div class="card value-panel">
+                    <h3>📊 節點資訊</h3>
+                    <div id="nodeInfo" class="node-info">
+                        <p class="info-hint">點擊任意節點查看詳細資訊</p>
+                    </div>
+                </div>
+
+                <!-- 計算公式 -->
+                <div class="card formula-panel">
+                    <h3>📐 神經元計算</h3>
+                    <div class="formula-content">
+                        <div class="formula-label">加權和：</div>
+                        <div class="formula">z = Σ(wᵢ × xᵢ) + b</div>
+                    </div>
+                    <div class="formula-content formula-full">
+                        <div class="formula-label">激活輸出：</div>
+                        <div class="formula formula-small">a = σ(z) = 1/(1+e⁻ᶻ)</div>
+                    </div>
+                    <div class="usage-info">
+                        <span class="usage-label">使用激活函數：</span>
+                        <span class="usage-value">Sigmoid</span>
+                    </div>
+                </div>
+
+    </div>
+    </aside>
+    </main>
+
+    <!-- 下方：教學說明區 -->
+    <section class="info-section">
+        <div class="info-grid">
+            <!-- 什麼是 MLP -->
+            <div class="card info-card">
+                <h3>🧠 什麼是多重感知器？</h3>
+                <p>多重感知器 (MLP) 是一種<strong>前饋神經網路</strong>，由多個神經元層組成。</p>
+                <p>資料從輸入層流向輸出層，經過一或多個<em>隱藏層</em>進行非線性轉換。</p>
+            </div>
+
+            <!-- 網路結構 -->
+            <div class="card compare-card">
+                <h3>🏗️ 網路結構</h3>
+                <ul class="compare-list">
+                    <li><strong>輸入層</strong>：接收原始特徵資料</li>
+                    <li><strong>隱藏層</strong>：學習特徵的非線性組合</li>
+                    <li><strong>輸出層</strong>：產生最終預測結果</li>
+                </ul>
+            </div>
+
+            <!-- 前向傳播 -->
+            <div class="card gradient-card">
+                <h3>➡️ 前向傳播</h3>
+                <p>每個神經元接收前一層的<strong>所有</strong>輸出，進行加權和計算。</p>
+                <p>透過<strong>激活函數</strong>轉換後，傳遞給下一層。</p>
+            </div>
+
+            <!-- 學習建議 -->
+            <div class="card tips-card">
+                <h3>💡 學習建議</h3>
+                <ul class="tips-list">
+                    <li><strong>調整節點數</strong>：觀察網路結構變化</li>
+                    <li><strong>執行前向傳播</strong>：理解資料流動</li>
+                    <li><strong>點擊節點</strong>：查看計算細節</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer class="footer">
+        <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+        <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+    </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
