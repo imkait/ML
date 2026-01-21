@@ -207,99 +207,121 @@ function trainSVM() {
     const N = state.data.length;
     state.alphas = new Float64Array(N).fill(0);
     state.b = 0;
+    state.isTrained = true; // 設為 true 以便顯示決策邊界
 
     const maxPasses = 10;
     let passes = 0;
     const tol = 1e-4; // Tolerance
     const C = state.C; // Regularization
+    let iter = 0;
+    const maxIter = 2000;
 
-    // 為了不阻塞 UI，使用 setTimeout
-    setTimeout(() => {
-        try {
-            console.log('Training started...');
-            let iter = 0;
-            const maxIter = 2000;
+    console.log('Training started...');
 
-            while (passes < maxPasses && iter < maxIter) {
-                let numChangedAlphas = 0;
-                for (let i = 0; i < N; i++) {
-                    const E_i = decisionFunction(state.data[i]) - state.data[i].label;
+    // 使用動畫形式進行訓練，以便觀察決策邊界變化
+    function trainStep() {
+        // 每個動畫幀執行多次迭代（加快訓練但仍可見變化）
+        const iterationsPerFrame = 5;
 
-                    if ((state.data[i].label * E_i < -tol && state.alphas[i] < C) ||
-                        (state.data[i].label * E_i > tol && state.alphas[i] > 0)) {
+        for (let step = 0; step < iterationsPerFrame && passes < maxPasses && iter < maxIter; step++) {
+            let numChangedAlphas = 0;
 
-                        // Select j randomly distinct from i
-                        let j = Math.floor(Math.random() * (N - 1));
-                        if (j >= i) j++;
+            for (let i = 0; i < N; i++) {
+                const E_i = decisionFunction(state.data[i]) - state.data[i].label;
 
-                        const E_j = decisionFunction(state.data[j]) - state.data[j].label;
+                if ((state.data[i].label * E_i < -tol && state.alphas[i] < C) ||
+                    (state.data[i].label * E_i > tol && state.alphas[i] > 0)) {
 
-                        // Save old alphas
-                        const alpha_i_old = state.alphas[i];
-                        const alpha_j_old = state.alphas[j];
+                    // Select j randomly distinct from i
+                    let j = Math.floor(Math.random() * (N - 1));
+                    if (j >= i) j++;
 
-                        // Compute L and H
-                        let L, H;
-                        if (state.data[i].label !== state.data[j].label) {
-                            L = Math.max(0, state.alphas[j] - state.alphas[i]);
-                            H = Math.min(C, C + state.alphas[j] - state.alphas[i]);
-                        } else {
-                            L = Math.max(0, state.alphas[i] + state.alphas[j] - C);
-                            H = Math.min(C, state.alphas[i] + state.alphas[j]);
-                        }
+                    const E_j = decisionFunction(state.data[j]) - state.data[j].label;
 
-                        if (L === H) continue;
+                    // Save old alphas
+                    const alpha_i_old = state.alphas[i];
+                    const alpha_j_old = state.alphas[j];
 
-                        // Compute eta
-                        const eta = 2 * kernel(state.data[i], state.data[j]) -
-                            kernel(state.data[i], state.data[i]) -
-                            kernel(state.data[j], state.data[j]);
-
-                        if (eta >= 0) continue;
-
-                        // Update alpha_j
-                        state.alphas[j] -= (state.data[j].label * (E_i - E_j)) / eta;
-                        state.alphas[j] = Math.min(H, Math.max(L, state.alphas[j]));
-
-                        if (Math.abs(state.alphas[j] - alpha_j_old) < 1e-5) continue;
-
-                        // Update alpha_i
-                        state.alphas[i] += state.data[i].label * state.data[j].label * (alpha_j_old - state.alphas[j]);
-
-                        // Update b
-                        const b1 = state.b - E_i -
-                            state.data[i].label * (state.alphas[i] - alpha_i_old) * kernel(state.data[i], state.data[i]) -
-                            state.data[j].label * (state.alphas[j] - alpha_j_old) * kernel(state.data[i], state.data[j]);
-
-                        const b2 = state.b - E_j -
-                            state.data[i].label * (state.alphas[i] - alpha_i_old) * kernel(state.data[i], state.data[j]) -
-                            state.data[j].label * (state.alphas[j] - alpha_j_old) * kernel(state.data[j], state.data[j]);
-
-                        if (0 < state.alphas[i] && state.alphas[i] < C) state.b = b1;
-                        else if (0 < state.alphas[j] && state.alphas[j] < C) state.b = b2;
-                        else state.b = (b1 + b2) / 2;
-
-                        numChangedAlphas++;
+                    // Compute L and H
+                    let L, H;
+                    if (state.data[i].label !== state.data[j].label) {
+                        L = Math.max(0, state.alphas[j] - state.alphas[i]);
+                        H = Math.min(C, C + state.alphas[j] - state.alphas[i]);
+                    } else {
+                        L = Math.max(0, state.alphas[i] + state.alphas[j] - C);
+                        H = Math.min(C, state.alphas[i] + state.alphas[j]);
                     }
-                }
 
-                if (numChangedAlphas === 0) passes++;
-                else passes = 0;
-                iter++;
+                    if (L === H) continue;
+
+                    // Compute eta
+                    const eta = 2 * kernel(state.data[i], state.data[j]) -
+                        kernel(state.data[i], state.data[i]) -
+                        kernel(state.data[j], state.data[j]);
+
+                    if (eta >= 0) continue;
+
+                    // Update alpha_j
+                    state.alphas[j] -= (state.data[j].label * (E_i - E_j)) / eta;
+                    state.alphas[j] = Math.min(H, Math.max(L, state.alphas[j]));
+
+                    if (Math.abs(state.alphas[j] - alpha_j_old) < 1e-5) continue;
+
+                    // Update alpha_i
+                    state.alphas[i] += state.data[i].label * state.data[j].label * (alpha_j_old - state.alphas[j]);
+
+                    // Update b
+                    const b1 = state.b - E_i -
+                        state.data[i].label * (state.alphas[i] - alpha_i_old) * kernel(state.data[i], state.data[i]) -
+                        state.data[j].label * (state.alphas[j] - alpha_j_old) * kernel(state.data[i], state.data[j]);
+
+                    const b2 = state.b - E_j -
+                        state.data[i].label * (state.alphas[i] - alpha_i_old) * kernel(state.data[i], state.data[j]) -
+                        state.data[j].label * (state.alphas[j] - alpha_j_old) * kernel(state.data[j], state.data[j]);
+
+                    if (0 < state.alphas[i] && state.alphas[i] < C) state.b = b1;
+                    else if (0 < state.alphas[j] && state.alphas[j] < C) state.b = b2;
+                    else state.b = (b1 + b2) / 2;
+
+                    numChangedAlphas++;
+                }
             }
 
+            if (numChangedAlphas === 0) passes++;
+            else passes = 0;
+            iter++;
+        }
+
+        // 更新狀態顯示
+        updateStatus(`訓練中... (迭代: ${iter}, SV: ${countSupportVectorsValue()})`);
+        countSupportVectors();
+        render();
+
+        // 檢查是否繼續訓練
+        if (passes < maxPasses && iter < maxIter) {
+            // 使用 setTimeout 來控制動畫速度，讓變化更容易觀察
+            setTimeout(() => requestAnimationFrame(trainStep), 50);
+        } else {
+            // 訓練完成
             console.log('Training finished. Iter:', iter);
-            state.isTrained = true;
             updateStatus('訓練完成');
             countSupportVectors();
             render();
-        } catch (error) {
-            console.error('Training error:', error);
-            alert('訓練發生錯誤: ' + error.message);
-            updateStatus('訓練失敗');
         }
+    }
 
-    }, 10);
+    // 開始訓練動畫
+    requestAnimationFrame(trainStep);
+}
+
+// 輔助函式：計算支持向量數量（回傳值）
+function countSupportVectorsValue() {
+    let count = 0;
+    const threshold = 1e-4;
+    state.alphas.forEach(a => {
+        if (a > threshold) count++;
+    });
+    return count;
 }
 
 // ===========================
