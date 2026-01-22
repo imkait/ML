@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>過擬合與欠擬合 - 互動教學</title>
+    <meta name="description" content="透過互動體驗了解機器學習中過擬合 (Overfitting) 與欠擬合 (Underfitting) 的成因與影響">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>⚖️ 過擬合與欠擬合</h1>
+            <p class="subtitle">探索模型複雜度與泛化能力的平衡點</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <!-- 概念點擊互動區 -->
+                <div class="concept-area">
+                    <div class="concept-card" id="cardUnderfit" onclick="setPresetMode('underfit')">
+                        <h3 style="color: var(--status-underfit)">😕 Underfitting</h3>
+                        <p>模型太簡單 (Degree = 1)</p>
+                    </div>
+                    <div class="concept-card" id="cardOptimal" onclick="setPresetMode('optimal')">
+                        <h3 style="color: var(--status-optimal)">✅ Just Right</h3>
+                        <p>複雜度適中 (Degree = 3)</p>
+                    </div>
+                    <div class="concept-card" id="cardOverfit" onclick="setPresetMode('overfit')">
+                        <h3 style="color: var(--status-overfit)">🤯 Overfitting</h3>
+                        <p>模型太複雜 (Degree = 15)</p>
+                    </div>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas id="chartCanvas"></canvas>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板 -->
+            <aside class="control-section">
+                <!-- 參數設定 -->
+                <div class="card">
+                    <h3>⚙️ 參數設定</h3>
+
+                    <div class="slider-container">
+                        <label for="degreeSlider">
+                            <span>多項式階數 (Degree)</span>
+                            <span id="degreeValue" class="value-display">1</span>
+                        </label>
+                        <input type="range" id="degreeSlider" min="1" max="15" value="1" step="1">
+                    </div>
+
+                    <div class="slider-container">
+                        <label for="noiseSlider">
+                            <span>數據雜訊 (Noise)</span>
+                            <span id="noiseValue" class="value-display">20</span>
+                        </label>
+                        <input type="range" id="noiseSlider" min="0" max="50" value="20">
+                    </div>
+
+                    <div class="slider-container">
+                        <label for="sampleSizeSlider">
+                            <span>樣本數量</span>
+                            <span id="sampleSizeValue" class="value-display">20</span>
+                        </label>
+                        <input type="range" id="sampleSizeSlider" min="10" max="50" value="20">
+                    </div>
+
+                    <button id="regenerateBtn" class="btn-primary">🔄 重新生成數據</button>
+                </div>
+
+                <!-- 誤差指標 -->
+                <div class="card">
+                    <h3>📊 誤差指標 (MSE)</h3>
+                    <div class="metrics-box" style="margin-top: 0; padding-top: 0; border: none;">
+                        <div class="metric-item">
+                            <span>訓練誤差 (Train Loss)</span>
+                            <span id="trainLossDisplay" style="color: #fca5a5; font-weight: bold;">0.00</span>
+                        </div>
+                        <div class="metric-item">
+                            <span>測試誤差 (Test Loss)</span>
+                            <span id="testLossDisplay" style="color: #60a5fa; font-weight: bold;">0.00</span>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; line-height: 1.5;">
+                        <strong style="color: var(--status-overfit)">警示：</strong>當測試誤差顯著高於訓練誤差時，極可能發生了過擬合。
+                    </p>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 核心概念 -->
+                <div class="card info-card">
+                    <h3>🧠 核心概念：權衡 (Trade-off)</h3>
+                    <p>機器學習的目標是找到 <strong>Bias (偏差)</strong> 與 <strong>Variance (變異)</strong> 的最佳平衡點。</p>
+                    <ul class="tips-list">
+                        <li><strong>Underfitting</strong>：高偏差 (High Bias)，模型太笨。</li>
+                        <li><strong>Overfitting</strong>：高變異 (High Variance)，模型太敏感。</li>
+                    </ul>
+                </div>
+
+                <!-- 如何判斷 -->
+                <div class="card steps-card">
+                    <h3>📈 如何判斷？</h3>
+                    <p>觀察 <strong>Loss (損失函數)</strong> 的變化曲線：</p>
+                    <ol class="steps-list">
+                        <li>
+                            <span class="step-num">1</span>
+                            <span>如果 訓練誤差 高，測試誤差 也高 ➝ <strong>欠擬合</strong></span>
+                        </li>
+                        <li>
+                            <span class="step-num">2</span>
+                            <span>如果 訓練誤差 低，測試誤差 卻很高 ➝ <strong>過擬合</strong></span>
+                        </li>
+                        <li>
+                            <span class="step-num">3</span>
+                            <span>兩者都很低且接近 ➝ <strong>訓練良好</strong></span>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- 發生原因 -->
+                <div class="card formula-card">
+                    <h3>⚠️ 常見發生原因</h3>
+                    <ul class="tips-list">
+                        <li><strong>模型太複雜</strong>：參數太多 (如本例 Degree 很高)。</li>
+                        <li><strong>資料量太少</strong>：沒看過夠多題型，只好死背。</li>
+                        <li><strong>資料太髒</strong>：模型努力去擬合錯誤的雜訊 (Noise)。</li>
+                    </ul>
+                </div>
+
+                <!-- 解決方案 -->
+                <div class="card tips-card">
+                    <h3>💡 解決方案 (Solutions)</h3>
+                    <ul class="tips-list">
+                        <li><strong>增加資料量</strong>：這是最有效的方法。</li>
+                        <li><strong>特徵選取</strong>：移除不重要的輸入特徵。</li>
+                        <li><strong>正規化 (Regularization)</strong>：限制權重的大小 (L1/L2)。</li>
+                        <li><strong>早停法 (Early Stopping)</strong>：在測試誤差開始上升時停止訓練。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+            <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

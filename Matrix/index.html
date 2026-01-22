@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>混淆矩陣與評估指標 - 互動教學</title>
+    <meta name="description" content="互動式學習混淆矩陣 (Confusion Matrix)、Precision、Recall 與 F1-Score 的計算原理">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>📊 混淆矩陣與評估指標</h1>
+            <p class="subtitle">互動式探索分類模型的評估方法</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <!-- 畫布：顯示正負樣本分佈與閾值 -->
+                <div class="canvas-container">
+                    <canvas id="matrixCanvas" width="800" height="320"></canvas>
+                    <div class="canvas-hint">↔️ 拖曳垂直線調整分類閾值 (Threshold)</div>
+                </div>
+
+                <!-- 評估指標顯示 -->
+                <div class="stats-panel">
+                    <div class="stats-grid">
+                        <div class="stat-card accuracy" title="(TP + TN) / Total">
+                            <div class="stat-label">準確率(Accuracy)</div>
+                            <div class="stat-value" id="valAcc">0.00</div>
+                            <div class="stat-desc">(TP + TN) / Total</div>
+                        </div>
+                        <div class="stat-card precision" title="TP / (TP + FP)">
+                            <div class="stat-label">精確度(Precision)</div>
+                            <div class="stat-value" id="valPrec">0.00</div>
+                            <div class="stat-desc">TP / (TP + FP)</div>
+                        </div>
+                        <div class="stat-card recall" title="TP / (TP + FN)">
+                            <div class="stat-label">召回率(Recall)</div>
+                            <div class="stat-value" id="valRec">0.00</div>
+                            <div class="stat-desc">TP / (TP + FN)</div>
+                        </div>
+                        <div class="stat-card f1" title="2 * (P * R) / (P + R)">
+                            <div class="stat-label">F1-Score</div>
+                            <div class="stat-value" id="valF1">0.00</div>
+                            <div class="stat-desc">2 * (P * R) / (P + R)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右側：混淆矩陣與控制面板 -->
+            <aside class="control-section">
+                <!-- 混淆矩陣區塊 -->
+                <div class="matrix-container">
+                    <h3 class="matrix-title">Confusion Matrix</h3>
+
+                    <div class="confusion-matrix">
+                        <!-- 頂部標題：預測結果 -->
+                        <!-- 頂部標題：此處將使用 CSS Grid 定位 -->
+                        <div class="col-header header-pos">Actual Positive (1)</div>
+                        <div class="col-header header-neg">Actual Negative (0)</div>
+
+                        <!-- 左側標題：真實情況 -->
+                        <!-- 左側標題：真實情況 -->
+                        <div class="matrix-label left">Predicted Class</div>
+
+                        <!-- 預測類別標籤 (Row Headers) -->
+                        <div class="row-header row-pos">Positive (1)</div>
+                        <div class="row-header row-neg">Negative (0)</div>
+
+                        <!-- TP 格子 -->
+                        <div class="matrix-cell cell-tp" id="cellTP">
+                            <span class="mt-label">TP</span>
+                            <div class="mt-value" id="countTP">0</div>
+                            <div class="mt-desc">True Positive</div>
+                        </div>
+
+                        <!-- FP 格子 (Moved here) -->
+                        <div class="matrix-cell cell-fp" id="cellFP">
+                            <span class="mt-label">FP</span>
+                            <div class="mt-value" id="countFP">0</div>
+                            <div class="mt-desc">False Positive</div>
+                        </div>
+
+                        <!-- FN 格子 (Moved here) -->
+                        <div class="matrix-cell cell-fn" id="cellFN">
+                            <span class="mt-label">FN</span>
+                            <div class="mt-value" id="countFN">0</div>
+                            <div class="mt-desc">False Negative</div>
+                        </div>
+
+                        <!-- TN 格子 -->
+                        <div class="matrix-cell cell-tn" id="cellTN">
+                            <span class="mt-label">TN</span>
+                            <div class="mt-value" id="countTN">0</div>
+                            <div class="mt-desc">True Negative</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 控制參數 -->
+                <div class="control-panel">
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span>閾值 (Threshold)</span>
+                            <span id="threshValue">0.50</span>
+                        </div>
+                        <input type="range" id="threshSlider" min="0" max="100" value="50">
+                    </div>
+
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span>樣本重疊度 (Overlap)</span>
+                            <span id="overlapValue">中</span>
+                        </div>
+                        <input type="range" id="overlapSlider" min="0" max="100" value="40">
+                    </div>
+
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span>樣本數量 (Sample Size)</span>
+                            <span id="sizeValue">200</span>
+                        </div>
+                        <input type="range" id="sizeSlider" min="50" max="500" value="200" step="50">
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 混淆矩陣定義 -->
+                <div class="info-card">
+                    <h3>🧩 混淆矩陣定義</h3>
+                    <ul class="info-list">
+                        <li><strong>TP (True Positive)</strong>：真的有病，且被檢測出來。</li>
+                        <li><strong>TN (True Negative)</strong>：真的沒病，且檢測正常。</li>
+                        <li><strong>FP (False Positive)</strong>：沒病卻被誤判有病 (誤報)。</li>
+                        <li><strong>FN (False Negative)</strong>：有病卻沒被檢測出來 (漏報)。</li>
+                    </ul>
+                </div>
+
+                <!-- 指標名詞解釋 -->
+                <div class="info-card">
+                    <h3>📚 評估指標定義</h3>
+                    <ul class="info-list">
+                        <li><strong>準確率 (Accuracy)</strong>：所有預測正確的比例。</li>
+                        <li><strong>精確度 (Precision)</strong>：預測為正樣本中，真正的正樣本比例。</li>
+                        <li><strong>召回率 (Recall)</strong>：真正的正樣本中，被正確預測的比例。</li>
+                        <li><strong>F1-Score</strong>：Precision 與 Recall 的調和平均數。</li>
+                    </ul>
+                </div>
+
+                <!-- Precision vs Recall -->
+                <div class="info-card">
+                    <h3>⚖️ Precision 與 Recall 的權衡</h3>
+                    <p>通常這兩者是互斥的：</p>
+                    <ul class="info-list">
+                        <li><strong>提高閾值</strong>：模型更謹慎 ➝ Precision ⬆️，但 Recall ⬇️ (易漏報)。</li>
+                        <li><strong>降低閾值</strong>：模型更寬鬆 ➝ Recall ⬆️，但 Precision ⬇️ (易誤報)。</li>
+                    </ul>
+                    <h3>⚠️ Accuracy 的陷阱</h3>
+                    <p>當資料<strong>不平衡</strong>時（例如：癌症發生率僅 0.1%），Accuracy 可能會誤導我們。</p>
+                    <p>即使模型預測「所有人」都沒病，Accuracy 仍高達 99.9%，但此模型完全無用。</p>
+                </div>
+
+                <!-- 應用場景 -->
+                <div class="info-card">
+                    <h3>💡 選擇合適的指標</h3>
+                    <ul class="info-list">
+                        <li><strong>注重Recall</strong>：地震預警、癌症篩檢（寧可錯殺，不可放過）。</li>
+                        <li><strong>注重Precision</strong>：垃圾郵件過濾、指紋解鎖（不想被一直誤判打擾）。</li>
+                        <li><strong>注重F1-Score</strong>：兩者的調和平均，適合追求平衡時。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+            <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

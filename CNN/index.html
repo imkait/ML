@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNN 卷積神經網路 - 互動教學</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>卷積運算視覺化 (Convolution Viewer)</h1>
+            <p>移動滑鼠觀察 Filter 如何提取特徵，理解 CNN 的核心原理</p>
+        </header>
+
+        <main class="main-content">
+            <div class="visualization-area">
+                <!-- 控制面板 -->
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label>選擇濾鏡 (Filter)：</label>
+                        <button class="btn-filter active" data-filter="edge">邊緣檢測 (Edge)</button>
+                        <button class="btn-filter" data-filter="sharpen">銳化 (Sharpen)</button>
+                        <button class="btn-filter" data-filter="boxBlur">模糊 (Box Blur)</button>
+                        <button class="btn-filter" data-filter="emboss">浮雕 (Emboss)</button>
+                        <button class="btn-filter" data-filter="identity">原圖 (Identity)</button>
+                    </div>
+                </div>
+
+                <!-- 畫布區域 -->
+                <div class="canvas-container">
+                    <!-- 輸入層 -->
+                    <div class="canvas-box">
+                        <h3>輸入圖像 (Input Image)</h3>
+                        <canvas id="inputCanvas" width="300" height="300"></canvas>
+                        <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">提示：請將圖片拖曳至此或使用預設圖片</p>
+                    </div>
+
+                    <!-- 中間運算層 -->
+                    <div class="canvas-box math-panel">
+                        <h4>當前濾鏡 (Kernel 3x3)</h4>
+                        <div class="kernel-grid" id="kernelGrid">
+                            <!-- JS 動態生成 -->
+                            <div class="kernel-cell">0</div>
+                            <div class="kernel-cell">-1</div>
+                            <div class="kernel-cell">0</div>
+                            <div class="kernel-cell">-1</div>
+                            <div class="kernel-cell">4</div>
+                            <div class="kernel-cell">-1</div>
+                            <div class="kernel-cell">0</div>
+                            <div class="kernel-cell">-1</div>
+                            <div class="kernel-cell">0</div>
+                        </div>
+
+                        <h4>卷積運算過程</h4>
+                        <div class="math-expression" id="mathOutput">
+                            請將滑鼠移至左側圖片上...
+                        </div>
+                    </div>
+
+                    <!-- 輸出層 -->
+                    <div class="canvas-box">
+                        <h3>特徵圖 (Feature Map)</h3>
+                        <canvas id="outputCanvas" width="300" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div style="text-align: center;">
+            <a href="../index.html" class="back-link">← 返回首頁</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

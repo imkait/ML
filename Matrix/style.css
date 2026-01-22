@@ -1,0 +1,564 @@
+/* ===========================
+   CSS 變數與基礎設定
+   =========================== */
+:root {
+    /* 主色調 */
+    --primary: #8b5cf6;
+    /* Violet */
+    --primary-light: #a78bfa;
+    --primary-dark: #7c3aed;
+
+    /* 矩陣區塊顏色 (Confusion Matrix Colors) */
+    --tp-color: #22c55e;
+    /* Green */
+    --tn-color: #3b82f6;
+    /* Blue */
+    --fp-color: #f43f5e;
+    /* Red/Rose */
+    --fn-color: #f59e0b;
+    /* Amber/Orange */
+
+    --tp-bg: rgba(34, 197, 94, 0.15);
+    --tn-bg: rgba(59, 130, 246, 0.15);
+    --fp-bg: rgba(244, 63, 94, 0.15);
+    --fn-bg: rgba(245, 158, 11, 0.15);
+
+    /* 背景與表面 */
+    --bg-gradient-start: #0f172a;
+    --bg-gradient-end: #1e293b;
+    --surface: rgba(30, 41, 59, 0.8);
+    --surface-light: rgba(51, 65, 85, 0.6);
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+
+    /* 文字 */
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    /* 其他 */
+    --radius: 16px;
+    --radius-sm: 8px;
+    --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* ===========================
+   容器佈局
+   =========================== */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===========================
+   頁首
+   =========================== */
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #a78bfa, #f472b6);
+    /* Violet to Pink */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* ===========================
+   主要內容區
+   =========================== */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 2rem;
+}
+
+/* ===========================
+   視覺化區域 (左側)
+   =========================== */
+.visualization-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.canvas-container {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    height: 100%;
+    min-height: 320px;
+    position: relative;
+    overflow: hidden;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    cursor: col-resize;
+    /* 提示可以左右拖動閾值 */
+    border-radius: var(--radius-sm);
+}
+
+.canvas-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--glass);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 數據顯示面板 */
+.stats-panel {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    padding: 1.5rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.stat-card {
+    background: var(--glass);
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    border: 1px solid transparent;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    background: var(--surface-light);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: monospace;
+}
+
+/* 指標顏色 */
+.accuracy .stat-value {
+    color: #e2e8f0;
+}
+
+.precision .stat-value {
+    color: #f472b6;
+}
+
+.recall .stat-value {
+    color: #22d3ee;
+}
+
+.f1 .stat-value {
+    color: #a78bfa;
+}
+
+
+/* ===========================
+   混淆矩陣區域 (右側)
+   =========================== */
+.control-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* 混淆矩陣表格 */
+.matrix-container {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.matrix-title {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.confusion-matrix {
+    display: grid;
+    /* Columns: Left-Axis-Label | Row-Header | Data-Col-1 | Data-Col-2 */
+    grid-template-columns: 30px 40px 1fr 1fr;
+    /* Rows: Col-Header | Data-Row-1 | Data-Row-2 */
+    grid-template-rows: auto 1fr 1fr;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* 頂部欄位標題 (Actual) */
+.col-header {
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    background: var(--surface-light);
+    border-radius: var(--radius-sm);
+}
+
+.header-pos {
+    grid-row: 1;
+    grid-column: 3;
+}
+
+.header-neg {
+    grid-row: 1;
+    grid-column: 4;
+}
+
+/* 左側大標題 (Predicted Class) */
+.matrix-label.left {
+    grid-row: 2 / 4;
+    /* Spans both data rows */
+    grid-column: 1;
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    text-align: center;
+    font-weight: 700;
+    color: var(--text-primary);
+    justify-self: center;
+}
+
+/* 列標題 (Predicted Pos/Neg) */
+.row-header {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    writing-mode: vertical-lr;
+    /* 為了節省空間，或者保持水平? 嘗試垂直看看，或簡寫 P/N */
+    transform: rotate(180deg);
+}
+
+.row-pos {
+    grid-row: 2;
+    grid-column: 2;
+}
+
+.row-neg {
+    grid-row: 3;
+    grid-column: 2;
+}
+
+/* 矩陣格子定位 */
+#cellTP {
+    grid-row: 2;
+    grid-column: 3;
+}
+
+#cellFP {
+    grid-row: 2;
+    grid-column: 4;
+}
+
+#cellFN {
+    grid-row: 3;
+    grid-column: 3;
+}
+
+#cellTN {
+    grid-row: 3;
+    grid-column: 4;
+}
+
+.mt-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.mt-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: monospace;
+}
+
+.mt-desc {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* 個別格子顏色 */
+/* CSS Clean up - Remove old class specific styles if replaced by ID selectors above, 
+   but keeping the styling classes (cell-tp, etc) for colors is good. */
+.matrix-cell {
+    position: relative;
+    background: var(--glass);
+    padding: 1rem 0.5rem;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    border: 1px solid var(--glass-border);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* Specific cell styles remain same, just ensure they apply */
+.cell-tp {
+    border-color: var(--tp-color);
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--tp-bg));
+}
+
+.cell-tp .mt-label,
+.cell-tp .mt-value {
+    color: var(--tp-color);
+}
+
+.cell-tn {
+    border-color: var(--tn-color);
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--tn-bg));
+}
+
+.cell-tn .mt-label,
+.cell-tn .mt-value {
+    color: var(--tn-color);
+}
+
+.cell-fp {
+    border-color: var(--fp-color);
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--fp-bg));
+}
+
+.cell-fp .mt-label,
+.cell-fp .mt-value {
+    color: var(--fp-color);
+}
+
+.cell-fn {
+    border-color: var(--fn-color);
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--fn-bg));
+}
+
+.cell-fn .mt-label,
+.cell-fn .mt-value {
+    color: var(--fn-color);
+}
+
+
+/* 控制面板 */
+.control-panel {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+}
+
+.control-item {
+    margin-bottom: 1.25rem;
+}
+
+.control-item:last-child {
+    margin-bottom: 0;
+}
+
+.control-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--surface-light);
+    height: 6px;
+    border-radius: 3px;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* ===========================
+   下方教學說明區域
+   =========================== */
+.info-section {
+    margin-top: 2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+}
+
+.info-card {
+    background: var(--surface);
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.info-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.info-list {
+    list-style: none;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.info-list li {
+    margin-bottom: 0.4rem;
+    padding-left: 0.8rem;
+    position: relative;
+}
+
+.info-list li::before {
+    content: "•";
+    color: var(--primary-light);
+    position: absolute;
+    left: 0;
+}
+
+/* ===========================
+   頁尾
+   =========================== */
+.footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.back-home {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.6rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.back-home:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
+}
+
+/* 響應式 */
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .confusion-matrix {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}

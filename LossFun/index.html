@@ -25,8 +25,27 @@
             <!-- 左側：視覺化區域 -->
             <section class="visualization-section">
                 <div class="canvas-container">
-                    <canvas id="lossCanvas" width="600" height="500"></canvas>
+                    <canvas id="lossCanvas" width="600" height="400"></canvas>
                     <div class="canvas-hint">👆 滑鼠移動查看損失值</div>
+                </div>
+
+                <!-- 當前數值顯示 (移至畫布下方) -->
+                <div class="card value-panel">
+                    <h3>📊 當前數值</h3>
+                    <div class="value-items">
+                        <div class="value-item">
+                            <span class="value-label">真實值 y</span>
+                            <span class="value-number" id="displayY">1.00</span>
+                        </div>
+                        <div class="value-item">
+                            <span class="value-label">預測值 ŷ</span>
+                            <span class="value-number highlight-secondary" id="displayYHat">0.00</span>
+                        </div>
+                        <div class="value-item">
+                            <span class="value-label">損失值 L</span>
+                            <span class="value-number highlight-primary" id="displayLoss">0.00</span>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -77,24 +96,7 @@
                     </div>
                 </div>
 
-                <!-- 當前數值顯示 -->
-                <div class="card value-panel">
-                    <h3>📊 當前數值</h3>
-                    <div class="value-items">
-                        <div class="value-item">
-                            <span class="value-label">真實值 y</span>
-                            <span class="value-number" id="displayY">1.00</span>
-                        </div>
-                        <div class="value-item">
-                            <span class="value-label">預測值 ŷ</span>
-                            <span class="value-number highlight-secondary" id="displayYHat">0.00</span>
-                        </div>
-                        <div class="value-item">
-                            <span class="value-label">損失值 L</span>
-                            <span class="value-number highlight-primary" id="displayLoss">0.00</span>
-                        </div>
-                    </div>
-                </div>
+
 
                 <!-- 函數公式 -->
                 <div class="card formula-panel">

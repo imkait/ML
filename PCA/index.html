@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主成分分析 (PCA) - 互動教學</title>
+    <meta name="description" content="互動式主成分分析 (PCA) 教學，視覺化投影、變異數與降維概念。">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>📊 主成份分析 (PCA)</h1>
+            <p class="subtitle">尋找數據中的「最大變異方向」與「最佳投影視角」</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <!-- 畫布：PCA 投影 -->
+                <div class="canvas-container">
+                    <canvas id="pcaCanvas" width="500" height="500"></canvas>
+                </div>
+
+                <!-- 統計數據 -->
+                <div class="stats-panel">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Current Variance</div>
+                            <div class="stat-value" id="valVariance">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Max Variance (PC1)</div>
+                            <div class="stat-value" id="valMaxVariance">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Explained Ratio</div>
+                            <div class="stat-value" id="valExplained">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板 -->
+            <aside class="control-section">
+                <!-- 數據生成控制 -->
+                <div class="control-panel">
+                    <h3>🎲 數據參數</h3>
+                    <br>
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span>相關性 (Correlation)</span>
+                            <span id="corrValue">0.8</span>
+                        </div>
+                        <input type="range" id="corrSlider" min="0" max="95" value="80">
+                    </div>
+
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span>雜訊 (Noise)</span>
+                            <span id="noiseValue">20</span>
+                        </div>
+                        <input type="range" id="noiseSlider" min="5" max="50" value="20">
+                    </div>
+
+                    <button id="btnRegenerate" class="btn btn-secondary" style="width: 100%">
+                        🔄 重新生成數據
+                    </button>
+                </div>
+
+                <!-- 投影控制 -->
+                <div class="control-panel">
+                    <h3>📐 投影控制</h3>
+                    <br>
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span>旋轉角度 (Angle)</span>
+                            <span id="angleValue">0°</span>
+                        </div>
+                        <input type="range" id="angleSlider" min="0" max="180" value="0">
+                    </div>
+
+                    <div class="control-item">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="showPC">
+                            <span>顯示主成分 (Show PC1/PC2)</span>
+                        </label>
+                    </div>
+
+                    <div class="control-item">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="showProjections" checked>
+                            <span>顯示投影點 (Projections)</span>
+                        </label>
+                    </div>
+
+                    <div class="control-item">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="showErrors" checked>
+                            <span>顯示誤差線 (Errors)</span>
+                        </label>
+                    </div>
+
+                    <button id="btnOptimize" class="btn btn-primary" style="width: 100%">
+                        ✨ 自動對齊最佳解 (Find PC1)
+                    </button>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 概念 -->
+                <div class="info-card">
+                    <h3>💡 什麼是 PCA？</h3>
+                    <p><strong>主成分分析 (Principal Component Analysis)</strong>
+                        是一種降維技術。它的目標是找到一個新的座標系，讓數據在新的座標軸上<strong>變異數 (Variance) 最大</strong>。</p>
+                    <ul class="info-list">
+                        <li><strong>降維</strong>：把高維數據壓扁到低維，但保留最多資訊。</li>
+                        <li><strong>去關聯</strong>：新座標軸之間彼此垂直 (無相關性)。</li>
+                    </ul>
+                </div>
+
+                <!-- 關鍵名詞 -->
+                <div class="info-card">
+                    <h3>🔑 關鍵名詞</h3>
+                    <ul class="info-list">
+                        <li><strong class="text-primary">投影 (Projection)</strong>：數據點垂直投射到軸上的位置。</li>
+                        <li><strong class="text-primary">變異數 (Variance)</strong>：投影點的分散程度。分散越廣，代表保留資訊越多。</li>
+                        <li><strong class="text-accent">誤差 (Reconstruction Error)</strong>：原始點到投影軸的距離。PCA
+                            試圖<strong>最小化</strong>這個距離。</li>
+                    </ul>
+                </div>
+
+                <!-- 主成分 -->
+                <div class="info-card">
+                    <h3>🎯 主成分 (Principal Components)</h3>
+                    <ul class="info-list">
+                        <li><strong>PC1 (第一主成分)</strong>：變異數最大的方向 (最長軸)。</li>
+                        <li><strong>PC2 (第二主成分)</strong>：與 PC1 垂直，變異數次大的方向。</li>
+                        <li><strong>特徵值 (Eigenvalue)</strong>：代表該主成分方向的變異數大小。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+            <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

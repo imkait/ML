@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-Learning 強化學習 - 互動教學</title>
+    <meta name="description" content="互動式強化學習 (Reinforcement Learning) 教學，透過 Grid World 視覺化理解 Q-Learning 演算法">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>🤖 Q-Learning 強化學習</h1>
+            <p class="subtitle">讓 AI 在網格世界中學習尋找最佳路徑</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <!-- 畫布：Grid World -->
+                <div class="canvas-container">
+                    <canvas id="gridCanvas" width="500" height="500"></canvas>
+                </div>
+
+                <!-- 訓練狀態顯示 -->
+                <div class="stats-panel">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Episode</div>
+                            <div class="stat-value" id="valEpisode">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Reward</div>
+                            <div class="stat-value" id="valReward">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Steps</div>
+                            <div class="stat-value" id="valSteps">0</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板 -->
+            <aside class="control-section">
+                <!-- 控制按鈕 -->
+                <div class="control-panel">
+                    <div class="control-buttons">
+                        <button id="btnTrain" class="btn btn-primary">開始訓練</button>
+                        <button id="btnReset" class="btn btn-secondary">重置環境</button>
+                    </div>
+
+                    <!-- 超參數調整 -->
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span title="決定隨機探索的機率 (Exploration Rate)">探索率 (Epsilon)</span>
+                            <span id="epsValue">0.10</span>
+                        </div>
+                        <input type="range" id="epsSlider" min="0" max="100" value="10">
+                    </div>
+
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span title="學習新知識的速度 (Learning Rate)">學習率 (Alpha)</span>
+                            <span id="alphaValue">0.10</span>
+                        </div>
+                        <input type="range" id="alphaSlider" min="1" max="100" value="10">
+                    </div>
+
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span title="對未來獎勵的重視程度 (Discount Factor)">折扣因子 (Gamma)</span>
+                            <span id="gammaValue">0.90</span>
+                        </div>
+                        <input type="range" id="gammaSlider" min="0" max="100" value="90">
+                    </div>
+
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span>訓練速度 (Speed)</span>
+                            <span id="speedValue">中</span>
+                        </div>
+                        <input type="range" id="speedSlider" min="1" max="50" value="10">
+                    </div>
+                </div>
+
+                <!-- 學習曲線圖表 -->
+                <div class="chart-container">
+                    <canvas id="rewardChart"></canvas>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 什麼是 Q-Learning -->
+                <div class="info-card">
+                    <h3>Q-Learning 概念</h3>
+                    <p>一種<strong>無模型 (Model-free)</strong> 的強化學習演算法。機器人透過試誤 (Trial-and-Error) 來學習每個狀態下採取什麼行動最好。</p>
+                    <p>核心是建立一張 <strong>Q-Table</strong>，記錄每個格子(State)對應不同動作(Action)的分數。</p>
+                </div>
+
+                <!-- 更新公式 -->
+                <div class="info-card">
+                    <h3>📝 Q 值更新公式</h3>
+                    <p><code>Q(s,a) ← (1-α)Q(s,a) + α[R + γ·maxQ(s',a')]</code></p>
+                    <ul class="info-list">
+                        <li><strong class="text-success">R</strong>：當下獲得的獎勵 (Reward)。</li>
+                        <li><strong class="text-info">maxQ(s',a')</strong>：對下一步狀態的最佳估計。</li>
+                        <li><strong class="text-danger">TD Error</strong>：現實 (R+..) 與預期 (Q) 的差距。</li>
+                    </ul>
+                </div>
+
+                <!-- 參數意義說明 -->
+                <div class="info-card">
+                    <h3>🎛️ 參數功能說明</h3>
+                    <ul class="info-list">
+                        <li><strong class="text-warning">探索率
+                                (Epsilon)</strong>：決定隨機探索的機率。<br><small>高：多嘗試新路徑；低：多走已知好路。</small></li>
+                        <li><strong class="text-info">學習率 (Alpha)</strong>：學習新經驗的速度。<br><small>高：重視新發現；低：保留舊有記憶。</small>
+                        </li>
+                        <li><strong class="text-accent">折扣因子 (Gamma)</strong>：對未來獎勵的重視程度。<br><small>高：有遠見
+                                (重視長遠)；低：短視近利。</small></li>
+                    </ul>
+                </div>
+
+                <!-- 獎勵機制 -->
+                <!-- 獎勵機制 -->
+                <div class="info-card">
+                    <h3>🎁 獎勵與視覺化</h3>
+                    <ul class="info-list">
+                        <li>🏁 <strong class="text-success">到達終點 (Goal)</strong>：+100 分。</li>
+                        <li>🔥 <strong class="text-danger">掉進陷阱 (Trap)</strong>：-100 分。</li>
+                        <li>⬜ <strong class="text-warning">移動一步</strong>：-1 分 (鼓勵最短路徑)。</li>
+                    </ul>
+                    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;">
+                    <ul class="info-list">
+                        <li><strong class="text-accent">四個方位三角形顏色</strong>：</li>
+                        <li>🟢 <strong class="text-success">越綠</strong>：預期獎勵高 (推薦往此走)。</li>
+                        <li>🔴 <strong class="text-danger">越紅</strong>：預期獎勵低 (不建議往此走)。</li>
+                    </ul>
+                    <p style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted);">注意：環境初始為隨機，請多次訓練以收斂。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+            <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

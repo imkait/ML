@@ -28,10 +28,16 @@
                     <canvas id="lrCanvas" width="600" height="500"></canvas>
                     <div class="canvas-hint">👆 點擊畫布新增訓練資料（左鍵：類別 A / 右鍵：類別 B）</div>
                 </div>
-            </section>
 
-            <!-- 右側：控制面板與分類結果 -->
-            <aside class="control-section">
+                <!-- 訓練結果 (移至畫布下方) -->
+                <div class="card result-panel result-panel-horizontal" id="resultPanel">
+                    <h3>📋 訓練結果</h3>
+                    <div class="result-placeholder">
+                        <span class="icon">🎯</span>
+                        <p>點擊「開始訓練」查看分類結果</p>
+                    </div>
+                </div>
+
                 <!-- 圖例 -->
                 <div class="card legend-card">
                     <h3>📊 圖例說明</h3>
@@ -54,10 +60,35 @@
                         </div>
                     </div>
                 </div>
+            </section>
 
+            <!-- 右側：控制面板與分類結果 -->
+            <aside class="control-section">
                 <!-- 參數控制器 -->
                 <div class="card control-panel">
                     <h3>⚙️ 參數設定</h3>
+                    <div class="slider-container">
+                        <label for="degreeSlider">
+                            <span class="label-text">模型複雜度 (Degree)</span>
+                            <span class="param-value" id="degreeValue">1</span>
+                        </label>
+                        <input type="range" id="degreeSlider" min="1" max="4" value="1" step="1">
+                        <div class="slider-labels">
+                            <span>1 (線性)</span>
+                            <span>4 (高維)</span>
+                        </div>
+                    </div>
+                    <div class="slider-container">
+                        <label for="dispersionSlider">
+                            <span class="label-text">數據分散程度</span>
+                            <span class="param-value" id="dispersionValue">70</span>
+                        </label>
+                        <input type="range" id="dispersionSlider" min="50" max="200" value="70" step="10">
+                        <div class="slider-labels">
+                            <span>集中</span>
+                            <span>分散</span>
+                        </div>
+                    </div>
                     <div class="slider-container">
                         <label for="lrSlider">
                             <span class="label-text">學習率</span>
@@ -74,10 +105,10 @@
                             <span class="label-text">訓練週期</span>
                             <span class="param-value" id="epochValue">100</span>
                         </label>
-                        <input type="range" id="epochSlider" min="10" max="5000" value="100" step="10">
+                        <input type="range" id="epochSlider" min="100" max="10000" value="100" step="100">
                         <div class="slider-labels">
-                            <span>10</span>
-                            <span>5000</span>
+                            <span>100</span>
+                            <span>10000</span>
                         </div>
                     </div>
                     <div class="button-group">
@@ -89,12 +120,27 @@
                     </div>
                 </div>
 
-                <!-- 訓練結果 -->
-                <div class="card result-panel" id="resultPanel">
-                    <h3>📋 訓練結果</h3>
-                    <div class="result-placeholder">
-                        <span class="icon">🎯</span>
-                        <p>點擊「開始訓練」查看分類結果</p>
+                <!-- 訓練進度 -->
+                <div class="card progress-panel" id="progressPanel" style="display: none;">
+                    <h3>⏳ 訓練進度</h3>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressText">0 / 0 Epochs</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                </div>
+
+                <!-- 損失曲線 -->
+                <div class="card loss-panel" id="lossPanel" style="display: none;">
+                    <h3>📉 損失曲線 (Loss Curve)</h3>
+                    <div class="loss-chart-container">
+                        <canvas id="lossCanvas"></canvas>
+                    </div>
+                    <div class="loss-info">
+                        <span>初始損失: <strong id="initialLoss">-</strong></span>
+                        <span>最終損失: <strong id="finalLoss">-</strong></span>
                     </div>
                 </div>
             </aside>
