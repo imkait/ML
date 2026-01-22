@@ -274,6 +274,123 @@ input[type="range"]::-webkit-slider-thumb:hover {
     color: var(--text-secondary);
 }
 
+/* 開關樣式 */
+.toggle-container {
+    margin-bottom: 1.5rem;
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.toggle-label input[type="checkbox"] {
+    display: none;
+}
+
+.toggle-slider {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: var(--surface-light);
+    border-radius: 12px;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.toggle-slider::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.toggle-label input:checked+.toggle-slider {
+    background: var(--status-optimal);
+}
+
+.toggle-label input:checked+.toggle-slider::after {
+    transform: translateX(20px);
+}
+
+/* 過擬合警示區 */
+.overfit-warning {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    background: rgba(244, 63, 94, 0.15);
+    border: 1px solid rgba(244, 63, 94, 0.4);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    margin-top: 1rem;
+    animation: pulse-warning 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-warning {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.overfit-warning .warning-icon {
+    font-size: 1.5rem;
+}
+
+.overfit-warning .warning-text strong {
+    color: var(--status-overfit);
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.overfit-warning .warning-text p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* 欠擬合警示區 */
+.underfit-warning {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    margin-top: 1rem;
+}
+
+.underfit-warning .warning-icon {
+    font-size: 1.5rem;
+}
+
+.underfit-warning .warning-text strong {
+    color: var(--status-underfit);
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.underfit-warning .warning-text p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
 /* ===========================
    下方教學說明區域
    =========================== */

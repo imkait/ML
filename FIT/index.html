@@ -69,10 +69,26 @@
 
                     <div class="slider-container">
                         <label for="sampleSizeSlider">
-                            <span>樣本數量</span>
+                            <span>訓練樣本數</span>
                             <span id="sampleSizeValue" class="value-display">20</span>
                         </label>
                         <input type="range" id="sampleSizeSlider" min="10" max="50" value="20">
+                    </div>
+
+                    <div class="slider-container">
+                        <label for="testSizeSlider">
+                            <span>測試樣本數</span>
+                            <span id="testSizeValue" class="value-display">10</span>
+                        </label>
+                        <input type="range" id="testSizeSlider" min="5" max="25" value="10">
+                    </div>
+
+                    <div class="toggle-container">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="showTruthToggle">
+                            <span class="toggle-slider"></span>
+                            <span>顯示真實函數 (Ground Truth)</span>
+                        </label>
                     </div>
 
                     <button id="regenerateBtn" class="btn-primary">🔄 重新生成數據</button>
@@ -80,7 +96,7 @@
 
                 <!-- 誤差指標 -->
                 <div class="card">
-                    <h3>📊 誤差指標 (MSE)</h3>
+                    <h3>📊 誤差指標 (RMSE)</h3>
                     <div class="metrics-box" style="margin-top: 0; padding-top: 0; border: none;">
                         <div class="metric-item">
                             <span>訓練誤差 (Train Loss)</span>
@@ -90,10 +106,27 @@
                             <span>測試誤差 (Test Loss)</span>
                             <span id="testLossDisplay" style="color: #60a5fa; font-weight: bold;">0.00</span>
                         </div>
+                        <div class="metric-item">
+                            <span>誤差比率 (Test/Train)</span>
+                            <span id="lossRatioDisplay" style="font-weight: bold;">1.00x</span>
+                        </div>
                     </div>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; line-height: 1.5;">
-                        <strong style="color: var(--status-overfit)">警示：</strong>當測試誤差顯著高於訓練誤差時，極可能發生了過擬合。
-                    </p>
+                    <!-- 過擬合警示區 -->
+                    <div class="overfit-warning" id="overfitWarning" style="display: none;">
+                        <div class="warning-icon">⚠️</div>
+                        <div class="warning-text">
+                            <strong>過擬合警告！</strong>
+                            <p>測試誤差顯著高於訓練誤差，模型可能過度擬合訓練數據。</p>
+                        </div>
+                    </div>
+                    <!-- 欠擬合警示區 -->
+                    <div class="underfit-warning" id="underfitWarning" style="display: none;">
+                        <div class="warning-icon">😕</div>
+                        <div class="warning-text">
+                            <strong>欠擬合提示</strong>
+                            <p>訓練與測試誤差皆高，模型可能太簡單。</p>
+                        </div>
+                    </div>
                 </div>
             </aside>
         </main>

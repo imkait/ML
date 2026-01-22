@@ -120,6 +120,18 @@ function initChart() {
                     pointRadius: 0,
                     fill: false,
                     tension: 0.4
+                },
+                {
+                    label: '真實函數 (Ground Truth)',
+                    data: [],
+                    type: 'line',
+                    borderColor: '#fbbf24', // Amber 400
+                    borderWidth: 2,
+                    borderDash: [8, 4],
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.4,
+                    hidden: true // 預設隱藏
                 }
             ]
         },
@@ -163,6 +175,7 @@ function initChart() {
 // 生成數據
 function generateData() {
     const n = parseInt(document.getElementById('sampleSizeSlider').value);
+    const testSize = parseInt(document.getElementById('testSizeSlider').value);
     const noiseLevel = parseInt(document.getElementById('noiseSlider').value);
 
     trainData = [];
@@ -176,8 +189,8 @@ function generateData() {
         trainData.push({ x, y });
     }
 
-    // 生成測試數據 (數量固定，分佈更廣一點)
-    for (let i = 0; i < 10; i++) {
+    // 生成測試數據 (使用可調整的數量)
+    for (let i = 0; i < testSize; i++) {
         const x = 5 + Math.random() * 50;
         const noise = (Math.random() - 0.5) * noiseLevel * 2;
         const y = trueFunc(x) + noise;
@@ -283,6 +296,7 @@ window.setPresetMode = function (mode) {
 // 更新圖表與模型
 function updateChart() {
     const degree = parseInt(document.getElementById('degreeSlider').value);
+    const showTruth = document.getElementById('showTruthToggle').checked;
 
     // 更新 Active 狀態顯示
     document.querySelectorAll('.concept-card').forEach(c => c.classList.remove('active'));
@@ -295,35 +309,63 @@ function updateChart() {
 
     // 產生預測曲線的點
     const curveData = [];
+    const truthData = [];
     if (model) {
         for (let x = 0; x <= 60; x += 0.5) {
             curveData.push({ x: x, y: model.predict(x) });
+            truthData.push({ x: x, y: trueFunc(x) });
         }
     }
 
     // 計算誤差
     const trainLoss = calculateMSE(model, trainData);
     const testLoss = calculateMSE(model, testData);
+    const trainLossNum = parseFloat(trainLoss);
+    const testLossNum = parseFloat(testLoss);
+    const lossRatio = trainLossNum > 0 ? (testLossNum / trainLossNum) : 1;
 
     // 更新 DOM
     document.getElementById('degreeValue').textContent = degree;
     document.getElementById('trainLossDisplay').textContent = trainLoss;
     document.getElementById('testLossDisplay').textContent = testLoss;
+    document.getElementById('lossRatioDisplay').textContent = lossRatio.toFixed(2) + 'x';
 
-    // 視覺提示：如果 Test Loss 遠大於 Train Loss (且 Train Loss 很低)，提示過擬合
-    // 這裡我們只改變文字顏色，保持介面簡潔
-    const testLossElem = document.getElementById('testLossDisplay');
-    if (degree > 10 && Number(testLoss) > Number(trainLoss) * 1.5) {
-        testLossElem.style.color = '#f43f5e'; // Warning Red
-        testLossElem.textContent += ' (High!)';
+    // 誤差比率顏色
+    const ratioElem = document.getElementById('lossRatioDisplay');
+    if (lossRatio > 2) {
+        ratioElem.style.color = '#f43f5e'; // 過擬合警告
+    } else if (lossRatio < 1.3) {
+        ratioElem.style.color = '#22c55e'; // 良好
     } else {
-        testLossElem.style.color = '#60a5fa'; // Normal Blue
+        ratioElem.style.color = '#fbbf24'; // 警告
+    }
+
+    // 過擬合/欠擬合警示
+    const overfitWarning = document.getElementById('overfitWarning');
+    const underfitWarning = document.getElementById('underfitWarning');
+
+    // 定義閾值
+    const highLossThreshold = 15; // RMSE 高於此值視為高誤差
+
+    if (lossRatio > 1.8 && trainLossNum < highLossThreshold) {
+        // 過擬合：訓練誤差低但測試誤差高
+        overfitWarning.style.display = 'flex';
+        underfitWarning.style.display = 'none';
+    } else if (trainLossNum >= highLossThreshold && testLossNum >= highLossThreshold) {
+        // 欠擬合：兩者都高
+        overfitWarning.style.display = 'none';
+        underfitWarning.style.display = 'flex';
+    } else {
+        overfitWarning.style.display = 'none';
+        underfitWarning.style.display = 'none';
     }
 
     // 更新 Chart.js 資料
     chart.data.datasets[0].data = trainData;
     chart.data.datasets[1].data = testData;
     chart.data.datasets[2].data = curveData;
+    chart.data.datasets[3].data = truthData;
+    chart.data.datasets[3].hidden = !showTruth;
     chart.update();
 }
 
@@ -341,5 +383,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('sampleSizeValue').textContent = e.target.value;
         generateData();
     });
+    document.getElementById('testSizeSlider').addEventListener('input', (e) => {
+        document.getElementById('testSizeValue').textContent = e.target.value;
+        generateData();
+    });
+    document.getElementById('showTruthToggle').addEventListener('change', updateChart);
     document.getElementById('regenerateBtn').addEventListener('click', generateData);
 });

@@ -28,33 +28,33 @@
                     <canvas id="regressionCanvas" width="600" height="450"></canvas>
                     <div class="canvas-hint" id="canvasHint">👆 點擊畫布新增資料點</div>
                 </div>
-            </section>
-
-            <!-- 右側：控制面板與狀態 -->
-            <aside class="control-section">
-                <!-- 圖例 -->
-                <div class="card legend-card">
-                    <h3>📊 圖例說明</h3>
-                    <div class="legend-items">
-                        <div class="legend-item">
-                            <span class="dot data-point"></span>
-                            <span>訓練資料點 (Data Points)</span>
+                <!-- 訓練狀態顯示 (移到畫布下方) -->
+                <div class="card status-panel status-panel-bottom">
+                    <div class="status-header">
+                        <h3>📉 訓練狀態</h3>
+                    </div>
+                    <div class="status-content">
+                        <div class="status-grid" id="statusGrid">
+                            <div class="status-item">
+                                <div class="status-label">Loss (MSE)</div>
+                                <div class="status-value loss" id="lossValue">0.00</div>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-label">迭代次數 (Step)</div>
+                                <div class="status-value" id="stepValue">0</div>
+                            </div>
+                            <!-- Weights will be injected here via JS -->
                         </div>
-                        <div class="legend-item">
-                            <span class="line-icon"></span>
-                            <span>回歸線 (Regression Line)</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="line-icon residual"></span>
-                            <span>誤差 (Residuals)</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="dot prediction-point"></span>
-                            <span>預測點 (Prediction)</span>
+                        <!-- 回歸方程式顯示 -->
+                        <div class="equation-display" id="equationDisplay">
+                            <h4>📐 回歸方程式</h4>
+                            <div class="equation-text" id="equationText">y = 0.00x + 0.00</div>
                         </div>
                     </div>
                 </div>
+            </section>
 
+            <aside class="control-section">
                 <!-- 參數控制 -->
                 <div class="card control-panel">
                     <h3>⚙️ 參數設定</h3>
@@ -74,11 +74,28 @@
                             <span class="label-text">學習率 (Learning Rate)</span>
                             <span class="value-display" id="lrValue">0.05</span>
                         </label>
-                        <input type="range" id="learningRate" min="0.001" max="0.2" value="0.05" step="0.001">
+                        <input type="range" id="learningRate" min="0.001" max="0.5" value="0.05" step="0.001">
+                    </div>
+
+                    <div class="slider-container">
+                        <label for="trainSpeed">
+                            <span class="label-text">訓練速度 (Steps/Frame)</span>
+                            <span class="value-display" id="speedValue">5</span>
+                        </label>
+                        <input type="range" id="trainSpeed" min="1" max="50" value="5" step="1">
+                    </div>
+
+                    <div class="slider-container">
+                        <label for="noiseLevel">
+                            <span class="label-text">資料分散程度 (Noise)</span>
+                            <span class="value-display" id="noiseValue">0.10</span>
+                        </label>
+                        <input type="range" id="noiseLevel" min="0.01" max="0.30" value="0.10" step="0.01">
                     </div>
 
                     <div class="button-group">
                         <button id="resetBtn" class="btn-secondary">🔄 重置畫布</button>
+                        <button id="undoBtn" class="btn-secondary">↩️ 復原</button>
                         <button id="randomBtn" class="btn-secondary">🎲 隨機資料</button>
                         <button id="trainBtn" class="btn-primary">▶ 開始訓練</button>
                     </div>
@@ -89,19 +106,26 @@
                     </div>
                 </div>
 
-                <!-- 狀態顯示 -->
-                <div class="card status-panel">
-                    <h3>📉 訓練狀態</h3>
-                    <div class="status-grid" id="statusGrid">
-                        <div class="status-item">
-                            <div class="status-label">Loss (MSE)</div>
-                            <div class="status-value loss" id="lossValue">0.00</div>
+                <!-- 圖例說明 -->
+                <div class="card legend-card">
+                    <h3>📊 圖例說明</h3>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <span class="dot data-point"></span>
+                            <span>訓練資料點 (Data Points)</span>
                         </div>
-                        <div class="status-item">
-                            <div class="status-label">迭代次數 (Step)</div>
-                            <div class="status-value" id="stepValue">0</div>
+                        <div class="legend-item">
+                            <span class="line-icon"></span>
+                            <span>回歸線 (Regression Line)</span>
                         </div>
-                        <!-- Weights will be injected here via JS -->
+                        <div class="legend-item">
+                            <span class="line-icon residual"></span>
+                            <span>誤差 (Residuals)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot prediction-point"></span>
+                            <span>預測點 (Prediction)</span>
+                        </div>
                     </div>
                 </div>
             </aside>

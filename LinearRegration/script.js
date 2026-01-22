@@ -32,6 +32,8 @@ let state = {
     weights: [0, 0],    // 權重陣列 [w0, w1, w2...], y = w0 + w1*x + w2*x^2 ... 
     // 注意：這裡我們習慣用 w0 為截距 (bias)，w1 為 x係數
     learningRate: 0.05,
+    trainSpeed: 5,      // 每次 frame 執行的步數
+    noiseLevel: 0.10,   // 資料雜訊程度
     isTraining: false,
     step: 0,
     loss: 0,
@@ -132,6 +134,32 @@ function initControls() {
 
     const trainBtn = document.getElementById('trainBtn');
     trainBtn.addEventListener('click', toggleTraining);
+
+    // 訓練速度滑桿
+    const speedSlider = document.getElementById('trainSpeed');
+    const speedValue = document.getElementById('speedValue');
+    speedSlider.addEventListener('input', (e) => {
+        state.trainSpeed = parseInt(e.target.value);
+        speedValue.textContent = state.trainSpeed;
+    });
+
+    // 資料分散程度滑桿
+    const noiseSlider = document.getElementById('noiseLevel');
+    const noiseValue = document.getElementById('noiseValue');
+    noiseSlider.addEventListener('input', (e) => {
+        state.noiseLevel = parseFloat(e.target.value);
+        noiseValue.textContent = state.noiseLevel.toFixed(2);
+    });
+
+    // 復原按鈕
+    document.getElementById('undoBtn').addEventListener('click', () => {
+        if (state.points.length > 0) {
+            state.points.pop();
+            calculateLoss();
+            render();
+            updateStatusPanel();
+        }
+    });
 
     // 模式切換
     const modeBtns = document.querySelectorAll('.mode-btn');
@@ -286,8 +314,8 @@ function generateRandomData() {
             y += trueWeights[d] * Math.pow(x, d);
         }
 
-        // 加入雜訊
-        const noise = (Math.random() * 2 - 1) * 0.1;
+        // 加入雜訊 (使用 state.noiseLevel)
+        const noise = (Math.random() * 2 - 1) * state.noiseLevel;
         y += noise;
 
         // Clamp to slightly wider range but keep valid
@@ -342,8 +370,8 @@ function stopTraining() {
 function trainingLoop() {
     if (!state.isTraining) return;
 
-    // 為了加速訓練視覺效果，每次 frame 多跑幾步
-    for (let k = 0; k < 5; k++) {
+    // 為了加速訓練視覺效果，每次 frame 多跑幾步 (使用 state.trainSpeed)
+    for (let k = 0; k < state.trainSpeed; k++) {
         trainStep();
     }
 
@@ -630,4 +658,60 @@ function updateStatusPanel() {
             el.textContent = state.weights[i].toFixed(4);
         }
     }
+
+    // 更新回歸方程式顯示
+    updateEquationDisplay();
+}
+
+/**
+ * 更新回歸方程式顯示
+ * 根據多項式次數動態產生方程式字串
+ */
+function updateEquationDisplay() {
+    const equationEl = document.getElementById('equationText');
+    if (!equationEl) return;
+
+    let equation = 'y = ';
+    const terms = [];
+
+    // 從高次項到低次項排列（更易讀）
+    for (let i = state.degree; i >= 0; i--) {
+        const w = state.weights[i];
+        const absW = Math.abs(w).toFixed(3);
+
+        let term = '';
+
+        if (i === 0) {
+            // 常數項
+            term = absW;
+        } else if (i === 1) {
+            // x 項
+            term = `${absW}x`;
+        } else {
+            // x^n 項
+            term = `${absW}x\u00B2`.replace('²', superscriptNum(i));
+        }
+
+        // 處理符號
+        if (terms.length === 0) {
+            // 第一項，若為負則加負號
+            if (w < 0) term = '-' + term;
+        } else {
+            // 後續項，加上 + 或 -
+            term = (w >= 0 ? ' + ' : ' - ') + term;
+        }
+
+        terms.push(term);
+    }
+
+    equation += terms.join('');
+    equationEl.textContent = equation;
+}
+
+/**
+ * 將數字轉換為上標字元
+ */
+function superscriptNum(n) {
+    const superscripts = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'];
+    return String(n).split('').map(d => superscripts[parseInt(d)]).join('');
 }
