@@ -1,10 +1,35 @@
+/* ===========================
+   CSS 變數與基礎設定 (參考 LinearRegration)
+   =========================== */
 :root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --card-bg: rgba(255, 255, 255, 0.95);
-    --text-primary: #1a1a2e;
-    --text-secondary: #4a5568;
-    --border-radius: 20px;
+    /* 主色調 */
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+
+    /* 類別顏色 */
+    --point-color: #f43f5e;
+    --point-glow: rgba(244, 63, 94, 0.4);
+    --line-color: #06b6d4;
+
+    /* 背景與表面 */
+    --bg-gradient-start: #0f172a;
+    --bg-gradient-end: #1e293b;
+    --surface: rgba(30, 41, 59, 0.8);
+    --surface-light: rgba(51, 65, 85, 0.6);
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+
+    /* 文字 */
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    /* 其他 */
+    --radius: 16px;
+    --radius-sm: 8px;
+    --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -14,177 +39,346 @@
 }
 
 body {
-    font-family: 'Noto Sans TC', sans-serif;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    min-height: 100vh;
+    font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
     color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
     padding-bottom: 50px;
 }
 
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 2rem;
 }
 
+/* ===========================
+   頁首
+   =========================== */
 header {
     text-align: center;
-    padding: 40px 0 60px;
-    color: white;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
 }
 
 header h1 {
     font-size: 2.5rem;
-    margin-bottom: 15px;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-light), var(--line-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    text-shadow: none;
+    /* 移除舊陰影 */
 }
 
 header p {
+    color: var(--text-secondary);
     font-size: 1.1rem;
-    opacity: 0.9;
+    opacity: 1;
 }
 
+/* ===========================
+   核心視覺化區域
+   =========================== */
 .main-content {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: 40px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    min-height: 80vh;
+    background: transparent;
+    /* 移除舊背景 */
+    box-shadow: none;
+    /* 移除舊陰影 */
+    border-radius: 0;
+    padding: 0;
+    min-height: auto;
 }
 
-/* 核心視覺化區域 */
 .visualization-area {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 2rem;
 }
 
+/* 控制面板 */
 .controls-panel {
-    background: #f8fafc;
-    padding: 20px;
-    border-radius: 15px;
-    border: 1px solid #e2e8f0;
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow);
 }
 
 .control-group {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 1rem;
     flex-wrap: wrap;
 }
 
-.btn-filter {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    background: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+.control-group label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* 按鈕樣式 (Filter & Size & Padding) */
+.btn-filter,
+.btn-size,
+.btn-padding {
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-light);
+    color: var(--text-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     font-weight: 500;
-    transition: all 0.2s;
-    border: 2px solid transparent;
+    transition: var(--transition);
 }
 
-.btn-filter:hover {
+.btn-filter:hover,
+.btn-size:hover,
+.btn-padding:hover {
+    background: var(--glass-border);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.btn-filter.active {
-    background: #e0e7ff;
-    border-color: #6366f1;
-    color: #4338ca;
+.btn-filter.active,
+.btn-size.active,
+.btn-padding.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
 }
 
+/* 畫布容器 */
 .canvas-container {
     display: grid;
     grid-template-columns: 1fr 300px 1fr;
-    gap: 30px;
+    gap: 2rem;
     align-items: start;
+    background: var(--surface);
+    /* 統一背景 */
+    padding: 2rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
 }
 
 .canvas-box {
     text-align: center;
+    background: transparent;
 }
 
-.canvas-box h3 {
-    margin-bottom: 15px;
+.canvas-box h3,
+.canvas-box h4 {
+    margin-bottom: 1rem;
     color: var(--text-secondary);
+    font-weight: 600;
 }
 
 canvas {
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* 保持白色以顯示圖像 */
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     cursor: crosshair;
     image-rendering: pixelated;
-    /* 讓像素更清晰 */
+    max-width: 100%;
 }
 
-/* 運算細節面板 */
+/* 運算細節面板 (中間層) */
 .math-panel {
-    background: #white;
-    border-radius: 15px;
-    padding: 20px;
-    border: 2px dashed #cbd5e1;
+    background: var(--glass);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 1px solid var(--glass-border);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    background: #f1f5f9;
+    gap: 1.5rem;
 }
 
 .kernel-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    /* grid-template-columns 由 JS 動態控制 */
     gap: 5px;
-    background: #e2e8f0;
-    padding: 5px;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: var(--radius-sm);
 }
 
 .kernel-cell {
-    width: 40px;
-    height: 40px;
-    background: white;
+    width: 35px;
+    height: 35px;
+    background: var(--surface-light);
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: monospace;
     font-weight: bold;
+    font-size: 0.9rem;
     border-radius: 4px;
+    border: 1px solid var(--glass-border);
+}
+
+/* 卷積運算過程 (獨立面板) */
+.calculation-panel {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    margin-top: 0;
+    /* 在 grid gap 中處理間距 */
+    box-shadow: var(--shadow);
+}
+
+.calculation-panel h4 {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
 }
 
 .math-expression {
     font-family: monospace;
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: var(--radius-sm);
     width: 100%;
     text-align: left;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    border: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    border: 1px solid var(--glass-border);
     min-height: 100px;
+    color: var(--text-primary);
 }
 
-.back-link {
+/* ===========================
+   下方教學說明區域
+   =========================== */
+.info-section {
+    margin-top: 3rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.info-card {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow);
+}
+
+.info-card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--primary-light), var(--line-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.info-card p,
+.info-list li {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.info-card p {
+    margin-bottom: 0.8rem;
+}
+
+.info-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.info-list li {
+    position: relative;
+    padding-left: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.info-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* ===========================
+   頁尾
+   =========================== */
+.footer {
+    text-align: center;
+    padding: 2rem 0;
+    margin-top: 3rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.back-home {
     display: inline-block;
-    margin-top: 30px;
-    color: rgba(255, 255, 255, 0.8);
+    margin-top: 1rem;
+    padding: 0.6rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
     text-decoration: none;
-    font-weight: 500;
-    padding: 10px 20px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 50px;
-    transition: all 0.3s;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    border: none;
 }
 
-.back-link:hover {
-    background: rgba(255, 255, 255, 0.1);
+.back-home:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.5);
     color: white;
 }
 
+/* 返回首頁連結 */
+.back-link {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.6rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    border: none;
+}
+
+.back-link:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.5);
+    color: white;
+}
+
+/* 響應式設計 */
 @media (max-width: 1200px) {
     .canvas-container {
         grid-template-columns: 1fr;
@@ -194,6 +388,28 @@ canvas {
 
     .math-panel {
         order: -1;
-        margin: 20px 0;
+        /* 中間層移到最上面 */
+        margin: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    header h1 {
+        font-size: 1.75rem;
+    }
+
+    .control-group {
+        justify-content: center;
+    }
+}
+
+/* 響應式設計補充 */
+@media (max-width: 1024px) {
+    .info-grid {
+        grid-template-columns: 1fr;
     }
 }

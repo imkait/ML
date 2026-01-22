@@ -12,7 +12,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>卷積運算視覺化 (Convolution Viewer)</h1>
+            <h1>卷積神經網路-卷積層</h1>
             <p>移動滑鼠觀察 Filter 如何提取特徵，理解 CNN 的核心原理</p>
         </header>
 
@@ -21,12 +21,23 @@
                 <!-- 控制面板 -->
                 <div class="controls-panel">
                     <div class="control-group">
-                        <label>選擇濾鏡 (Filter)：</label>
+                        <label style="color: #f472b6;">Kernel 尺寸：</label>
+                        <button class="btn-size active" data-size="3">3×3</button>
+                        <button class="btn-size" data-size="5">5×5</button>
+
+                        <label style="margin-left: 20px; color: #a78bfa;">Padding：</label>
+                        <button class="btn-padding active" data-padding="valid">Valid (No)</button>
+                        <button class="btn-padding" data-padding="same">Same (Yes)</button>
+                    </div>
+                    <div class="control-group" style="margin-top: 15px;">
+                        <label style="color: #34d399;">選擇濾鏡 (Filter)：</label>
                         <button class="btn-filter active" data-filter="edge">邊緣檢測 (Edge)</button>
                         <button class="btn-filter" data-filter="sharpen">銳化 (Sharpen)</button>
                         <button class="btn-filter" data-filter="boxBlur">模糊 (Box Blur)</button>
                         <button class="btn-filter" data-filter="emboss">浮雕 (Emboss)</button>
                         <button class="btn-filter" data-filter="identity">原圖 (Identity)</button>
+                        <button class="btn-filter btn-5x5-only" data-filter="gaussian" style="display: none;">高斯模糊
+                            (Gaussian)</button>
                     </div>
                 </div>
 
@@ -34,14 +45,13 @@
                 <div class="canvas-container">
                     <!-- 輸入層 -->
                     <div class="canvas-box">
-                        <h3>輸入圖像 (Input Image)</h3>
+                        <h3>輸入圖像 (Input Image) - 15×15</h3>
                         <canvas id="inputCanvas" width="300" height="300"></canvas>
-                        <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">提示：請將圖片拖曳至此或使用預設圖片</p>
                     </div>
 
                     <!-- 中間運算層 -->
                     <div class="canvas-box math-panel">
-                        <h4>當前濾鏡 (Kernel 3x3)</h4>
+                        <h4 id="kernelTitle">當前濾鏡 (Kernel 3×3)</h4>
                         <div class="kernel-grid" id="kernelGrid">
                             <!-- JS 動態生成 -->
                             <div class="kernel-cell">0</div>
@@ -54,25 +64,66 @@
                             <div class="kernel-cell">-1</div>
                             <div class="kernel-cell">0</div>
                         </div>
-
-                        <h4>卷積運算過程</h4>
-                        <div class="math-expression" id="mathOutput">
-                            請將滑鼠移至左側圖片上...
-                        </div>
                     </div>
 
                     <!-- 輸出層 -->
                     <div class="canvas-box">
-                        <h3>特徵圖 (Feature Map)</h3>
+                        <h3 id="featureMapLabel">特徵圖 (Feature Map) - 13×13</h3>
                         <canvas id="outputCanvas" width="300" height="300"></canvas>
+                    </div>
+                </div>
+
+                <!-- 卷積運算過程 -->
+                <div class="calculation-panel">
+                    <h4>卷積運算過程</h4>
+                    <div class="math-expression" id="mathOutput">
+                        請將滑鼠移至左側圖片上...
                     </div>
                 </div>
             </div>
         </main>
 
-        <div style="text-align: center;">
-            <a href="../index.html" class="back-link">← 返回首頁</a>
-        </div>
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 概念 -->
+                <div class="info-card">
+                    <h3>💡 什麼是卷積層？</h3>
+                    <p><strong>卷積層 (Convolution Layer)</strong> 是 CNN 的核心。它使用一小塊矩陣（稱為 Kernel 或 Filter）在圖像上滑動，進行加權總和運算。
+                    </p>
+                    <ul class="info-list">
+                        <li><strong>特徵提取</strong>：不同的 Kernel 可以提取圖像的不同特徵（如邊緣、紋理）。</li>
+                        <li><strong>局部連接</strong>：每個輸出像素只與輸入圖像的一小部分區域相關。</li>
+                    </ul>
+                </div>
+
+                <!-- 特徵圖 -->
+                <div class="info-card">
+                    <h3>🗺️ 特徵圖 (Feature Map)</h3>
+                    <p>卷積運算後的輸出結果稱為特徵圖。它代表了輸入圖像中某種特徵的分佈情況。</p>
+                    <ul class="info-list">
+                        <li><strong>尺寸變化</strong>：通常會比原圖略小（取決於 Kernel 大小與 Padding）。</li>
+                        <li><strong>激活</strong>：數值越高，代表該處的特徵越強烈。</li>
+                    </ul>
+                </div>
+
+                <!-- 濾鏡效果 -->
+                <div class="info-card">
+                    <h3>🎨 常見濾鏡效果</h3>
+                    <ul class="info-list">
+                        <li><strong>邊緣檢測 (Edge)</strong>：突顯物體輪廓，數值變化劇烈處反應強。</li>
+                        <li><strong>銳化 (Sharpen)</strong>：增強中心像素與周圍的對比，使細節更清晰。</li>
+                        <li><strong>模糊 (Blur)</strong>：將周圍像素取平均，能夠消除雜訊但會讓影像變模糊。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+            <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+        </footer>
     </div>
 
     <script src="script.js"></script>
