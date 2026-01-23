@@ -410,6 +410,29 @@
         .course-card.cnn-pool {
             --card-accent: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
         }
+
+        /* 分類標題樣式 */
+        .category-section {
+            margin-bottom: 60px;
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 30px;
+            padding-left: 20px;
+            border-left: 5px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .category-title span {
+            font-size: 1.2rem;
+            opacity: 0.7;
+            font-weight: 400;
+        }
     </style>
 </head>
 
@@ -422,280 +445,319 @@
             <p class="subtitle">透過視覺化互動，輕鬆學習 AI 核心演算法</p>
         </header>
 
-        <!-- 課程卡片網格 -->
-        <section class="courses-grid">
-            <!-- KNN -->
-            <a href="KNN/index.html" class="course-card knn">
-                <div class="card-content">
-                    <span class="card-icon">🎯</span>
-                    <h2 class="card-title">K-最近鄰演算法 (KNN)</h2>
-                    <p class="card-subtitle">透過「近朱者赤」的概念，根據鄰近點進行分類</p>
-                    <div class="card-tags">
-                        <span class="tag">監督式學習</span>
-                        <span class="tag">分類</span>
+        <!-- 1. 基礎核心與回歸 -->
+        <div class="category-section">
+            <h2 class="category-title">基礎核心與回歸 <span>Foundations & Regression</span></h2>
+            <section class="courses-grid">
+                <!-- 梯度下降 -->
+                <a href="GradientDescent/index.html" class="course-card gradient">
+                    <div class="card-content">
+                        <span class="card-icon">⛰️</span>
+                        <h2 class="card-title">梯度下降法</h2>
+                        <p class="card-subtitle">機器學習的核心優化方法，找尋損失函數最小值</p>
+                        <div class="card-tags">
+                            <span class="tag">優化方法</span>
+                            <span class="tag">基礎概念</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- 線性回歸 -->
-            <a href="LinearRegration/index.html" class="course-card linear">
-                <div class="card-content">
-                    <span class="card-icon">📈</span>
-                    <h2 class="card-title">線性回歸</h2>
-                    <p class="card-subtitle">找出最佳擬合線，預測連續數值</p>
-                    <div class="card-tags">
-                        <span class="tag">監督式學習</span>
-                        <span class="tag">回歸</span>
+                <!-- 線性回歸 -->
+                <a href="LinearRegration/index.html" class="course-card linear">
+                    <div class="card-content">
+                        <span class="card-icon">📈</span>
+                        <h2 class="card-title">線性回歸</h2>
+                        <p class="card-subtitle">找出最佳擬合線，預測連續數值</p>
+                        <div class="card-tags">
+                            <span class="tag">監督式學習</span>
+                            <span class="tag">回歸</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- 邏輯回歸 -->
-            <a href="LogisticRegression/index.html" class="course-card logistic">
-                <div class="card-content">
-                    <span class="card-icon">🔀</span>
-                    <h2 class="card-title">邏輯回歸</h2>
-                    <p class="card-subtitle">使用 Sigmoid 函數進行二元分類預測</p>
-                    <div class="card-tags">
-                        <span class="tag">監督式學習</span>
-                        <span class="tag">分類</span>
+                <!-- 邏輯回歸 -->
+                <a href="LogisticRegression/index.html" class="course-card logistic">
+                    <div class="card-content">
+                        <span class="card-icon">🔀</span>
+                        <h2 class="card-title">邏輯回歸</h2>
+                        <p class="card-subtitle">使用 Sigmoid 函數進行二元分類預測</p>
+                        <div class="card-tags">
+                            <span class="tag">監督式學習</span>
+                            <span class="tag">分類</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
+            </section>
+        </div>
 
-            <!-- 決策樹 -->
-            <a href="DecisionTree/index.html" class="course-card decision">
-                <div class="card-content">
-                    <span class="card-icon">🌳</span>
-                    <h2 class="card-title">決策樹</h2>
-                    <p class="card-subtitle">透過樹狀結構進行條件判斷與分類</p>
-                    <div class="card-tags">
-                        <span class="tag">監督式學習</span>
-                        <span class="tag">分類</span>
+        <!-- 2. 監督式學習演算法 -->
+        <div class="category-section">
+            <h2 class="category-title">監督式學習演算法 <span>Supervised Learning</span></h2>
+            <section class="courses-grid">
+                <!-- KNN -->
+                <a href="KNN/index.html" class="course-card knn">
+                    <div class="card-content">
+                        <span class="card-icon">🎯</span>
+                        <h2 class="card-title">K-最近鄰演算法 (KNN)</h2>
+                        <p class="card-subtitle">透過「近朱者赤」的概念，根據鄰近點進行分類</p>
+                        <div class="card-tags">
+                            <span class="tag">監督式學習</span>
+                            <span class="tag">分類</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- SVM -->
-            <a href="SVM/index.html" class="course-card svm">
-                <div class="card-content">
-                    <span class="card-icon">⚔️</span>
-                    <h2 class="card-title">支援向量機 (SVM)</h2>
-                    <p class="card-subtitle">尋找最佳超平面，實現高維度分類</p>
-                    <div class="card-tags">
-                        <span class="tag">監督式學習</span>
-                        <span class="tag">分類</span>
+                <!-- 決策樹 -->
+                <a href="DecisionTree/index.html" class="course-card decision">
+                    <div class="card-content">
+                        <span class="card-icon">🌳</span>
+                        <h2 class="card-title">決策樹</h2>
+                        <p class="card-subtitle">透過樹狀結構進行條件判斷與分類</p>
+                        <div class="card-tags">
+                            <span class="tag">監督式學習</span>
+                            <span class="tag">分類</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- K-Means -->
-            <a href="KMeans/index.html" class="course-card kmeans">
-                <div class="card-content">
-                    <span class="card-icon">🎨</span>
-                    <h2 class="card-title">K-Means 分群</h2>
-                    <p class="card-subtitle">無監督式學習，自動將資料分成 K 個群集</p>
-                    <div class="card-tags">
-                        <span class="tag">非監督式學習</span>
-                        <span class="tag">分群</span>
+                <!-- SVM -->
+                <a href="SVM/index.html" class="course-card svm">
+                    <div class="card-content">
+                        <span class="card-icon">⚔️</span>
+                        <h2 class="card-title">支援向量機 (SVM)</h2>
+                        <p class="card-subtitle">尋找最佳超平面，實現高維度分類</p>
+                        <div class="card-tags">
+                            <span class="tag">監督式學習</span>
+                            <span class="tag">分類</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
+            </section>
+        </div>
 
-            <!-- 梯度下降 -->
-            <a href="GradientDescent/index.html" class="course-card gradient">
-                <div class="card-content">
-                    <span class="card-icon">⛰️</span>
-                    <h2 class="card-title">梯度下降法</h2>
-                    <p class="card-subtitle">機器學習的核心優化方法，找尋損失函數最小值</p>
-                    <div class="card-tags">
-                        <span class="tag">優化方法</span>
-                        <span class="tag">基礎概念</span>
+        <!-- 3. 非監督式學習與降維 -->
+        <div class="category-section">
+            <h2 class="category-title">非監督式學習與降維 <span>Unsupervised Learning</span></h2>
+            <section class="courses-grid">
+                <!-- K-Means -->
+                <a href="KMeans/index.html" class="course-card kmeans">
+                    <div class="card-content">
+                        <span class="card-icon">🎨</span>
+                        <h2 class="card-title">K-Means 分群</h2>
+                        <p class="card-subtitle">無監督式學習，自動將資料分成 K 個群集</p>
+                        <div class="card-tags">
+                            <span class="tag">非監督式學習</span>
+                            <span class="tag">分群</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- 激活函數 -->
-            <a href="ActFun/index.html" class="course-card actfun">
-                <div class="card-content">
-                    <span class="card-icon">⚡</span>
-                    <h2 class="card-title">激活函數</h2>
-                    <p class="card-subtitle">了解神經網路中常用的激活函數及其特性</p>
-                    <div class="card-tags">
-                        <span class="tag">深度學習</span>
-                        <span class="tag">基礎概念</span>
+                <!-- 主成分分析 (PCA) -->
+                <a href="PCA/index.html" class="course-card pca">
+                    <div class="card-content">
+                        <span class="card-icon">📊</span>
+                        <h2 class="card-title">主成份分析 (PCA)</h2>
+                        <p class="card-subtitle">透過旋轉與投影，找出數據變異數最大的方向</p>
+                        <div class="card-tags">
+                            <span class="tag">降維</span>
+                            <span class="tag">特徵提取</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
+            </section>
+        </div>
 
-            <!-- 損失函數 -->
-            <a href="LossFun/index.html" class="course-card lossfun">
-                <div class="card-content">
-                    <span class="card-icon">📊</span>
-                    <h2 class="card-title">損失函數</h2>
-                    <p class="card-subtitle">評估模型預測誤差的各種損失函數比較</p>
-                    <div class="card-tags">
-                        <span class="tag">深度學習</span>
-                        <span class="tag">優化方法</span>
+        <!-- 4. 模型評估與概念 -->
+        <div class="category-section">
+            <h2 class="category-title">模型評估與概念 <span>Model Evaluation</span></h2>
+            <section class="courses-grid">
+                <!-- 過擬合與欠擬合 (Overfitting) -->
+                <a href="FIT/index.html" class="course-card fit">
+                    <div class="card-content">
+                        <span class="card-icon">⚖️</span>
+                        <h2 class="card-title">過擬合與欠擬合</h2>
+                        <p class="card-subtitle">探索模型複雜度與泛化能力的平衡點</p>
+                        <div class="card-tags">
+                            <span class="tag">基礎概念</span>
+                            <span class="tag">模型評估</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- 多重感知器 -->
-            <a href="MLP/index.html" class="course-card mlp">
-                <div class="card-content">
-                    <span class="card-icon">🧠</span>
-                    <h2 class="card-title">多重感知器 (MLP)</h2>
-                    <p class="card-subtitle">前饋神經網路的基礎架構與前向傳播</p>
-                    <div class="card-tags">
-                        <span class="tag">深度學習</span>
-                        <span class="tag">神經網路</span>
+                <!-- 混淆矩陣與評估指標 (Matrix) -->
+                <a href="Matrix/index.html" class="course-card matrix">
+                    <div class="card-content">
+                        <span class="card-icon">📊</span>
+                        <h2 class="card-title">混淆矩陣與指標</h2>
+                        <p class="card-subtitle">深入理解 Accuracy, Precision, Recall 與 F1-Score</p>
+                        <div class="card-tags">
+                            <span class="tag">模型評估</span>
+                            <span class="tag">視覺化</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
+            </section>
+        </div>
 
-            <!-- 卷積神經網路 (CNN) -->
-            <a href="CNN/index.html" class="course-card cnn">
-                <div class="card-content">
-                    <span class="card-icon">🖼️</span>
-                    <h2 class="card-title">CNN卷積神經網路-卷積層</h2>
-                    <p class="card-subtitle">視覺化卷積運算，了解電腦如何「看見」特徵</p>
-                    <div class="card-tags">
-                        <span class="tag">深度學習</span>
-                        <span class="tag">電腦視覺</span>
+        <!-- 5. 深度學習基礎 -->
+        <div class="category-section">
+            <h2 class="category-title">深度學習基礎 <span>Deep Learning Foundations</span></h2>
+            <section class="courses-grid">
+                <!-- 激活函數 -->
+                <a href="ActFun/index.html" class="course-card actfun">
+                    <div class="card-content">
+                        <span class="card-icon">⚡</span>
+                        <h2 class="card-title">激活函數</h2>
+                        <p class="card-subtitle">了解神經網路中常用的激活函數及其特性</p>
+                        <div class="card-tags">
+                            <span class="tag">深度學習</span>
+                            <span class="tag">基礎概念</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- CNN 池化層 (CNN Pooling) -->
-            <a href="CNN_Pooling/index.html" class="course-card cnn-pool">
-                <div class="card-content">
-                    <span class="card-icon">🔍</span>
-                    <h2 class="card-title">CNN卷積神經網路-池化層</h2>
-                    <p class="card-subtitle">透過 Max/Mean Pooling，降低特徵維度並保留關鍵資訊</p>
-                    <div class="card-tags">
-                        <span class="tag">深度學習</span>
-                        <span class="tag">電腦視覺</span>
+                <!-- 損失函數 -->
+                <a href="LossFun/index.html" class="course-card lossfun">
+                    <div class="card-content">
+                        <span class="card-icon">📊</span>
+                        <h2 class="card-title">損失函數</h2>
+                        <p class="card-subtitle">評估模型預測誤差的各種損失函數比較</p>
+                        <div class="card-tags">
+                            <span class="tag">深度學習</span>
+                            <span class="tag">優化方法</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- 過擬合與欠擬合 (Overfitting) -->
-            <a href="FIT/index.html" class="course-card fit">
-                <div class="card-content">
-                    <span class="card-icon">⚖️</span>
-                    <h2 class="card-title">過擬合與欠擬合</h2>
-                    <p class="card-subtitle">探索模型複雜度與泛化能力的平衡點</p>
-                    <div class="card-tags">
-                        <span class="tag">基礎概念</span>
-                        <span class="tag">模型評估</span>
+                <!-- 多重感知器 -->
+                <a href="MLP/index.html" class="course-card mlp">
+                    <div class="card-content">
+                        <span class="card-icon">🧠</span>
+                        <h2 class="card-title">多重感知器 (MLP)</h2>
+                        <p class="card-subtitle">前饋神經網路的基礎架構與前向傳播</p>
+                        <div class="card-tags">
+                            <span class="tag">深度學習</span>
+                            <span class="tag">神經網路</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
+            </section>
+        </div>
 
-            <!-- 混淆矩陣與評估指標 (Matrix) -->
-            <a href="Matrix/index.html" class="course-card matrix">
-                <div class="card-content">
-                    <span class="card-icon">📊</span>
-                    <h2 class="card-title">混淆矩陣與指標</h2>
-                    <p class="card-subtitle">深入理解 Accuracy, Precision, Recall 與 F1-Score</p>
-                    <div class="card-tags">
-                        <span class="tag">模型評估</span>
-                        <span class="tag">視覺化</span>
+        <!-- 6. 進階視覺模型 -->
+        <div class="category-section">
+            <h2 class="category-title">進階視覺模型 <span>Advanced Vision Models</span></h2>
+            <section class="courses-grid">
+                <!-- 卷積神經網路 (CNN) -->
+                <a href="CNN/index.html" class="course-card cnn">
+                    <div class="card-content">
+                        <span class="card-icon">🖼️</span>
+                        <h2 class="card-title">CNN卷積神經網路-卷積層</h2>
+                        <p class="card-subtitle">視覺化卷積運算，了解電腦如何「看見」特徵</p>
+                        <div class="card-tags">
+                            <span class="tag">深度學習</span>
+                            <span class="tag">電腦視覺</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- 強化學習 Q-Learning (RLearning) -->
-            <a href="RLearning/index.html" class="course-card rl">
-                <div class="card-content">
-                    <span class="card-icon">🤖</span>
-                    <h2 class="card-title">強化學習 (Q-Learning)</h2>
-                    <p class="card-subtitle">訓練 Agent 在網格世界中探索並尋找最佳路徑</p>
-                    <div class="card-tags">
-                        <span class="tag">強化學習</span>
-                        <span class="tag">路徑規劃</span>
+                <!-- CNN 池化層 (CNN Pooling) -->
+                <a href="CNN_Pooling/index.html" class="course-card cnn-pool">
+                    <div class="card-content">
+                        <span class="card-icon">🔍</span>
+                        <h2 class="card-title">CNN卷積神經網路-池化層</h2>
+                        <p class="card-subtitle">透過 Max/Mean Pooling，降低特徵維度並保留關鍵資訊</p>
+                        <div class="card-tags">
+                            <span class="tag">深度學習</span>
+                            <span class="tag">電腦視覺</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
+                </a>
+            </section>
+        </div>
 
-            <!-- 主成分分析 (PCA) -->
-            <a href="PCA/index.html" class="course-card pca">
-                <div class="card-content">
-                    <span class="card-icon">📊</span>
-                    <h2 class="card-title">主成份分析 (PCA)</h2>
-                    <p class="card-subtitle">透過旋轉與投影，找出數據變異數最大的方向</p>
-                    <div class="card-tags">
-                        <span class="tag">降維</span>
-                        <span class="tag">特徵提取</span>
+        <!-- 7. 強化學習 -->
+        <div class="category-section">
+            <h2 class="category-title">強化學習 <span>Reinforcement Learning</span></h2>
+            <section class="courses-grid">
+                <!-- 強化學習 Q-Learning (RLearning) -->
+                <a href="RLearning/index.html" class="course-card rl">
+                    <div class="card-content">
+                        <span class="card-icon">🤖</span>
+                        <h2 class="card-title">強化學習 (Q-Learning)</h2>
+                        <p class="card-subtitle">訓練 Agent 在網格世界中探索並尋找最佳路徑</p>
+                        <div class="card-tags">
+                            <span class="tag">強化學習</span>
+                            <span class="tag">路徑規劃</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <span>開始學習</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </div>
-            </a>
-        </section>
+                </a>
+            </section>
+        </div>
 
         <!-- 頁尾 -->
         <footer class="footer">
