@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNN 池化層 (Pooling) - 互動教學</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>卷積神經網路 - 池化層 (Pooling Layer)</h1>
+            <p>移動滑鼠觀察 Pooling 如何壓縮特徵並保留重要資訊</p>
+        </header>
+
+        <main class="main-content">
+            <div class="visualization-area">
+                <!-- 控制面板 -->
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label style="color: #f472b6;">池化模式 (Mode)：</label>
+                        <button class="btn-mode active" data-mode="max">最大池化 (Max Pooling)</button>
+                        <button class="btn-mode" data-mode="mean">平均池化 (Mean Pooling)</button>
+                    </div>
+                    <div class="control-group" style="margin-top: 15px;">
+                        <label style="color: #a78bfa;">池化尺寸 (Size)：</label>
+                        <button class="btn-size active" data-size="2">2×2 (Stride 2)</button>
+                        <!-- 保留擴充彈性，目前先專注 2x2 -->
+                    </div>
+                </div>
+
+                <!-- 畫布區域 -->
+                <div class="canvas-container">
+                    <!-- 輸入層 -->
+                    <div class="canvas-box">
+                        <h3>輸入圖像 (Input Image) - 20×20</h3>
+                        <canvas id="inputCanvas" width="400" height="400"></canvas>
+                    </div>
+
+                    <!-- 中間運算層 (示意) -->
+                    <div class="canvas-box math-panel">
+                        <h4 id="poolingTitle">當前操作</h4>
+                        <div class="pooling-window" id="poolingWindow">
+                            <!-- JS 動態生成示意圖 -->
+                            <div class="pool-cell">1</div>
+                            <div class="pool-cell">5</div>
+                            <div class="pool-cell">3</div>
+                            <div class="pool-cell">2</div>
+                        </div>
+                        <div style="font-size: 2rem; color: var(--text-secondary);">↓</div>
+                        <div class="pool-result" id="poolResultDisplay">5</div>
+                    </div>
+
+                    <!-- 輸出層 -->
+                    <div class="canvas-box">
+                        <h3 id="featureMapLabel">池化結果 (Pooling Map) - 10×10</h3>
+                        <canvas id="outputCanvas" width="200" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- 運算過程 -->
+                <div class="calculation-panel">
+                    <h4>運算過程細節</h4>
+                    <div class="math-expression" id="mathOutput">
+                        請將滑鼠移至左側圖片上...
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 概念 -->
+                <div class="info-card">
+                    <h3>💡 什麼是池化層？</h3>
+                    <p><strong>池化層 (Pooling Layer)</strong> 通常接在卷積層之後，用於降低特徵圖的維度（Downsampling），減少運算量並避免過度擬合
+                        (Overfitting)。</p>
+                    <ul class="info-list">
+                        <li><strong>壓縮資訊</strong>：將小區域的像素合併為一個值。</li>
+                        <li><strong>平移不變性</strong>：對輸入圖像的微小位移更加魯棒。</li>
+                    </ul>
+                </div>
+
+                <!-- Max Pooling -->
+                <div class="info-card">
+                    <h3>🚀 最大池化 (Max Pooling)</h3>
+                    <p>在池化視窗內選取<strong>最大值</strong>作為輸出。</p>
+                    <ul class="info-list">
+                        <li><strong>特點</strong>：保留最顯著的特徵（如紋理、邊緣）。</li>
+                        <li><strong>應用</strong>：最常用的池化方式，能有效提取關鍵資訊。</li>
+                    </ul>
+                </div>
+
+                <!-- Mean Pooling -->
+                <div class="info-card">
+                    <h3>⚖️ 平均池化 (Mean Pooling)</h3>
+                    <p>計算池化視窗內所有數值的<strong>平均值</strong>作為輸出。</p>
+                    <ul class="info-list">
+                        <li><strong>特點</strong>：保留背景資訊，使圖像更平滑。</li>
+                        <li><strong>應用</strong>：較少使用，但在某些特定任務（如 Global Average Pooling）中很重要。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+            <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
