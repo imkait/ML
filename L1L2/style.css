@@ -1,0 +1,403 @@
+/* ===========================
+   CSS 變數
+   =========================== */
+:root {
+    --primary: #8b5cf6;
+    /* Violet 500 - L2 Ridge Theme */
+    --primary-light: #a78bfa;
+    --primary-dark: #7c3aed;
+
+    --secondary: #ec4899;
+    /* Pink 500 - L1 Lasso Theme */
+    --secondary-light: #f472b6;
+
+    --accent: #f59e0b;
+    /* Amber 500 */
+
+    --bg-start: #0f172a;
+    /* Slate 900 */
+    --bg-end: #1e293b;
+    /* Slate 800 */
+    --surface: rgba(30, 41, 59, 0.7);
+    --surface-hover: rgba(51, 65, 85, 0.8);
+
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --radius: 12px;
+    --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+    color: var(--text-main);
+    margin: 0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.header h1 {
+    margin: 0;
+    background: linear-gradient(to right, #c084fc, #f472b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5rem;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+/* Layout */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Visualization Section */
+.visualization-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.canvas-container {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 1rem;
+    height: 400px;
+    /* Chart area height */
+    position: relative;
+    border: 1px solid var(--glass-border);
+}
+
+.weights-visual {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 1rem;
+    height: 250px;
+    border: 1px solid var(--glass-border);
+}
+
+.weights-visual h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Control Section */
+.control-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.card {
+    background: var(--surface);
+    padding: 1.2rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+}
+
+.card h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Highlight Card for Regularization controls */
+.highlight-card {
+    background: linear-gradient(145deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.05));
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+/* Controls */
+.control-group {
+    margin-bottom: 1.2rem;
+}
+
+.control-group label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.control-group label span {
+    font-feature-settings: "tnum";
+    font-weight: bold;
+    color: var(--primary-light);
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+.hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0.3rem 0 0 0;
+    line-height: 1.4;
+}
+
+/* Radio Buttons for Reg Type */
+.reg-type-selector {
+    display: flex;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 1rem;
+}
+
+.radio-label {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+}
+
+.radio-label input {
+    display: none;
+}
+
+.radio-label span {
+    display: block;
+    padding: 8px 4px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    transition: all 0.3s;
+    color: var(--text-muted);
+}
+
+.radio-label input:checked+span {
+    background: var(--primary);
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Specific colors for types */
+.radio-label input[value="l1"]:checked+span {
+    background: var(--secondary);
+}
+
+.radio-label input[value="l2"]:checked+span {
+    background: var(--primary);
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 0.5rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(139, 92, 246, 0.4);
+}
+
+.btn-primary.active {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    /* Red for stop */
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-text {
+    background: transparent;
+    color: var(--text-muted);
+    font-weight: normal;
+    font-size: 0.9rem;
+}
+
+.btn-text:hover {
+    color: var(--text-main);
+    text-decoration: underline;
+}
+
+/* Metrics */
+.metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.metric {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.8rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.metric span:first-child {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+}
+
+.metric span:last-child {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--accent);
+}
+
+/* Info Section */
+.info-section {
+    margin-top: 2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-card h3 {
+    color: var(--primary-light);
+    margin-top: 0;
+}
+
+.formula-box {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    font-family: monospace;
+    margin: 1rem 0;
+    border-left: 3px solid var(--text-muted);
+}
+
+.formula-box.primary {
+    border-left-color: var(--primary);
+    color: var(--primary-light);
+}
+
+.formula-box.secondary {
+    border-left-color: var(--secondary);
+    color: var(--secondary-light);
+}
+
+.feature-list {
+    padding-left: 1.2rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.feature-list li {
+    margin-bottom: 0.5rem;
+}
+
+.steps-list {
+    padding-left: 1.2rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.steps-list li {
+    margin-bottom: 0.5rem;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--glass-border);
+    color: var(--text-muted);
+}
+
+.back-home {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--primary-light);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-home:hover {
+    color: white;
+}
+
+/* ... existing styles ... */
+
+.img-container {
+    margin-top: 1rem;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.concept-img {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.concept-img:hover {
+    transform: scale(1.05);
+}
+
+@media (max-width: 900px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+}

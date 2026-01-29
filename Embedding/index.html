@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedding 詞嵌入互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習 Embedding 詞嵌入的概念與應用">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>🧮 Embedding 詞嵌入</h1>
+            <p class="subtitle">互動式機器學習基礎教學</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <!-- 輸入區域 -->
+                <div class="input-container card">
+                    <h3>📝 輸入詞彙</h3>
+                    <div class="word-input-group">
+                        <input type="text" id="wordInput" placeholder="輸入一個詞彙，例如：貓" maxlength="10">
+                        <button id="addWordBtn" class="btn-add">➕ 加入</button>
+                    </div>
+                    <div class="selected-words" id="selectedWords">
+                        <span class="placeholder-text">點擊下方詞彙或自行輸入加入</span>
+                    </div>
+                    <div class="button-group">
+                        <button id="visualizeBtn" class="btn-primary">📊 視覺化嵌入空間</button>
+                        <button id="clearBtn" class="btn-reset">🗑️ 清除</button>
+                    </div>
+                </div>
+
+                <!-- 2D 視覺化區域 -->
+                <div class="result-container card">
+                    <h3>🎯 2D 嵌入空間視覺化</h3>
+                    <div class="canvas-wrapper">
+                        <canvas id="embeddingCanvas" width="600" height="400"></canvas>
+                    </div>
+                    <div class="canvas-legend">
+                        <span class="legend-item"><span class="legend-dot animal"></span>動物類</span>
+                        <span class="legend-item"><span class="legend-dot fruit"></span>水果類</span>
+                        <span class="legend-item"><span class="legend-dot vehicle"></span>交通類</span>
+                        <span class="legend-item"><span class="legend-dot emotion"></span>情感類</span>
+                        <span class="legend-item"><span class="legend-dot custom"></span>自訂</span>
+                    </div>
+                </div>
+
+                <!-- 向量詳情 -->
+                <div class="vector-container card">
+                    <h3>🔢 向量表示</h3>
+                    <div id="vectorDisplay" class="vector-display">
+                        <div class="placeholder-text">選擇詞彙後將顯示其向量表示</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板與資訊顯示 -->
+            <aside class="control-section">
+                <!-- 預設詞彙選擇 -->
+                <div class="card control-panel">
+                    <h3>📚 預設詞彙庫</h3>
+                    <div class="control-group">
+                        <label class="label-text">動物</label>
+                        <div class="word-pills" id="animalWords">
+                            <span class="word-pill" data-word="貓">貓</span>
+                            <span class="word-pill" data-word="狗">狗</span>
+                            <span class="word-pill" data-word="鳥">鳥</span>
+                            <span class="word-pill" data-word="魚">魚</span>
+                            <span class="word-pill" data-word="兔子">兔子</span>
+                            <span class="word-pill" data-word="老虎">老虎</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="label-text">水果</label>
+                        <div class="word-pills" id="fruitWords">
+                            <span class="word-pill" data-word="蘋果">蘋果</span>
+                            <span class="word-pill" data-word="香蕉">香蕉</span>
+                            <span class="word-pill" data-word="橘子">橘子</span>
+                            <span class="word-pill" data-word="葡萄">葡萄</span>
+                            <span class="word-pill" data-word="西瓜">西瓜</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="label-text">交通工具</label>
+                        <div class="word-pills" id="vehicleWords">
+                            <span class="word-pill" data-word="汽車">汽車</span>
+                            <span class="word-pill" data-word="機車">機車</span>
+                            <span class="word-pill" data-word="腳踏車">腳踏車</span>
+                            <span class="word-pill" data-word="公車">公車</span>
+                            <span class="word-pill" data-word="火車">火車</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="label-text">情感</label>
+                        <div class="word-pills" id="emotionWords">
+                            <span class="word-pill" data-word="開心">開心</span>
+                            <span class="word-pill" data-word="難過">難過</span>
+                            <span class="word-pill" data-word="生氣">生氣</span>
+                            <span class="word-pill" data-word="害怕">害怕</span>
+                            <span class="word-pill" data-word="驚訝">驚訝</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 相似度計算 -->
+                <div class="card value-panel">
+                    <h3>📐 相似度計算</h3>
+                    <div class="similarity-selector">
+                        <select id="word1Select" class="func-select">
+                            <option value="">選擇詞彙 1</option>
+                        </select>
+                        <span class="similarity-vs">vs</span>
+                        <select id="word2Select" class="func-select">
+                            <option value="">選擇詞彙 2</option>
+                        </select>
+                    </div>
+                    <button id="calcSimilarityBtn" class="btn-secondary">計算餘弦相似度</button>
+                    <div class="similarity-result" id="similarityResult">
+                        <div class="placeholder-text">選擇兩個詞彙計算相似度</div>
+                    </div>
+                </div>
+
+                <!-- 維度設定 -->
+                <div class="card formula-panel">
+                    <h3>⚙️ 嵌入維度模擬</h3>
+                    <div class="control-group">
+                        <label for="dimensionSelect" class="label-text">向量維度</label>
+                        <select id="dimensionSelect" class="func-select">
+                            <option value="2">2 維（視覺化用）</option>
+                            <option value="4" selected>4 維（模擬）</option>
+                            <option value="8">8 維（模擬）</option>
+                        </select>
+                    </div>
+                    <div class="output-range">
+                        <span class="range-label">實際應用：</span>
+                        <span class="range-value">768 ~ 1536 維</span>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 什麼是 Embedding -->
+                <div class="card info-card">
+                    <h3>🧠 什麼是 Embedding？</h3>
+                    <p>Embedding（詞嵌入）是將<strong>文字轉換成數值向量</strong>的技術。</p>
+                    <p>相似的詞彙在向量空間中會<em>彼此靠近</em>，讓電腦能理解語意關係。</p>
+                </div>
+
+                <!-- 為什麼需要 Embedding -->
+                <div class="card compare-card">
+                    <h3>⚡ 為什麼需要？</h3>
+                    <ul class="compare-list">
+                        <li>電腦無法直接理解文字，需要<strong>數值表示</strong></li>
+                        <li>能夠捕捉詞彙間的<strong>語意關係</strong></li>
+                        <li>支援相似度計算、分類、搜尋等任務</li>
+                    </ul>
+                </div>
+
+                <!-- 核心概念 -->
+                <div class="card gradient-card">
+                    <h3>📊 核心概念</h3>
+                    <p><strong>向量空間</strong>：每個詞彙對應一個高維向量。</p>
+                    <p><strong>餘弦相似度</strong>：衡量兩個向量的相似程度。</p>
+                </div>
+
+                <!-- 實際應用 -->
+                <div class="card tips-card">
+                    <h3>💡 實際應用</h3>
+                    <ul class="tips-list">
+                        <li><strong>搜尋引擎</strong>：語意搜尋與推薦</li>
+                        <li><strong>ChatGPT</strong>：文字理解與生成</li>
+                        <li><strong>RAG</strong>：知識庫檢索增強</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 互動演示區 -->
+        <section class="animation-section">
+            <div class="card animation-card">
+                <h3>🎬 Embedding 概念演示</h3>
+                <div class="demo-container">
+                    <!-- 類比演示 -->
+                    <div class="analogy-demo">
+                        <h4>📐 詞彙類比 (Word Analogy)</h4>
+                        <p class="demo-description">著名的例子：<strong>國王 - 男人 + 女人 ≈ 皇后</strong></p>
+                        <div class="analogy-visual">
+                            <div class="analogy-item">
+                                <span class="analogy-word king">國王 👑</span>
+                                <span class="analogy-op">−</span>
+                                <span class="analogy-word man">男人 👨</span>
+                                <span class="analogy-op">+</span>
+                                <span class="analogy-word woman">女人 👩</span>
+                                <span class="analogy-op">=</span>
+                                <span class="analogy-word queen">皇后 👸</span>
+                            </div>
+                        </div>
+                        <div class="analogy-explanation">
+                            <p>這個經典例子說明了 Embedding 能夠<strong>捕捉語意關係</strong>。</p>
+                            <p>向量運算：Vec(國王) - Vec(男人) + Vec(女人) ≈ Vec(皇后)</p>
+                        </div>
+                    </div>
+
+                    <!-- One-Hot vs Embedding -->
+                    <div class="comparison-demo">
+                        <h4>🔄 One-Hot Encoding vs Embedding</h4>
+                        <div class="comparison-grid">
+                            <div class="comparison-item">
+                                <h5>One-Hot Encoding</h5>
+                                <div class="encoding-visual onehot">
+                                    <div class="encoding-row">
+                                        <span class="word-label">貓：</span>
+                                        <span class="bit">1</span><span class="bit">0</span><span
+                                            class="bit">0</span><span class="bit">0</span><span class="bit">0</span>
+                                    </div>
+                                    <div class="encoding-row">
+                                        <span class="word-label">狗：</span>
+                                        <span class="bit">0</span><span class="bit">1</span><span
+                                            class="bit">0</span><span class="bit">0</span><span class="bit">0</span>
+                                    </div>
+                                    <div class="encoding-row">
+                                        <span class="word-label">鳥：</span>
+                                        <span class="bit">0</span><span class="bit">0</span><span
+                                            class="bit">1</span><span class="bit">0</span><span class="bit">0</span>
+                                    </div>
+                                </div>
+                                <p class="comparison-note">❌ 稀疏、高維、無語意資訊</p>
+                            </div>
+                            <div class="comparison-item">
+                                <h5>Embedding</h5>
+                                <div class="encoding-visual embedding">
+                                    <div class="encoding-row">
+                                        <span class="word-label">貓：</span>
+                                        <span class="vec">0.8</span><span class="vec">0.2</span><span
+                                            class="vec">0.5</span><span class="vec">0.3</span>
+                                    </div>
+                                    <div class="encoding-row">
+                                        <span class="word-label">狗：</span>
+                                        <span class="vec">0.7</span><span class="vec">0.3</span><span
+                                            class="vec">0.6</span><span class="vec">0.2</span>
+                                    </div>
+                                    <div class="encoding-row">
+                                        <span class="word-label">鳥：</span>
+                                        <span class="vec">0.4</span><span class="vec">0.1</span><span
+                                            class="vec">0.8</span><span class="vec">0.9</span>
+                                    </div>
+                                </div>
+                                <p class="comparison-note">✅ 稠密、低維、包含語意資訊</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+            <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

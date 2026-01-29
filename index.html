@@ -411,6 +411,14 @@
             --card-accent: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
         }
 
+        .course-card.embedding {
+            --card-accent: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+        }
+
+        .course-card.token {
+            --card-accent: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+        }
+
         /* 分類標題樣式 */
         .category-section {
             margin-bottom: 60px;
@@ -693,8 +701,43 @@
                         </div>
                     </div>
                 </a>
+
+                <!-- Tokenizer 分詞器 -->
+                <a href="Token/index.html" class="course-card token">
+                    <div class="card-content">
+                        <span class="card-icon">🔤</span>
+                        <h2 class="card-title">Tokenizer 分詞器</h2>
+                        <p class="card-subtitle">了解 LLM 如何將文字切割成 Token 進行處理</p>
+                        <div class="card-tags">
+                            <span class="tag">深度學習</span>
+                            <span class="tag">LLM</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Embedding 詞嵌入 -->
+                <a href="Embedding/index.html" class="course-card embedding">
+                    <div class="card-content">
+                        <span class="card-icon">🧮</span>
+                        <h2 class="card-title">Embedding 詞嵌入</h2>
+                        <p class="card-subtitle">將文字轉換成數值向量，讓電腦理解語意關係</p>
+                        <div class="card-tags">
+                            <span class="tag">深度學習</span>
+                            <span class="tag">NLP</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
+                    </div>
+                </a>
             </section>
         </div>
+
 
         <!-- 6. 進階視覺模型 -->
         <div class="category-section">

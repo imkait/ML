@@ -1,0 +1,59 @@
+<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8" />
+        </marker>
+    </defs>
+    
+    <!-- Background -->
+    <rect width="300" height="300" fill="#1e293b" />
+    
+    <!-- Grid/Axes -->
+    <g stroke="#94a3b8" stroke-width="2">
+        <!-- X Axis (w1) -->
+        <line x1="20" y1="150" x2="280" y2="150" marker-end="url(#arrow)" />
+        <text x="270" y="180" fill="#94a3b8" font-family="sans-serif" font-weight="bold">w1</text>
+        
+        <!-- Y Axis (w2) -->
+        <line x1="150" y1="280" x2="150" y2="20" marker-end="url(#arrow)" />
+        <text x="120" y="40" fill="#94a3b8" font-family="sans-serif" font-weight="bold">w2</text>
+    </g>
+    
+    <!-- L2 Constraint (Circle) -->
+    <!-- Center (150, 150). Radius 60 -->
+    <circle cx="150" cy="150" r="60" 
+            fill="rgba(139, 92, 246, 0.2)" 
+            stroke="#8b5cf6" 
+            stroke-width="3" />
+    <text x="160" y="130" fill="#8b5cf6" font-family="sans-serif" font-size="12">w1² + w2² ≤ C</text>
+             
+    <!-- Loss Contours (Ellipses) -->
+    <!-- Optimal Point at (230, 210) 
+         Vector from origin: (80, 60). Length 100.
+         Circle radius 60.
+         Touch point should be along vector (80, 60).
+         Touch point = (150, 150) + 60 * (0.8, 0.6) = (150+48, 150+36) = (198, 186)
+         Distance from Opt(230, 210) to Touch(198, 186):
+         sqrt(32^2 + 24^2) = sqrt(1024 + 576) = sqrt(1600) = 40.
+    -->
+         
+    <g fill="none" stroke="#60a5fa" stroke-width="2" stroke-dasharray="4 4">
+        <!-- Optimal Point -->
+        <circle cx="230" cy="210" r="3" fill="#60a5fa" stroke="none"/>
+        <text x="235" y="205" fill="#60a5fa" font-family="sans-serif" font-size="12">Optimal (w*)</text>
+        
+        <!-- Contour 1 (Touch Point) -->
+        <circle cx="230" cy="210" r="40" stroke="#60a5fa" stroke-width="3" stroke-dasharray="0" />
+        
+        <!-- Contour 2 -->
+        <circle cx="230" cy="210" r="60" opacity="0.6"/>
+        
+        <!-- Contour 3 -->
+        <circle cx="230" cy="210" r="80" opacity="0.3"/>
+    </g>
+    
+    <!-- Highlight Solution -->
+    <!-- (198, 186) -->
+    <circle cx="198" cy="186" r="5" fill="#facc15" stroke="#fff" stroke-width="2"/>
+    <text x="205" y="180" fill="#facc15" font-family="sans-serif" font-weight="bold">w1, w2 ≠ 0</text>
+</svg>

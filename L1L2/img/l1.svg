@@ -1,0 +1,60 @@
+<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8" />
+        </marker>
+    </defs>
+    
+    <!-- Background -->
+    <rect width="300" height="300" fill="#1e293b" />
+    
+    <!-- Grid/Axes -->
+    <g stroke="#94a3b8" stroke-width="2">
+        <!-- X Axis (w1) -->
+        <line x1="20" y1="150" x2="280" y2="150" marker-end="url(#arrow)" />
+        <text x="270" y="180" fill="#94a3b8" font-family="sans-serif" font-weight="bold">w1</text>
+        
+        <!-- Y Axis (w2) -->
+        <line x1="150" y1="280" x2="150" y2="20" marker-end="url(#arrow)" />
+        <text x="120" y="40" fill="#94a3b8" font-family="sans-serif" font-weight="bold">w2</text>
+    </g>
+    
+    <!-- L1 Constraint (Diamond) -->
+    <!-- Center (150, 150). Radius 60 -->
+    <!-- Points: (210, 150), (150, 210), (90, 150), (150, 90) -->
+    <polygon points="210,150 150,210 90,150 150,90" 
+             fill="rgba(236, 72, 153, 0.2)" 
+             stroke="#ec4899" 
+             stroke-width="3" />
+    <text x="155" y="145" fill="#ec4899" font-family="sans-serif" font-size="12">|w1| + |w2| ≤ C</text>
+             
+    <!-- Loss Contours (Ellipses) -->
+    <!-- Optimum at (240, 150) - aligned with w1 axis to force vertex solution -->
+    <!-- But to make it look "natural" but still hit the vertex, 
+         let's put Optimum at (250, 160) so it's slightly off but clearly hitting the explicit vertex (210, 150) first?
+         Actually, if Optimum is at (250, 150), the contours are circles centered there. 
+         Distance to (210, 150) is 40.
+         Distance to (150, 210) is sqrt(100^2 + 60^2) > 40.
+         So it will hit (210, 150) which implies w2=0. -->
+         
+    <g fill="none" stroke="#60a5fa" stroke-width="2" stroke-dasharray="4 4">
+        <!-- Optimal Point -->
+        <circle cx="250" cy="150" r="3" fill="#60a5fa" stroke="none"/>
+        <text x="255" y="145" fill="#60a5fa" font-family="sans-serif" font-size="12">Optimal (w*)</text>
+        
+        <!-- Contour 1 (Touch Point) -->
+        <!-- Touching (210, 150) -->
+        <!-- Radius = 40 -->
+        <circle cx="250" cy="150" r="40" stroke="#60a5fa" stroke-width="3" stroke-dasharray="0" />
+        
+        <!-- Contour 2 -->
+        <circle cx="250" cy="150" r="60" opacity="0.6"/>
+        
+        <!-- Contour 3 -->
+        <circle cx="250" cy="150" r="80" opacity="0.3"/>
+    </g>
+    
+    <!-- Highlight Solution -->
+    <circle cx="210" cy="150" r="5" fill="#facc15" stroke="#fff" stroke-width="2"/>
+    <text x="190" y="180" fill="#facc15" font-family="sans-serif" font-weight="bold">Solution (w2=0)</text>
+</svg>

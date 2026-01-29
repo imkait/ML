@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Tokenizer 分詞器互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習大型語言模型 (LLM) 的 Tokenizer 分詞過程">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>🔤 LLM Tokenizer 分詞器</h1>
+            <p class="subtitle">互動式大型語言模型基礎教學</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：輸入與視覺化區域 -->
+            <section class="visualization-section">
+                <!-- 輸入區域 -->
+                <div class="input-container card">
+                    <h3>📝 輸入文字</h3>
+                    <textarea id="inputText" placeholder="請輸入任意文字，例如：Hello, 你好世界！這是一個測試。"></textarea>
+                    <div class="button-group">
+                        <button id="tokenizeBtn" class="btn-primary">🔍 開始分詞</button>
+                        <button id="clearBtn" class="btn-reset">🗑️ 清除</button>
+                    </div>
+                </div>
+
+                <!-- 分詞結果視覺化 -->
+                <div class="result-container card">
+                    <h3>🎨 分詞結果視覺化</h3>
+                    <div id="tokenDisplay" class="token-display">
+                        <div class="placeholder-text">輸入文字後按下「開始分詞」查看結果</div>
+                    </div>
+                </div>
+
+                <!-- Token ID 對照表 -->
+                <div class="id-container card">
+                    <h3>🔢 Token ID 序列</h3>
+                    <div id="tokenIds" class="token-ids">
+                        <div class="placeholder-text">分詞後將顯示對應的 Token ID</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板與資訊顯示 -->
+            <aside class="control-section">
+                <!-- 範例選擇 -->
+                <div class="card control-panel">
+                    <h3>⚙️ 範例文字</h3>
+                    <div class="control-group">
+                        <label for="exampleSelect" class="label-text">選擇範例</label>
+                        <select id="exampleSelect" class="func-select">
+                            <option value="">-- 選擇範例 --</option>
+                            <option value="hello">Hello World</option>
+                            <option value="chinese">中文句子</option>
+                            <option value="mixed">中英混合</option>
+                            <option value="code">程式碼</option>
+                            <option value="emoji">表情符號</option>
+                            <option value="special">特殊字元</option>
+                        </select>
+                    </div>
+
+                    <!-- 分詞模式選擇 -->
+                    <div class="control-group" style="margin-top: 1rem;">
+                        <label for="modeSelect" class="label-text">分詞模式</label>
+                        <select id="modeSelect" class="func-select">
+                            <option value="bpe" selected>BPE (Byte Pair Encoding)</option>
+                            <option value="char">字元級 (Character)</option>
+                            <option value="word">詞語級 (Word)</option>
+                        </select>
+                    </div>
+
+                    <!-- 顯示選項 -->
+                    <div class="checkbox-container">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="showIds" checked>
+                            <span class="checkbox-custom"></span>
+                            <span>顯示 Token ID</span>
+                        </label>
+                    </div>
+                    <div class="checkbox-container">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="showBytes">
+                            <span class="checkbox-custom"></span>
+                            <span>顯示位元組資訊</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 統計資訊 -->
+                <div class="card value-panel">
+                    <h3>📊 統計資訊</h3>
+                    <div class="value-items">
+                        <div class="value-item">
+                            <span class="value-label">原始字元數</span>
+                            <span class="value-number" id="charCount">0</span>
+                        </div>
+                        <div class="value-item">
+                            <span class="value-label">Token 數量</span>
+                            <span class="value-number highlight-primary" id="tokenCount">0</span>
+                        </div>
+                        <div class="value-item">
+                            <span class="value-label">壓縮比率</span>
+                            <span class="value-number highlight-secondary" id="compressionRatio">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分詞模式說明 -->
+                <div class="card formula-panel">
+                    <h3>📐 目前模式說明</h3>
+                    <div class="formula-content">
+                        <div class="formula" id="modeDescription">BPE：使用頻率統計合併字元對</div>
+                    </div>
+                    <div class="output-range">
+                        <span class="range-label">詞彙表大小：</span>
+                        <span class="range-value" id="vocabSize">~50,000</span>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 什麼是 Tokenizer -->
+                <div class="card info-card">
+                    <h3>🧠 什麼是 Tokenizer？</h3>
+                    <p>Tokenizer（分詞器）是將原始文字<strong>切割成小單位</strong>的工具，這些小單位稱為 Token。</p>
+                    <p>LLM 無法直接理解文字，必須先將文字轉換成<em>數字序列</em>才能處理。</p>
+                </div>
+
+                <!-- BPE 演算法 -->
+                <div class="card compare-card">
+                    <h3>⚙️ BPE 演算法</h3>
+                    <ul class="compare-list">
+                        <li><strong>Byte Pair Encoding</strong> 是最常用的分詞方法</li>
+                        <li>統計字元對出現頻率，逐步<strong>合併高頻組合</strong></li>
+                        <li>平衡了詞彙表大小與表達能力</li>
+                    </ul>
+                </div>
+
+                <!-- 為什麼重要 -->
+                <div class="card gradient-card">
+                    <h3>⚠️ 為什麼很重要？</h3>
+                    <p>Token 數量直接影響 LLM 的<strong>計算成本</strong>與處理速度。</p>
+                    <p>不同語言的分詞效率不同，中文通常需要較多 Token。</p>
+                </div>
+
+                <!-- 實際應用 -->
+                <div class="card tips-card">
+                    <h3>💡 實際應用</h3>
+                    <ul class="tips-list">
+                        <li><strong>GPT-4</strong>：使用 cl100k_base 分詞器</li>
+                        <li><strong>費用計算</strong>：API 按 Token 數量收費</li>
+                        <li><strong>上下文限制</strong>：模型有最大 Token 限制</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- BPE 動畫演示區 -->
+        <section class="animation-section">
+            <div class="card animation-card">
+                <h3>🎬 BPE 分詞演算法步驟演示</h3>
+                <div class="animation-container">
+                    <div id="bpeSteps" class="bpe-steps">
+                        <div class="step-placeholder">輸入文字後，這裡將展示 BPE 演算法的逐步過程</div>
+                    </div>
+                    <div class="animation-controls">
+                        <button id="prevStep" class="btn-step" disabled>⬅️ 上一步</button>
+                        <span id="stepIndicator" class="step-indicator">步驟 0/0</span>
+                        <button id="nextStep" class="btn-step" disabled>下一步 ➡️</button>
+                        <button id="autoPlay" class="btn-auto">▶️ 自動播放</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+            <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
