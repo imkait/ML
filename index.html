@@ -367,6 +367,18 @@
             animation-delay: 1.0s;
         }
 
+        .course-card:nth-child(11) {
+            animation-delay: 1.1s;
+        }
+
+        .course-card:nth-child(12) {
+            animation-delay: 1.2s;
+        }
+
+        .course-card:nth-child(13) {
+            animation-delay: 1.3s;
+        }
+
         @keyframes fadeInUp {
             to {
                 opacity: 1;
@@ -419,6 +431,18 @@
             --card-accent: linear-gradient(135deg, #10b981 0%, #34d399 100%);
         }
 
+        .course-card.feature-scaling {
+            --card-accent: linear-gradient(135deg, #14b8a6 0%, #2dd4bf 100%);
+        }
+
+        .course-card.cg-encoding {
+            --card-accent: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+        }
+
+        .course-card.dimen-redu {
+            --card-accent: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+        }
+
         /* 分類標題樣式 */
         .category-section {
             margin-bottom: 60px;
@@ -453,7 +477,64 @@
             <p class="subtitle">透過視覺化互動，輕鬆學習 AI 核心演算法</p>
         </header>
 
-        <!-- 1. 基礎核心與回歸 -->
+        <!-- 1. 資料預處理 -->
+        <div class="category-section">
+            <h2 class="category-title">資料預處理 <span>Data Preprocessing</span></h2>
+            <section class="courses-grid">
+                <!-- 特徵縮放 -->
+                <a href="FeatureScaling/index.html" class="course-card feature-scaling">
+                    <div class="card-content">
+                        <span class="card-icon">📏</span>
+                        <h2 class="card-title">特徵縮放</h2>
+                        <p class="card-subtitle">將不同量綱的特徵轉換至相同尺度，提升模型學習效果</p>
+                        <div class="card-tags">
+                            <span class="tag">資料預處理</span>
+                            <span class="tag">基礎概念</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- 類別編碼 -->
+                <a href="CgEncoding/index.html" class="course-card cg-encoding">
+                    <div class="card-content">
+                        <span class="card-icon">🏷️</span>
+                        <h2 class="card-title">類別編碼</h2>
+                        <p class="card-subtitle">將文字型態的類別特徵轉換為數值，讓模型能夠理解</p>
+                        <div class="card-tags">
+                            <span class="tag">資料預處理</span>
+                            <span class="tag">基礎概念</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- 資料降維 -->
+                <a href="DimenRedu/index.html" class="course-card dimen-redu">
+                    <div class="card-content">
+                        <span class="card-icon">🔭</span>
+                        <h2 class="card-title">資料降維</h2>
+                        <p class="card-subtitle">將高維資料壓縮成低維，保留最重要的資訊</p>
+                        <div class="card-tags">
+                            <span class="tag">資料預處理</span>
+                            <span class="tag">降維</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
+                    </div>
+                </a>
+            </section>
+        </div>
+
+        <!-- 2. 基礎核心與回歸 -->
         <div class="category-section">
             <h2 class="category-title">基礎核心與回歸 <span>Foundations & Regression</span></h2>
             <section class="courses-grid">
@@ -507,10 +588,11 @@
                         </div>
                     </div>
                 </a>
+
             </section>
         </div>
 
-        <!-- 2. 監督式學習演算法 -->
+        <!-- 3. 監督式學習演算法 -->
         <div class="category-section">
             <h2 class="category-title">監督式學習演算法 <span>Supervised Learning</span></h2>
             <section class="courses-grid">
@@ -567,7 +649,7 @@
             </section>
         </div>
 
-        <!-- 3. 非監督式學習與降維 -->
+        <!-- 4. 非監督式學習與降維 -->
         <div class="category-section">
             <h2 class="category-title">非監督式學習與降維 <span>Unsupervised Learning</span></h2>
             <section class="courses-grid">
@@ -607,7 +689,7 @@
             </section>
         </div>
 
-        <!-- 4. 模型評估與概念 -->
+        <!-- 5. 模型評估與概念 -->
         <div class="category-section">
             <h2 class="category-title">模型評估與概念 <span>Model Evaluation</span></h2>
             <section class="courses-grid">
@@ -647,7 +729,7 @@
             </section>
         </div>
 
-        <!-- 5. 深度學習基礎 -->
+        <!-- 6. 深度學習基礎 -->
         <div class="category-section">
             <h2 class="category-title">深度學習基礎 <span>Deep Learning Foundations</span></h2>
             <section class="courses-grid">
@@ -739,7 +821,7 @@
         </div>
 
 
-        <!-- 6. 進階視覺模型 -->
+        <!-- 7. 進階視覺模型 -->
         <div class="category-section">
             <h2 class="category-title">進階視覺模型 <span>Advanced Vision Models</span></h2>
             <section class="courses-grid">

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dimensionality Reduction 資料降維互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習資料降維的概念，包含 PCA、t-SNE、LDA 三種方法">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- ============================
+             頁首：標題
+             ============================ -->
+        <header class="header">
+            <h1>🔭 Dimensionality Reduction 資料降維</h1>
+            <p class="subtitle">互動式機器學習基礎教學</p>
+        </header>
+
+        <!-- ============================
+             第一步：為什麼需要資料降維？
+             ============================ -->
+        <section class="step-section">
+            <div class="step-header">
+                <span class="step-number">1</span>
+                <h2>為什麼需要資料降維？</h2>
+            </div>
+            <div class="problem-showcase">
+                <div class="problem-card">
+                    <div class="problem-icon">😵</div>
+                    <h3>維度詛咒（Curse of Dimensionality）</h3>
+                    <p>當特徵（欄位）數量太多時，資料在高維空間中會變得<strong>極度稀疏</strong>，導致模型難以學習有效規律、訓練速度慢，且容易過擬合。</p>
+                    <p>降維就是把高維資料壓縮成低維，<strong>保留最重要的資訊</strong>，同時去除雜訊與冗餘！</p>
+                </div>
+                <div class="problem-visual">
+                    <div class="dim-demo">
+                        <div class="dim-before">
+                            <span class="dim-label">📦 原始高維資料</span>
+                            <div class="dim-features">
+                                <span class="feat-badge">特徵 1</span>
+                                <span class="feat-badge">特徵 2</span>
+                                <span class="feat-badge">特徵 3</span>
+                                <span class="feat-badge">特徵 4</span>
+                                <span class="feat-badge">特徵 5</span>
+                                <span class="feat-badge feat-muted">特徵 6</span>
+                                <span class="feat-badge feat-muted">⋯ N 個</span>
+                            </div>
+                        </div>
+                        <div class="dim-arrow">
+                            <span>降維壓縮</span>
+                            <span class="arrow-icon">→</span>
+                        </div>
+                        <div class="dim-after">
+                            <span class="dim-label">📉 低維精華資料</span>
+                            <div class="dim-features">
+                                <span class="feat-badge feat-pca">主成分 1</span>
+                                <span class="feat-badge feat-pca">主成分 2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 三大應用場景 -->
+            <div class="use-case-grid">
+                <div class="use-case-card">
+                    <div class="use-case-icon">👁️</div>
+                    <h4>視覺化</h4>
+                    <p>將數百個特徵降到 2D/3D，畫出散點圖讓人眼可以直接理解資料分佈</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">⚡</div>
+                    <h4>加速訓練</h4>
+                    <p>特徵從 1000 個降到 50 個，模型訓練速度大幅提升，節省計算資源</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">🧹</div>
+                    <h4>去除雜訊</h4>
+                    <p>過濾掉低方差、高相關的冗餘特徵，提升模型的泛化能力</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================
+             第二步：選擇資料集
+             ============================ -->
+        <section class="step-section">
+            <div class="step-header">
+                <span class="step-number">2</span>
+                <h2>選擇資料集，看看降維效果</h2>
+            </div>
+            <div class="data-area">
+                <div class="data-controls">
+                    <select id="datasetSelect" class="func-select">
+                        <option value="iris">🌸 鳶尾花資料（4 特徵 → 2D）</option>
+                        <option value="digits">🔢 手寫數字資料（64 特徵 → 2D）</option>
+                        <option value="student">🎓 學生成績資料（5 特徵 → 2D）</option>
+                    </select>
+                    <div class="button-group">
+                        <button id="reduceBtn" class="btn-primary">🚀 執行降維！</button>
+                        <button id="clearBtn" class="btn-reset">🗑️ 清除</button>
+                    </div>
+                </div>
+
+                <!-- 原始資料維度說明 -->
+                <div class="original-data-card" id="originalDataCard">
+                    <h3>📋 資料集說明</h3>
+                    <div id="datasetInfo">
+                        <div class="placeholder-text">👆 選擇資料集後點擊「執行降維」</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================
+             第三步：三種降維方法展示
+             ============================ -->
+        <section class="step-section" id="resultsSection" style="display: none;">
+            <div class="step-header">
+                <span class="step-number">3</span>
+                <h2>三種降維方法比較</h2>
+            </div>
+
+            <!-- 方法一：PCA -->
+            <div class="method-section" id="pcaSection">
+                <div class="method-header pca-theme">
+                    <div class="method-badge pca-bg">方法 1</div>
+                    <h3>PCA — 主成分分析</h3>
+                </div>
+                <div class="method-body">
+                    <div class="method-explain">
+                        <div class="method-idea">
+                            <span class="idea-icon">💡</span>
+                            <div>
+                                <strong>核心想法</strong>
+                                <p>找出資料中<strong>方差最大</strong>的方向（主成分），將資料投影到這些方向，保留最多資訊</p>
+                            </div>
+                        </div>
+                        <div class="method-example-box pca-border">
+                            <div class="example-title">數學直覺</div>
+                            <div class="pca-formula-visual">
+                                <div class="formula-step">
+                                    <span class="step-tag pca-tag">① 計算共變異矩陣</span>
+                                    <span class="formula-text">Σ = XᵀX / (n−1)</span>
+                                </div>
+                                <div class="formula-step">
+                                    <span class="step-tag pca-tag">② 特徵分解</span>
+                                    <span class="formula-text">Σ · v = λ · v</span>
+                                </div>
+                                <div class="formula-step">
+                                    <span class="step-tag pca-tag">③ 投影</span>
+                                    <span class="formula-text">Z = X · V<sub>k</sub></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="method-pros-cons">
+                            <div class="pros"><span>✅</span> 計算快速、結果可解釋，適合預處理</div>
+                            <div class="cons"><span>⚠️</span> 只捕捉線性結構，非線性資料效果有限</div>
+                        </div>
+                    </div>
+                    <div class="method-result">
+                        <h4>📊 PCA 降維視覺化</h4>
+                        <canvas id="pcaCanvas" class="result-canvas" width="340" height="260"></canvas>
+                        <div id="pcaInfo" class="result-info"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 方法二：t-SNE -->
+            <div class="method-section" id="tsneSection">
+                <div class="method-header tsne-theme">
+                    <div class="method-badge tsne-bg">方法 2</div>
+                    <h3>t-SNE — 非線性降維</h3>
+                </div>
+                <div class="method-body">
+                    <div class="method-explain">
+                        <div class="method-idea">
+                            <span class="idea-icon">💡</span>
+                            <div>
+                                <strong>核心想法</strong>
+                                <p>在低維空間中<strong>保持高維空間的鄰近關係</strong>，讓相似的點在降維後依然靠在一起</p>
+                            </div>
+                        </div>
+                        <div class="method-example-box tsne-border">
+                            <div class="example-title">運作邏輯（直覺）</div>
+                            <div class="tsne-steps">
+                                <div class="tsne-step">
+                                    <span class="tsne-num">1</span>
+                                    <span>計算高維空間中各點之間的<strong>相似度機率</strong></span>
+                                </div>
+                                <div class="tsne-step">
+                                    <span class="tsne-num">2</span>
+                                    <span>在 2D 空間中隨機初始化各點位置</span>
+                                </div>
+                                <div class="tsne-step">
+                                    <span class="tsne-num">3</span>
+                                    <span>反覆調整 2D 位置，使兩個空間的<strong>相似度分佈盡量一致</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="method-pros-cons">
+                            <div class="pros"><span>✅</span> 視覺化效果極佳，善於呈現群聚結構</div>
+                            <div class="cons"><span>⚠️</span> 計算慢、結果有隨機性，不適合特徵工程</div>
+                        </div>
+                    </div>
+                    <div class="method-result">
+                        <h4>📊 t-SNE 降維視覺化</h4>
+                        <canvas id="tsneCanvas" class="result-canvas" width="340" height="260"></canvas>
+                        <div id="tsneInfo" class="result-info"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 方法三：LDA -->
+            <div class="method-section" id="ldaSection">
+                <div class="method-header lda-theme">
+                    <div class="method-badge lda-bg">方法 3</div>
+                    <h3>LDA — 線性判別分析</h3>
+                </div>
+                <div class="method-body">
+                    <div class="method-explain">
+                        <div class="method-idea">
+                            <span class="idea-icon">💡</span>
+                            <div>
+                                <strong>核心想法</strong>
+                                <p>在降維的同時，找到能讓<strong>不同類別盡量分開</strong>的投影方向（有監督式降維）</p>
+                            </div>
+                        </div>
+                        <div class="method-example-box lda-border">
+                            <div class="example-title">PCA vs LDA 的差異</div>
+                            <table class="mini-table compare-table">
+                                <thead>
+                                    <tr>
+                                        <th>比較</th>
+                                        <th>PCA</th>
+                                        <th>LDA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>學習類型</td>
+                                        <td>非監督式</td>
+                                        <td class="lda-highlight">監督式</td>
+                                    </tr>
+                                    <tr>
+                                        <td>目標</td>
+                                        <td>最大化方差</td>
+                                        <td class="lda-highlight">最大化類別間距</td>
+                                    </tr>
+                                    <tr>
+                                        <td>需要標籤</td>
+                                        <td>❌ 不需要</td>
+                                        <td class="lda-highlight">✅ 需要</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="method-pros-cons">
+                            <div class="pros"><span>✅</span> 能同時降維並提升分類效果</div>
+                            <div class="cons"><span>⚠️</span> 需要標籤資料，且最多降到 C-1 維（C 為類別數）</div>
+                        </div>
+                    </div>
+                    <div class="method-result">
+                        <h4>📊 LDA 降維視覺化</h4>
+                        <canvas id="ldaCanvas" class="result-canvas" width="340" height="260"></canvas>
+                        <div id="ldaInfo" class="result-info"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================
+             第四步：速查表
+             ============================ -->
+        <section class="step-section">
+            <div class="step-header">
+                <span class="step-number">4</span>
+                <h2>該選哪一種？速查表</h2>
+            </div>
+            <div class="decision-grid">
+                <div class="decision-card pca-border">
+                    <div class="decision-icon">📐</div>
+                    <h3>PCA</h3>
+                    <div class="decision-when">
+                        <strong>✅ 適合使用：</strong>
+                        <ul>
+                            <li>需要快速<strong>降低特徵維度</strong>進行預處理</li>
+                            <li>資料呈<strong>線性</strong>關係</li>
+                            <li>想了解<strong>哪些特徵最重要</strong>（可解釋性）</li>
+                        </ul>
+                    </div>
+                    <div class="decision-avoid">
+                        <strong>❌ 避免使用：</strong>
+                        <ul>
+                            <li>資料有<strong>非線性</strong>複雜結構</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="decision-card tsne-border">
+                    <div class="decision-icon">🌐</div>
+                    <h3>t-SNE</h3>
+                    <div class="decision-when">
+                        <strong>✅ 適合使用：</strong>
+                        <ul>
+                            <li>主要目的是<strong>資料視覺化</strong></li>
+                            <li>想探索資料的<strong>群聚結構</strong></li>
+                            <li>資料有非線性複雜的流形結構</li>
+                        </ul>
+                    </div>
+                    <div class="decision-avoid">
+                        <strong>❌ 避免使用：</strong>
+                        <ul>
+                            <li>需要快速執行（計算慢）</li>
+                            <li>作為機器學習的<strong>特徵工程</strong>步驟</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="decision-card lda-border">
+                    <div class="decision-icon">🎯</div>
+                    <h3>LDA</h3>
+                    <div class="decision-when">
+                        <strong>✅ 適合使用：</strong>
+                        <ul>
+                            <li>資料有<strong>類別標籤</strong></li>
+                            <li>目標是<strong>分類任務</strong>的預處理</li>
+                            <li>希望降維後<strong>保持類別可分性</strong></li>
+                        </ul>
+                    </div>
+                    <div class="decision-avoid">
+                        <strong>❌ 避免使用：</strong>
+                        <ul>
+                            <li>沒有類別標籤（非監督場景）</li>
+                            <li>類別數 C 很少（維度上限為 C−1）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 判斷流程圖 -->
+            <div class="flowchart-card">
+                <h3>🧭 快速判斷流程</h3>
+                <div class="flowchart">
+                    <div class="fc-node fc-question">你的目的是什麼？</div>
+                    <div class="fc-branches fc-branches-3">
+                        <div class="fc-branch">
+                            <div class="fc-label goal-label">👁️ 視覺化探索</div>
+                            <div class="fc-arrow">↓</div>
+                            <div class="fc-node fc-answer tsne-answer">t-SNE</div>
+                        </div>
+                        <div class="fc-branch">
+                            <div class="fc-label goal-label">⚙️ 預處理 / 特徵工程</div>
+                            <div class="fc-arrow">↓</div>
+                            <div class="fc-node fc-answer pca-answer">PCA</div>
+                        </div>
+                        <div class="fc-branch">
+                            <div class="fc-label goal-label">🎯 分類任務降維</div>
+                            <div class="fc-arrow">↓</div>
+                            <div class="fc-node fc-answer lda-answer">LDA</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 解釋變異量與累積重要性 -->
+            <div class="variance-card" id="varianceCard" style="display:none;">
+                <h3>📈 PCA 解釋變異量</h3>
+                <canvas id="varianceCanvas" width="860" height="180"></canvas>
+                <p id="varianceNote" class="variance-note"></p>
+            </div>
+        </section>
+
+        <!-- ============================
+             第五步：注意事項
+             ============================ -->
+        <section class="step-section">
+            <div class="step-header">
+                <span class="step-number">5</span>
+                <h2>常見陷阱與注意事項</h2>
+            </div>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon">⚠️</div>
+                    <h4>先縮放，再降維</h4>
+                    <p>PCA 對數值尺度敏感。若特徵量綱差異大（如身高 cm vs 年收入萬元），
+                        <strong>必須先做特徵縮放（Z-Score）</strong>，否則數值大的特徵會主導主成分。
+                    </p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">🔒</div>
+                    <h4>資料洩漏</h4>
+                    <p>PCA/LDA 必須<strong>只在訓練集上 fit（學習轉換矩陣）</strong>，再用相同的轉換應用到測試集。
+                        若使用全部資料 fit，會洩漏測試集資訊。</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">🎲</div>
+                    <h4>t-SNE 的隨機性</h4>
+                    <p>t-SNE 每次執行結果可能不同（受初始點影響）。實驗時請設置 <code>random_state</code> 固定種子，
+                        且<strong>不同執行結果間的座標位置無法直接比較</strong>。</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">📏</div>
+                    <h4>保留多少維度？</h4>
+                    <p>PCA 可透過<strong>累積解釋變異量</strong>決定保留幾個主成分（通常保留到累積 80%~95%）。
+                        沒有固定答案，需要根據任務和效能評估。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+            <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Scaling 特徵縮放互動教學</title>
+    <meta name="description" content="透過互動式視覺化學習特徵縮放的概念，包含 Min-Max、Z-Score、MaxAbs 三種方法">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頁首區塊 -->
+        <header class="header">
+            <h1>📏 Feature Scaling 特徵縮放</h1>
+            <p class="subtitle">互動式機器學習基礎教學</p>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <!-- 左側：視覺化區域 -->
+            <section class="visualization-section">
+                <!-- 資料輸入區域 -->
+                <div class="input-container card">
+                    <h3>📝 輸入資料集</h3>
+                    <div class="dataset-selector">
+                        <label class="label-text">選擇範例資料集：</label>
+                        <select id="datasetSelect" class="func-select">
+                            <option value="housing">🏠 房屋資料（坪數、屋齡、房間數）</option>
+                            <option value="student">📚 學生成績（數學、英語、體育）</option>
+                            <option value="health">💪 健康指標（身高、體重、血壓）</option>
+                            <option value="custom">✏️ 自訂資料</option>
+                        </select>
+                    </div>
+                    <!-- 自訂資料輸入 -->
+                    <div class="custom-input-area" id="customInputArea" style="display: none;">
+                        <label class="label-text">輸入數值（以逗號分隔）：</label>
+                        <div class="custom-input-group">
+                            <input type="text" id="feature1Name" placeholder="特徵1名稱" value="特徵A" class="name-input">
+                            <input type="text" id="feature1Values" placeholder="例如：10, 20, 30, 40" class="value-input">
+                        </div>
+                        <div class="custom-input-group">
+                            <input type="text" id="feature2Name" placeholder="特徵2名稱" value="特徵B" class="name-input">
+                            <input type="text" id="feature2Values" placeholder="例如：100, 200, 300, 400"
+                                class="value-input">
+                        </div>
+                        <div class="custom-input-group">
+                            <input type="text" id="feature3Name" placeholder="特徵3名稱" value="特徵C" class="name-input">
+                            <input type="text" id="feature3Values" placeholder="例如：1, 2, 3, 4" class="value-input">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button id="scaleBtn" class="btn-primary">📊 執行特徵縮放</button>
+                        <button id="clearBtn" class="btn-reset">🗑️ 清除</button>
+                    </div>
+                </div>
+
+                <!-- Canvas 視覺化長條圖 -->
+                <div class="result-container card" id="chartCard">
+                    <h3>🎯 縮放前後對比圖</h3>
+                    <div class="chart-tabs">
+                        <button class="chart-tab active" data-chart="original">原始資料</button>
+                        <button class="chart-tab" data-chart="minmax">Min-Max</button>
+                        <button class="chart-tab" data-chart="zscore">Z-Score</button>
+                        <button class="chart-tab" data-chart="maxabs">MaxAbs</button>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <canvas id="scalingCanvas" width="700" height="350"></canvas>
+                    </div>
+                    <div class="canvas-legend" id="chartLegend"></div>
+                </div>
+
+                <!-- 縮放結果表格 -->
+                <div class="data-table-container card" id="resultCard">
+                    <h3>📊 縮放結果比較</h3>
+                    <div class="result-tabs">
+                        <button class="result-tab active" data-result="original">原始資料</button>
+                        <button class="result-tab" data-result="minmax">Min-Max</button>
+                        <button class="result-tab" data-result="zscore">Z-Score</button>
+                        <button class="result-tab" data-result="maxabs">MaxAbs</button>
+                    </div>
+                    <div class="table-wrapper" id="resultTable">
+                        <div class="placeholder-text">選擇資料集後點擊「執行特徵縮放」</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右側：控制面板與公式 -->
+            <aside class="control-section">
+                <!-- 數學公式面板 -->
+                <div class="card formula-panel">
+                    <h3>📐 數學公式</h3>
+
+                    <!-- Min-Max Scaling -->
+                    <div class="formula-group">
+                        <h4 class="formula-title minmax-color">Min-Max Scaling</h4>
+                        <div class="formula-box">
+                            <div class="formula">
+                                X' = (X − X<sub>min</sub>) / (X<sub>max</sub> − X<sub>min</sub>)
+                            </div>
+                        </div>
+                        <p class="formula-desc">將數據線性縮放至 <strong>[0, 1]</strong> 範圍</p>
+                    </div>
+
+                    <!-- Z-Score Standardization -->
+                    <div class="formula-group">
+                        <h4 class="formula-title zscore-color">Z-Score 標準化</h4>
+                        <div class="formula-box">
+                            <div class="formula">
+                                X' = (X − μ) / σ
+                            </div>
+                        </div>
+                        <p class="formula-desc">μ = 平均值，σ = 標準差，結果分佈近似 N(0,1)</p>
+                    </div>
+
+                    <!-- MaxAbs Scaling -->
+                    <div class="formula-group">
+                        <h4 class="formula-title maxabs-color">MaxAbs Scaling</h4>
+                        <div class="formula-box">
+                            <div class="formula">
+                                X' = X / |X<sub>max</sub>|
+                            </div>
+                        </div>
+                        <p class="formula-desc">將數據縮放至 <strong>[-1, 1]</strong> 範圍</p>
+                    </div>
+                </div>
+
+                <!-- 統計資訊面板 -->
+                <div class="card value-panel">
+                    <h3>📊 統計資訊</h3>
+                    <div id="statsDisplay" class="stats-display">
+                        <div class="placeholder-text">執行縮放後顯示統計數據</div>
+                    </div>
+                </div>
+
+                <!-- 方法比較面板 -->
+                <div class="card compare-panel">
+                    <h3>⚖️ 方法選擇指南</h3>
+                    <div class="method-guide">
+                        <div class="guide-item">
+                            <span class="guide-dot minmax-bg"></span>
+                            <div>
+                                <strong>Min-Max</strong>
+                                <p>已知資料範圍、需要固定區間時使用</p>
+                            </div>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-dot zscore-bg"></span>
+                            <div>
+                                <strong>Z-Score</strong>
+                                <p>資料近似常態分佈、有離群值時使用</p>
+                            </div>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-dot maxabs-bg"></span>
+                            <div>
+                                <strong>MaxAbs</strong>
+                                <p>需要保留零值、稀疏矩陣時使用</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 下方：教學說明區 -->
+        <section class="info-section">
+            <div class="info-grid">
+                <!-- 什麼是特徵縮放 -->
+                <div class="card info-card">
+                    <h3>🧠 什麼是特徵縮放？</h3>
+                    <p>特徵縮放是將不同<strong>量綱的特徵</strong>轉換至相同尺度的預處理技術。</p>
+                    <p>例如：身高（公分）v.s. 體重（公斤），數值差異大，直接使用會影響模型學習。</p>
+                </div>
+
+                <!-- 為什麼需要 -->
+                <div class="card compare-card">
+                    <h3>⚡ 為什麼需要？</h3>
+                    <ul class="compare-list">
+                        <li>避免<strong>數值大的特徵</strong>主導模型學習</li>
+                        <li>加速<strong>梯度下降</strong>的收斂速度</li>
+                        <li>讓 KNN、SVM 等<strong>距離敏感</strong>的模型更準確</li>
+                    </ul>
+                </div>
+
+                <!-- 核心概念 -->
+                <div class="card gradient-card">
+                    <h3>📊 哪些模型需要？</h3>
+                    <p><strong>需要</strong>：KNN、SVM、線性回歸、神經網路、K-Means</p>
+                    <p><strong>不需要</strong>：決策樹、隨機森林、XGBoost</p>
+                </div>
+
+                <!-- 注意事項 -->
+                <div class="card tips-card">
+                    <h3>💡 注意事項</h3>
+                    <ul class="tips-list">
+                        <li>先分割訓練集再做縮放，避免<strong>資料洩漏</strong></li>
+                        <li>測試集必須使用<strong>訓練集的參數</strong>進行縮放</li>
+                        <li>有<strong>離群值</strong>時優先考慮 Z-Score 或 RobustScaler</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 互動演示區 -->
+        <section class="animation-section">
+            <div class="card animation-card">
+                <h3>🎬 特徵縮放概念演示</h3>
+                <div class="demo-container">
+                    <!-- 直覺比喻 -->
+                    <div class="analogy-demo">
+                        <h4>📐 直覺理解：不同單位的困擾</h4>
+                        <p class="demo-description">想像你要比較「<strong>身高</strong>」和「<strong>體重</strong>」：</p>
+                        <div class="analogy-visual">
+                            <div class="analogy-item">
+                                <div class="scale-example">
+                                    <span class="scale-label before">縮放前</span>
+                                    <div class="scale-bars">
+                                        <div class="scale-bar height-bar">
+                                            <span class="bar-value">170 cm</span>
+                                        </div>
+                                        <div class="scale-bar weight-bar">
+                                            <span class="bar-value">65 kg</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="analogy-op">→</span>
+                                <div class="scale-example">
+                                    <span class="scale-label after">縮放後</span>
+                                    <div class="scale-bars">
+                                        <div class="scale-bar height-bar-scaled">
+                                            <span class="bar-value">0.70</span>
+                                        </div>
+                                        <div class="scale-bar weight-bar-scaled">
+                                            <span class="bar-value">0.65</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="analogy-explanation">
+                            <p>身高 170cm 和體重 65kg <strong>數值差異極大</strong>，模型容易被身高主導。</p>
+                            <p>縮放後都在 <strong>0~1 之間</strong>，模型可以公平地學習兩個特徵！</p>
+                        </div>
+                    </div>
+
+                    <!-- 三種方法比較 -->
+                    <div class="comparison-demo">
+                        <h4>🔄 三種縮放方法視覺化比較</h4>
+                        <div class="comparison-grid">
+                            <div class="comparison-item">
+                                <h5>Min-Max Scaling</h5>
+                                <div class="method-visual">
+                                    <div class="number-line">
+                                        <span class="nl-label">0</span>
+                                        <div class="nl-bar minmax-bar"></div>
+                                        <span class="nl-label">1</span>
+                                    </div>
+                                </div>
+                                <p class="comparison-note">✅ 固定範圍 [0, 1]，直覺好理解</p>
+                            </div>
+                            <div class="comparison-item">
+                                <h5>Z-Score 標準化</h5>
+                                <div class="method-visual">
+                                    <div class="number-line">
+                                        <span class="nl-label">-3σ</span>
+                                        <div class="nl-bar zscore-bar"></div>
+                                        <span class="nl-label">+3σ</span>
+                                    </div>
+                                </div>
+                                <p class="comparison-note">✅ 均值為 0、標準差為 1</p>
+                            </div>
+                            <div class="comparison-item">
+                                <h5>MaxAbs Scaling</h5>
+                                <div class="method-visual">
+                                    <div class="number-line">
+                                        <span class="nl-label">-1</span>
+                                        <div class="nl-bar maxabs-bar"></div>
+                                        <span class="nl-label">1</span>
+                                    </div>
+                                </div>
+                                <p class="comparison-note">✅ 保留零值特性，適合稀疏資料</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>🎓 高雄市立楠梓高中互動式機器學習教學平台</p>
+            <a href="../index.html" class="back-home">🏠 返回主畫面</a>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
