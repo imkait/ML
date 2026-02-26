@@ -114,7 +114,7 @@
                                 X' = (X − μ) / σ
                             </div>
                         </div>
-                        <p class="formula-desc">μ = 平均值，σ = 標準差，結果分佈近似 N(0,1)</p>
+                        <p class="formula-desc">μ = 平均值，σ = 標準差，結果分佈近似標準常態分佈（均值為0，標準差為1）</p>
                     </div>
 
                     <!-- MaxAbs Scaling -->
@@ -200,7 +200,7 @@
                     <ul class="tips-list">
                         <li>先分割訓練集再做縮放，避免<strong>資料洩漏</strong></li>
                         <li>測試集必須使用<strong>訓練集的參數</strong>進行縮放</li>
-                        <li>有<strong>離群值</strong>時優先考慮 Z-Score 或 RobustScaler</li>
+                        <li>有<strong>離群值</strong>時優先考慮 Z-Score</li>
                     </ul>
                 </div>
             </div>

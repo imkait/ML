@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高雄市立楠梓高中機器學習互動教學平台</title>
+    <title>高雄市立楠梓高中AI人工智慧互動教學平台</title>
     <meta name="description" content="透過互動式視覺化學習各種機器學習演算法，包含 KNN、線性回歸、邏輯回歸、決策樹、SVM、K-Means 等主題">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -411,6 +411,10 @@
             --card-accent: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
         }
 
+        .course-card.l1l2 {
+            --card-accent: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
         .course-card.rl {
             --card-accent: linear-gradient(135deg, #fcd34d 0%, #f59e0b 100%);
         }
@@ -702,6 +706,23 @@
                         <div class="card-tags">
                             <span class="tag">基礎概念</span>
                             <span class="tag">模型評估</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- 正規化 (L1/L2) -->
+                <a href="L1L2/index.html" class="course-card l1l2">
+                    <div class="card-content">
+                        <span class="card-icon">🛡️</span>
+                        <h2 class="card-title">正規化 (L1/L2)</h2>
+                        <p class="card-subtitle">透過懲罰項抑制模型複雜度，解決過擬合問題</p>
+                        <div class="card-tags">
+                            <span class="tag">基礎概念</span>
+                            <span class="tag">正規化</span>
                         </div>
                         <div class="card-arrow">
                             <span>開始學習</span>
