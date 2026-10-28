@@ -3,7 +3,7 @@
  * 
  * 設計理念：步驟式教學
  * 1. 使用者選擇資料集 → 顯示原始資料
- * 2. 點擊「開始編碼」→ 三種方法的結果同時展開
+ * 2. 點擊「開始編碼」→ 五種方法的結果同時展開
  * 3. 每種方法獨立區塊，方便比較
  */
 
@@ -18,6 +18,8 @@ const DATASETS = {
         name: '水果資料',
         features: ['顏色', '大小', '種類'],
         ordinalOrder: { '大小': ['小', '中', '大'] },
+        targetName: '價格',
+        targets: [30, 15, 50, 40, 60, 20],
         data: [
             ['紅', '大', '蘋果'],
             ['黃', '中', '香蕉'],
@@ -31,6 +33,8 @@ const DATASETS = {
         name: '學生資料',
         features: ['性別', '學歷', '血型'],
         ordinalOrder: { '學歷': ['國中', '高中', '大學', '碩士'] },
+        targetName: '成績',
+        targets: [70, 85, 90, 75, 82, 65],
         data: [
             ['男', '高中', 'A'],
             ['女', '大學', 'B'],
@@ -44,6 +48,8 @@ const DATASETS = {
         name: '天氣資料',
         features: ['天氣', '風向', '季節'],
         ordinalOrder: { '季節': ['春', '夏', '秋', '冬'] },
+        targetName: '戶外活動分數',
+        targets: [90, 20, 60, 85, 25, 70],
         data: [
             ['晴', '東', '春'],
             ['雨', '南', '夏'],
@@ -95,17 +101,18 @@ function executeEncoding() {
     // ① 渲染原始資料表格
     renderOriginalTable(dataset);
 
-    // ② 計算三種編碼結果
+    // ② 依欄位準備各種編碼的輸入
     const featureCols = [];
     for (let j = 0; j < dataset.features.length; j++) {
         featureCols.push(dataset.data.map(row => row[j]));
     }
 
-    // ③ 渲染四種方法的結果表格
+    // ③ 渲染五種方法的結果表格
     renderLabelResult(dataset, featureCols);
     renderOneHotResult(dataset, featureCols);
     renderOrdinalResult(dataset, featureCols);
     renderFrequencyResult(dataset, featureCols);
+    renderTargetResult(dataset, featureCols);
 
     // ④ 顯示結果區塊（帶平滑捲動）
     const resultSection = document.getElementById('resultsSection');
@@ -167,7 +174,18 @@ function getCustomDataset() {
             data.push(columns.map(c => c[r]));
         }
 
-        return { name: '自訂資料', features, ordinalOrder: {}, data };
+        const targetText = document.getElementById('targetValues').value.trim();
+        let targets = null;
+        if (targetText) {
+            const entries = targetText.split(',').map(v => v.trim());
+            targets = entries.map(Number);
+            if (targets.length !== len || entries.some(v => !v) || targets.some(v => !Number.isFinite(v))) {
+                alert('目標值 y 必須是與資料筆數相同的有限數字，並以逗號分隔。');
+                return null;
+            }
+        }
+
+        return { name: '自訂資料', features, ordinalOrder: {}, data, targetName: '目標值 y', targets };
     } catch (err) {
         alert('資料格式錯誤：' + err.message);
         return null;
@@ -175,7 +193,7 @@ function getCustomDataset() {
 }
 
 // ===========================
-// 三種編碼演算法
+// 編碼演算法
 // ===========================
 
 /**
@@ -273,6 +291,21 @@ function frequencyEncode(col) {
     };
 }
 
+/**
+ * 目標編碼：同一類別對應目標值的平均。僅用於教學表格，訓練時需採用 out-of-fold 等方式避免目標洩漏。
+ */
+function targetEncode(col, targets) {
+    const sums = Object.create(null);
+    const counts = Object.create(null);
+    col.forEach((value, i) => {
+        sums[value] = (sums[value] || 0) + targets[i];
+        counts[value] = (counts[value] || 0) + 1;
+    });
+    const mapping = Object.create(null);
+    Object.keys(sums).forEach(value => { mapping[value] = sums[value] / counts[value]; });
+    return { encoded: col.map(value => mapping[value]), mapping };
+}
+
 // ===========================
 // 渲染函數
 // ===========================
@@ -287,11 +320,13 @@ function renderOriginalTable(dataset) {
     dataset.features.forEach((f, i) => {
         html += `<th class="feature-${i + 1}">${esc(f)}</th>`;
     });
+    if (dataset.targets) html += `<th>${esc(dataset.targetName)}</th>`;
     html += '</tr></thead><tbody>';
 
     dataset.data.forEach((row, i) => {
         html += `<tr><td>#${i + 1}</td>`;
         row.forEach(v => { html += `<td>${esc(v)}</td>`; });
+        if (dataset.targets) html += `<td>${dataset.targets[i]}</td>`;
         html += '</tr>';
     });
 
@@ -473,6 +508,29 @@ function renderFrequencyResult(dataset, featureCols) {
     container.innerHTML = html;
 }
 
+/** 顯示每個特徵對目標值的平均編碼。 */
+function renderTargetResult(dataset, featureCols) {
+    const container = document.getElementById('targetTable');
+    if (!dataset.targets) {
+        container.innerHTML = '<div class="placeholder-text">自訂資料需輸入目標值 y，才能計算目標編碼。</div>';
+        return;
+    }
+
+    const results = featureCols.map(col => targetEncode(col, dataset.targets));
+    let html = `<p class="custom-hint">示意：直接用全部資料計算類別平均。實際訓練須只從訓練集學習，訓練列宜使用 out-of-fold 編碼避免目標洩漏。</p>`;
+    html += `<table class="data-table"><thead><tr><th>樣本</th><th>${esc(dataset.targetName)}</th>`;
+    dataset.features.forEach(feature => { html += `<th>${esc(feature)} → 平均 ${esc(dataset.targetName)}</th>`; });
+    html += '</tr></thead><tbody>';
+    dataset.data.forEach((row, i) => {
+        html += `<tr><td>#${i + 1}</td><td>${dataset.targets[i]}</td>`;
+        results.forEach((result, j) => {
+            html += `<td>${esc(row[j])} → <strong style="color:var(--color-target)">${Number(result.encoded[i].toFixed(2))}</strong></td>`;
+        });
+        html += '</tr>';
+    });
+    container.innerHTML = html + '</tbody></table>';
+}
+
 // ===========================
 // 工具函數
 // ===========================
@@ -490,6 +548,8 @@ function clearAll() {
     document.getElementById('onehotTable').innerHTML = '';
     document.getElementById('ordinalTable').innerHTML = '';
     document.getElementById('freqTable').innerHTML = '';
+    document.getElementById('targetTable').innerHTML = '';
+    document.getElementById('targetValues').value = '';
 }
 
 /**

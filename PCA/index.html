@@ -4,43 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>主成分分析 (PCA) - 互動教學</title>
-    <meta name="description" content="互動式主成分分析 (PCA) 教學，視覺化投影、變異數與降維概念。">
+    <title>3D 主成分分析 (PCA) - 互動教學與視覺化</title>
+    <meta name="description" content="互動式 3D 主成分分析 (PCA) 教學，使用 Three.js 視覺化 3D 數據投影、共變異數與降維概念。">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- 引入 Three.js 與 OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 
 <body>
     <div class="container">
         <!-- 頁首區塊 -->
         <header class="header">
-            <h1>📊 主成份分析 (PCA)</h1>
-            <p class="subtitle">尋找數據中的「最大變異方向」與「最佳投影視角」</p>
+            <h1>📊 3D 主成分分析 (PCA) 互動視覺化</h1>
+            <p class="subtitle">在 3D 空間中探索數據的「最大變異方向」與「投影降維」物理意義</p>
         </header>
 
         <!-- 主要內容區 -->
         <main class="main-content">
             <!-- 左側：視覺化區域 -->
             <section class="visualization-section">
-                <!-- 畫布：PCA 投影 -->
-                <div class="canvas-container">
-                    <canvas id="pcaCanvas" width="500" height="500"></canvas>
+                <!-- Three.js 渲染容器 -->
+                <div class="canvas-container" id="canvasContainer">
+                    <!-- 3D Scene will be mounted here -->
+                    <div class="canvas-tooltip">🖱️ 拖拽以旋轉視角 | 滾輪縮放 | 右鍵平移</div>
                 </div>
 
                 <!-- 統計數據 -->
                 <div class="stats-panel">
                     <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-label">Current Variance</div>
-                            <div class="stat-value" id="valVariance">0</div>
+                        <div class="stat-card" id="cardPC1">
+                            <div class="stat-label text-success">第一主成分 (PC1)</div>
+                            <div class="stat-value text-success" id="valPC1">0%</div>
+                            <div class="stat-sub" id="eigenPC1">特徵值: 0</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Max Variance (PC1)</div>
-                            <div class="stat-value" id="valMaxVariance">0</div>
+                        <div class="stat-card" id="cardPC2">
+                            <div class="stat-label text-primary">第二主成分 (PC2)</div>
+                            <div class="stat-value text-primary" id="valPC2">0%</div>
+                            <div class="stat-sub" id="eigenPC2">特徵值: 0</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Explained Ratio</div>
-                            <div class="stat-value" id="valExplained">0%</div>
+                        <div class="stat-card" id="cardPC3">
+                            <div class="stat-label text-accent">第三主成分 (PC3)</div>
+                            <div class="stat-value text-accent" id="valPC3">0%</div>
+                            <div class="stat-sub" id="eigenPC3">特徵值: 0</div>
                         </div>
                     </div>
                 </div>
@@ -50,22 +57,34 @@
             <aside class="control-section">
                 <!-- 數據生成控制 -->
                 <div class="control-panel">
-                    <h3>🎲 數據參數</h3>
+                    <h3>🎲 3D 數據生成參數</h3>
                     <br>
                     <div class="control-item">
-                        <div class="control-label">
-                            <span>相關性 (Correlation)</span>
-                            <span id="corrValue">0.8</span>
-                        </div>
-                        <input type="range" id="corrSlider" min="0" max="95" value="80">
+                        <label class="control-label" for="distSelect">
+                            <span>數據分佈類型 (Distribution)</span>
+                        </label>
+                        <select id="distSelect" class="form-select">
+                            <option value="cigar">拉長線狀 (Cigar-shaped / PC1 強顯著)</option>
+                            <option value="pancake" selected>扁平盤狀 (Pancake-shaped / 2D 平面)</option>
+                            <option value="spherical">均勻球狀 (Spherical / 各向同性)</option>
+                            <option value="helix">非線性螺旋 (Helix / PCA 局限性展示)</option>
+                        </select>
                     </div>
 
                     <div class="control-item">
                         <div class="control-label">
-                            <span>雜訊 (Noise)</span>
-                            <span id="noiseValue">20</span>
+                            <span>數據點數量 (Points)</span>
+                            <span id="pointCountValue">150</span>
                         </div>
-                        <input type="range" id="noiseSlider" min="5" max="50" value="20">
+                        <input type="range" id="pointCountSlider" min="50" max="300" step="10" value="150">
+                    </div>
+
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span>雜訊大小 (Noise)</span>
+                            <span id="noiseValue">15</span>
+                        </div>
+                        <input type="range" id="noiseSlider" min="0" max="50" value="15">
                     </div>
 
                     <button id="btnRegenerate" class="btn btn-secondary" style="width: 100%">
@@ -73,42 +92,48 @@
                     </button>
                 </div>
 
-                <!-- 投影控制 -->
+                <!-- 投影與降維動畫控制 -->
                 <div class="control-panel">
-                    <h3>📐 投影控制</h3>
+                    <h3>📐 投影與降維控制</h3>
                     <br>
                     <div class="control-item">
-                        <div class="control-label">
-                            <span>旋轉角度 (Angle)</span>
-                            <span id="angleValue">0°</span>
+                        <label class="control-label">
+                            <span>當前投影目標狀態</span>
+                        </label>
+                        <div class="btn-group">
+                            <button id="btnState3D" class="btn btn-tab active">3D 空間</button>
+                            <button id="btnState2D" class="btn btn-tab">2D 平面 (PC1+PC2)</button>
+                            <button id="btnState1D" class="btn btn-tab">1D 軸線 (PC1)</button>
                         </div>
-                        <input type="range" id="angleSlider" min="0" max="180" value="0">
                     </div>
 
                     <div class="control-item">
                         <label class="checkbox-wrapper">
-                            <input type="checkbox" id="showPC">
-                            <span>顯示主成分 (Show PC1/PC2)</span>
+                            <input type="checkbox" id="showPCAxes" checked>
+                            <span>顯示主成分方向軸 (PC1 / PC2 / PC3)</span>
+                        </label>
+                    </div>
+
+                    <div class="control-item">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="showPCPlane" checked>
+                            <span>顯示主成分投影平面 (PC1-PC2 平面)</span>
                         </label>
                     </div>
 
                     <div class="control-item">
                         <label class="checkbox-wrapper">
                             <input type="checkbox" id="showProjections" checked>
-                            <span>顯示投影點 (Projections)</span>
+                            <span>顯示投影點 (Projected Points)</span>
                         </label>
                     </div>
 
                     <div class="control-item">
                         <label class="checkbox-wrapper">
                             <input type="checkbox" id="showErrors" checked>
-                            <span>顯示誤差線 (Errors)</span>
+                            <span>顯示誤差線 (Reconstruction Errors)</span>
                         </label>
                     </div>
-
-                    <button id="btnOptimize" class="btn btn-primary" style="width: 100%">
-                        ✨ 自動對齊最佳解 (Find PC1)
-                    </button>
                 </div>
             </aside>
         </main>
@@ -118,34 +143,57 @@
             <div class="info-grid">
                 <!-- 概念 -->
                 <div class="info-card">
-                    <h3>💡 什麼是 PCA？</h3>
+                    <h3>💡 什麼是 3D PCA？</h3>
                     <p><strong>主成分分析 (Principal Component Analysis)</strong>
-                        是一種降維技術。它的目標是找到一個新的座標系，讓數據在新的座標軸上<strong>變異數 (Variance) 最大</strong>。</p>
+                        是一種高維數據降維技術。當數據分佈在 3D 空間時，PCA 可以找出三個互相垂直的座標軸 (<span class="text-success">PC1</span>, <span class="text-primary">PC2</span>, <span class="text-accent">PC3</span>)，使得數據點在這些新軸上的<strong>投影變異數 (Variance) 依序最大</strong>。</p>
                     <ul class="info-list">
-                        <li><strong>降維</strong>：把高維數據壓扁到低維，但保留最多資訊。</li>
-                        <li><strong>去關聯</strong>：新座標軸之間彼此垂直 (無相關性)。</li>
+                        <li><strong class="text-success">PC1 (第一主成分)</strong>：數據散佈最廣的「主延伸軸」，變異數最大。</li>
+                        <li><strong class="text-primary">PC2 (第二主成分)</strong>：與 <strong class="text-success">PC1</strong> 垂直，且在該平面內變異數次大的軸。</li>
+                        <li><strong class="text-accent">PC3 (第三主成分)</strong>：與 <strong class="text-success">PC1</strong>, <strong class="text-primary">PC2</strong> 同時垂直的軸，通常代表最無關緊要的「厚度」或雜訊。</li>
                     </ul>
                 </div>
 
-                <!-- 關鍵名詞 -->
+                <!-- 降維與投影 -->
                 <div class="info-card">
-                    <h3>🔑 關鍵名詞</h3>
+                    <h3>📐 3D 投影與降維原理</h3>
+                    <p>利用主成分分析，我們可以將 3D 的數據「壓縮」成 2D 或 1D，而只流失最少量的資訊：</p>
                     <ul class="info-list">
-                        <li><strong class="text-primary">投影 (Projection)</strong>：數據點垂直投射到軸上的位置。</li>
-                        <li><strong class="text-primary">變異數 (Variance)</strong>：投影點的分散程度。分散越廣，代表保留資訊越多。</li>
-                        <li><strong class="text-accent">誤差 (Reconstruction Error)</strong>：原始點到投影軸的距離。PCA
-                            試圖<strong>最小化</strong>這個距離。</li>
+                        <li><strong>降維至 2D 平面</strong>：捨棄 <strong class="text-accent">PC3</strong> 軸，將所有數據垂直投影至由 <strong class="text-success">PC1</strong> 與 <strong class="text-primary">PC2</strong> 構成的超平面上。此時，數據點到平面的垂直距離即為<strong>重建誤差 (Reconstruction Error)</strong>。</li>
+                        <li><strong>降維至 1D 軸線</strong>：同時捨棄 <strong class="text-primary">PC2</strong> 與 <strong class="text-accent">PC3</strong>，只保留 <strong class="text-success">PC1</strong>。這是最大程度的壓縮。</li>
+                        <li><strong>解釋變異數比例 (Explained Variance Ratio)</strong>：特徵值佔總特徵值和的比例，表示該主成分解釋了多少原始資料的總變異；不等同於任務所需資訊。</li>
                     </ul>
                 </div>
 
-                <!-- 主成分 -->
+                <!-- 局限性 -->
                 <div class="info-card">
-                    <h3>🎯 主成分 (Principal Components)</h3>
+                    <h3>⚠️ PCA 的線性局限性</h3>
+                    <p>PCA 是一種<strong>線性降維方法</strong>，當面對呈現彎曲或扭曲特徵的非線性結構（如「螺旋線」數據）時，其效果會打折扣：</p>
                     <ul class="info-list">
-                        <li><strong>PC1 (第一主成分)</strong>：變異數最大的方向 (最長軸)。</li>
-                        <li><strong>PC2 (第二主成分)</strong>：與 PC1 垂直，變異數次大的方向。</li>
-                        <li><strong>特徵值 (Eigenvalue)</strong>：代表該主成分方向的變異數大小。</li>
+                        <li><strong>非線性數據</strong>：對於螺旋狀數據，即便降維到 PC1-PC2 平面，仍會因為「強制線性投影」而使螺旋的序列關係被混淆。</li>
+                        <li><strong>解決方案</strong>：遇到這類數據時，通常需要使用非線性降維技術（如 Kernel PCA, t-SNE, UMAP 或流形學習）。</li>
                     </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 教學影片區 -->
+        <section class="video-section">
+            <h2>🎥 推薦教學影片</h2>
+            <div class="video-card">
+                <div class="video-container">
+                    <iframe
+                        width="560"
+                        height="315"
+                        src="https://www.youtube.com/embed/FI0H_HStNJU"
+                        title="PCA Tutorial"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="video-description">
+                    <h3>主成分分析 (PCA) 教學</h3>
+                    <p>透過這部影片深入了解 PCA 的核心概念、降維原理與實際應用。本教學展示如何利用主成分分析將高維數據轉換到低維空間，同時保留數據中最重要的變異資訊。</p>
                 </div>
             </div>
         </section>

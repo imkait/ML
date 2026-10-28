@@ -13,6 +13,8 @@
     --color-ordinal: #a78bfa;
     --color-freq: #34d399;
     /* emerald 綠色 */
+    --color-target: #f59e0b;
+    /* amber 琥珀色 — Target Encoding */
 
     /* 背景與表面 */
     --bg-gradient-start: #0f172a;
@@ -491,6 +493,11 @@ body {
     border-bottom: 2px solid var(--color-freq);
 }
 
+.method-header.target-theme {
+    background: rgba(245, 158, 11, 0.08);
+    border-bottom: 2px solid var(--color-target);
+}
+
 .method-badge {
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
@@ -514,6 +521,10 @@ body {
 
 .freq-bg {
     background: var(--color-freq);
+}
+
+.target-bg {
+    background: var(--color-target);
 }
 
 .method-header h3 {
@@ -586,6 +597,10 @@ body {
     border-left-color: var(--color-freq);
 }
 
+.method-example-box.target-border {
+    border-left-color: var(--color-target);
+}
+
 .example-title {
     font-size: 0.8rem;
     font-weight: 600;
@@ -644,6 +659,11 @@ body {
 .freq-num {
     background: rgba(52, 211, 153, 0.15);
     color: var(--color-freq);
+}
+
+.target-num {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--color-target);
 }
 
 /* One-Hot 範例表格 */
@@ -759,6 +779,11 @@ body {
     grid-template-columns: repeat(4, 1fr);
 }
 
+/* 速查表五欄 */
+.decision-grid-5 {
+    grid-template-columns: repeat(5, 1fr);
+}
+
 .decision-card {
     background: var(--surface);
     border-radius: var(--radius);
@@ -781,6 +806,10 @@ body {
 
 .decision-card.freq-border {
     border-top-color: var(--color-freq);
+}
+
+.decision-card.target-border {
+    border-top-color: var(--color-target);
 }
 
 .decision-icon {
@@ -898,6 +927,10 @@ body {
     background: var(--color-freq);
 }
 
+.target-answer {
+    background: var(--color-target);
+}
+
 .fc-branches {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -978,6 +1011,99 @@ body {
     color: var(--color-freq);
     font-weight: 700;
     background: rgba(52, 211, 153, 0.1);
+}
+
+/* ===========================
+   Target Encoding 專屬元件
+   =========================== */
+
+/* Target 範例表格的目標編碼値欄 */
+.mini-table td.target-val {
+    color: var(--color-target);
+    font-weight: 700;
+    background: rgba(245, 158, 11, 0.1);
+}
+
+/* Target Encoding 的目標值輸入區 */
+.target-input-section {
+    margin-top: 0.75rem;
+    padding: 0.85rem;
+    background: rgba(245, 158, 11, 0.06);
+    border: 1px dashed rgba(245, 158, 11, 0.3);
+    border-radius: var(--radius-sm);
+}
+
+.target-input-section label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-target);
+    margin-bottom: 0.5rem;
+}
+
+.target-input-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.target-input-row input {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.55rem 0.75rem;
+    background: var(--surface-light);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.target-input-row input:focus {
+    outline: none;
+    border-color: var(--color-target);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+.target-input-row input::placeholder {
+    color: var(--text-muted);
+}
+
+.btn-target {
+    padding: 0.55rem 1rem;
+    background: linear-gradient(135deg, var(--color-target), #d97706);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.btn-target:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+/* Target Encoding 的 warning/info 區塊 */
+.method-target-info {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.method-target-info p {
+    color: var(--text-secondary);
+    margin: 0;
 }
 
 /* ===========================
@@ -1074,7 +1200,8 @@ body {
     }
 
     .decision-grid,
-    .decision-grid-4 {
+    .decision-grid-4,
+    .decision-grid-5 {
         grid-template-columns: 1fr;
     }
 

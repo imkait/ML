@@ -162,10 +162,10 @@
                 <!-- Precision vs Recall -->
                 <div class="info-card">
                     <h3>⚖️ Precision 與 Recall 的權衡</h3>
-                    <p>通常這兩者是互斥的：</p>
+                    <p>調整分類閾值時，兩者常有取捨，但並非互斥，也不保證每次都一升一降：</p>
                     <ul class="info-list">
-                        <li><strong>提高閾值</strong>：模型更謹慎 ➝ Precision ⬆️，但 Recall ⬇️ (易漏報)。</li>
-                        <li><strong>降低閾值</strong>：模型更寬鬆 ➝ Recall ⬆️，但 Precision ⬇️ (易誤報)。</li>
+                        <li><strong>提高閾值</strong>：模型更謹慎 ➝ 通常 Precision 較高、Recall 較低（易漏報）。</li>
+                        <li><strong>降低閾值</strong>：模型更寬鬆 ➝ 通常 Recall 較高、Precision 較低（易誤報）。</li>
                     </ul>
                     <h3>⚠️ Accuracy 的陷阱</h3>
                     <p>當資料<strong>不平衡</strong>時（例如：癌症發生率僅 0.1%），Accuracy 可能會誤導我們。</p>
@@ -176,7 +176,7 @@
                 <div class="info-card">
                     <h3>💡 選擇合適的指標</h3>
                     <ul class="info-list">
-                        <li><strong>注重Recall</strong>：地震預警、癌症篩檢（寧可錯殺，不可放過）。</li>
+                        <li><strong>注重Recall</strong>：癌症篩檢等漏報代價高的情境（仍須評估誤報代價）。</li>
                         <li><strong>注重Precision</strong>：垃圾郵件過濾、指紋解鎖（不想被一直誤判打擾）。</li>
                         <li><strong>注重F1-Score</strong>：兩者的調和平均，適合追求平衡時。</li>
                     </ul>

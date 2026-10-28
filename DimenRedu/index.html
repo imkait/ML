@@ -82,7 +82,7 @@
                 <div class="use-case-card">
                     <div class="use-case-icon">🧹</div>
                     <h4>去除雜訊</h4>
-                    <p>過濾掉低方差、高相關的冗餘特徵，提升模型的泛化能力</p>
+                    <p>某些方法可減少冗餘資訊；是否提升泛化能力仍須用驗證資料確認</p>
                 </div>
             </div>
         </section>
@@ -139,7 +139,7 @@
                             <span class="idea-icon">💡</span>
                             <div>
                                 <strong>核心想法</strong>
-                                <p>找出資料中<strong>方差最大</strong>的方向（主成分），將資料投影到這些方向，保留最多資訊</p>
+                                <p>找出資料中<strong>方差最大</strong>的方向（主成分），將資料投影到這些方向，保留最多資料變異量</p>
                             </div>
                         </div>
                         <div class="method-example-box pca-border">
@@ -177,6 +177,7 @@
                 <div class="method-header tsne-theme">
                     <div class="method-badge tsne-bg">方法 2</div>
                     <h3>t-SNE — 非線性降維</h3>
+                    <p>下圖採用簡化版 t-SNE 與模擬資料，重點在觀察局部鄰近關係；群與群的距離不宜直接解讀。</p>
                 </div>
                 <div class="method-body">
                     <div class="method-explain">

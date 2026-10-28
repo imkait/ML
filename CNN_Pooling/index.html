@@ -77,7 +77,7 @@
                 <!-- 概念 -->
                 <div class="info-card">
                     <h3>💡 什麼是池化層？</h3>
-                    <p><strong>池化層 (Pooling Layer)</strong> 通常接在卷積層之後，用於降低特徵圖的維度（Downsampling），減少運算量並避免過度擬合
+                    <p><strong>池化層 (Pooling Layer)</strong> 通常接在卷積層之後，用於降低特徵圖的維度（Downsampling），減少後續運算量；有時也能降低過擬合風險
                         (Overfitting)。</p>
                     <ul class="info-list">
                         <li><strong>壓縮資訊</strong>：將小區域的像素合併為一個值。</li>
@@ -101,7 +101,7 @@
                     <p>計算池化視窗內所有數值的<strong>平均值</strong>作為輸出。</p>
                     <ul class="info-list">
                         <li><strong>特點</strong>：保留背景資訊，使圖像更平滑。</li>
-                        <li><strong>應用</strong>：較少使用，但在某些特定任務（如 Global Average Pooling）中很重要。</li>
+                        <li><strong>應用</strong>：可用於平滑特徵；全域平均池化也常用於網路末端。</li>
                     </ul>
                 </div>
             </div>

@@ -103,7 +103,7 @@
                     <p>卷積運算後的輸出結果稱為特徵圖。它代表了輸入圖像中某種特徵的分佈情況。</p>
                     <ul class="info-list">
                         <li><strong>尺寸變化</strong>：通常會比原圖略小（取決於 Kernel 大小與 Padding）。</li>
-                        <li><strong>激活</strong>：數值越高，代表該處的特徵越強烈。</li>
+                        <li><strong>激活</strong>：濾鏡響應的大小與正負都可能有意義；本頁為了顯示灰階，將負值截為 0，實際卷積層可保留負值。</li>
                     </ul>
                 </div>
 

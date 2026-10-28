@@ -141,7 +141,7 @@
                     <div class="formula-box primary">Penalty = &sum; w<sub>i</sub><sup>2</sup></div>
                     <ul class="feature-list">
                         <li>特點：傾向產生<strong>小數值權重</strong>。</li>
-                        <li>效果：會把權重壓得很小，但不會變成 0。</li>
+                        <li>效果：會把權重壓得很小，通常不會像 L1 那樣直接產生大量恰好為 0 的權重。</li>
                         <li>幾何意義：解空間是圓形。</li>
                         <li>使用時機：特徵之間可能互相關聯 (共線性)，或希望保留所有特徵但減少過擬合時。</li>
 

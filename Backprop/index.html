@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="透過互動示範學習反向傳播與鏈式法則">
+<title>反向傳播與鏈式法則｜楠梓高中 AI 互動教學</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lesson-assets/style.css">
+</head>
+<body data-lesson="Backprop">
+<div class="shell">
+<nav class="topline"><a class="home" href="../index.html">← 返回課程首頁</a><span>高雄市立楠梓高中 · AI 互動教學</span></nav>
+<header class="hero"><span class="eyebrow">Interactive lesson / Backpropagation</span><h1>反向傳播與鏈式法則</h1><p class="lead">用一個 Sigmoid 神經元，看見預測、誤差與權重更新如何串在一起。</p></header>
+<main>
+<div class="layout">
+<section class="card stage" aria-labelledby="stageTitle"><h2 id="stageTitle">互動觀察</h2><div id="stage" aria-live="polite"></div><div id="insight" class="callout"></div></section>
+<aside class="card"><h2>調整參數</h2><div class="controls"><div class="control"><label for="x">輸入 x<output id="xValue">1</output></label><input id="x" type="range" min="-2" max="2" value="1" step="0.1"></div><div class="control"><label for="w">權重 w<output id="wValue">0.8</output></label><input id="w" type="range" min="-3" max="3" value="0.8" step="0.001"></div><div class="control"><label for="target">目標 y<output id="targetValue">1</output></label><input id="target" type="range" min="0" max="1" value="1" step="1"></div><div class="control"><label for="rate">學習率<output id="rateValue">0.2</output></label><input id="rate" type="range" min="0.01" max="1" value="0.2" step="0.01"></div><div class="buttons"><button class="button primary" id="update" type="button">更新一次權重</button><button class="button" id="reset" type="button">重設</button></div></div></aside>
+</div>
+<div class="lesson"><section class="card"><h2>核心概念</h2><ul><li>前向傳播：z = wx + b，a = sigmoid(z)，損失 L = ½(a − y)²。</li><li>反向傳播：dL/dw = (a − y) × a(1 − a) × x。更新方向與梯度相反。</li></ul></section><section class="card"><h2>閱讀圖表前</h2><p class="note">這是單一神經元的教學例子；多層網路會把鏈式法則逐層往回傳。</p><p>延伸閱讀：<a href="https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial" target="_blank" rel="noopener noreferrer">官方教學文件 ↗</a></p></section></div>
+</main><footer class="footer">教學示範以理解原理為目標。數值與結果請依各頁註記解讀。</footer>
+</div><script src="../lesson-assets/lessons.js" defer></script>
+</body></html>

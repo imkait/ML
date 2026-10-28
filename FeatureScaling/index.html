@@ -114,7 +114,7 @@
                                 X' = (X − μ) / σ
                             </div>
                         </div>
-                        <p class="formula-desc">μ = 平均值，σ = 標準差，結果分佈近似標準常態分佈（均值為0，標準差為1）</p>
+                        <p class="formula-desc">μ = 平均值，σ = 標準差，轉換後平均值為 0、標準差為 1；不會因此變成常態分布</p>
                     </div>
 
                     <!-- MaxAbs Scaling -->
@@ -152,7 +152,7 @@
                             <span class="guide-dot zscore-bg"></span>
                             <div>
                                 <strong>Z-Score</strong>
-                                <p>資料近似常態分佈、有離群值時使用</p>
+                                <p>希望特徵以 0 為中心、標準差為 1 時使用；離群值仍會影響結果</p>
                             </div>
                         </div>
                         <div class="guide-item">
@@ -190,8 +190,8 @@
                 <!-- 核心概念 -->
                 <div class="card gradient-card">
                     <h3>📊 哪些模型需要？</h3>
-                    <p><strong>需要</strong>：KNN、SVM、線性回歸、神經網路、K-Means</p>
-                    <p><strong>不需要</strong>：決策樹、隨機森林、XGBoost</p>
+                    <p><strong>通常建議</strong>：KNN、SVM、使用梯度下降的線性回歸、神經網路、K-Means</p>
+                    <p><strong>通常不敏感</strong>：決策樹、隨機森林、XGBoost</p>
                 </div>
 
                 <!-- 注意事項 -->
@@ -199,8 +199,8 @@
                     <h3>💡 注意事項</h3>
                     <ul class="tips-list">
                         <li>先分割訓練集再做縮放，避免<strong>資料洩漏</strong></li>
-                        <li>測試集必須使用<strong>訓練集的參數</strong>進行縮放</li>
-                        <li>有<strong>離群值</strong>時優先考慮 Z-Score</li>
+                        <li>測試集必須使用<strong>訓練集的參數</strong>進行縮放；Min-Max 的新資料可能落在 [0, 1] 之外</li>
+                        <li>有<strong>離群值</strong>時，可考慮以中位數與四分位距縮放，並檢查極端值</li>
                     </ul>
                 </div>
             </div>

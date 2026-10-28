@@ -10,6 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- 引入 Three.js 與 OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 
 <body>
@@ -25,8 +28,12 @@
             <!-- 左側：視覺化區域 -->
             <section class="visualization-section">
                 <div class="canvas-container">
+                    <div class="view-toggle" role="group" aria-label="視角切換">
+                        <button id="view2dBtn" class="view-btn active" type="button">2D 視角</button>
+                        <button id="view3dBtn" class="view-btn" type="button">3D 視角</button>
+                    </div>
                     <canvas id="svmCanvas" width="600" height="400"></canvas>
-                    <div class="canvas-hint">實線為決策邊界，虛線為邊距 (Margin)</div>
+                    <div class="canvas-hint" id="viewHint">實線為決策邊界，虛線為邊距 (Margin)</div>
                 </div>
 
                 <!-- 狀態顯示條 -->
@@ -118,23 +125,45 @@
                 <div class="card info-card">
                     <h3>🧠 什麼是 SVM？</h3>
                     <p>支援向量機是一種試圖找到<strong>「最寬街道」</strong>(最大邊距) 來區分不同類別資料的演算法。</p>
-                    <p>那些落在街道邊緣的關鍵資料點，就被稱為<strong>「支持向量」</strong>。</p>
+                    <p>決定邊界位置的訓練點稱為<strong>「支持向量」</strong>；在軟邊界模型中，也可能位於邊界內或被錯分。</p>
                 </div>
 
                 <!-- 核函數技巧 -->
                 <div class="card">
                     <h3>🔮 核函數技巧 (Kernel Trick)</h3>
-                    <p>當資料無法用直線分開時，SVM 可以將資料投影到更高維度，就像把一張紙捲起來剪開一樣。</p>
-                    <p><strong>RBF Kernel</strong> 就像是在資料周圍畫圈圈。</p>
+                    <p>當資料無法用直線分開時，SVM 可以透過核函數將資料投射到更高維度的空間 —— 就像在一張平面地圖上加入「高度」資訊，讓原本混在一起的點在新的維度中可以被一個平面分開。</p>
+                    <p><strong>RBF Kernel</strong> 能產生彈性的非線性決策邊界，可以包圍任意形狀的資料群集，不僅限於圓形。</p>
                 </div>
 
                 <!-- C 值的影響 -->
                 <div class="card">
                     <h3>🎚️ C 值的影響</h3>
                     <ul class="tips-list">
-                        <li><strong>C 很大</strong>：對錯誤分類容忍度低，邊界較窄 (Hard Margin)。</li>
-                        <li><strong>C 很小</strong>：容許一些錯誤，邊界較寬 (Soft Margin)，較不易過度擬合。</li>
+                        <li><strong>C 很大</strong>：對錯誤分類容忍度低，通常會較重視分類錯誤，可能形成較窄的邊距；有限大的 C 仍屬軟邊界。</li>
+                        <li><strong>C 很小</strong>：容許一些錯誤，更容許邊界違規，通常形成較寬的邊距，但也可能欠擬合。</li>
                     </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 教學影片區 -->
+        <section class="video-section">
+            <h2>🎥 推薦教學影片</h2>
+            <div class="video-card">
+                <div class="video-container">
+                    <iframe
+                        width="560"
+                        height="315"
+                        src="https://www.youtube.com/embed/RLA_R4tsT2M"
+                        title="SVM Tutorial"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="video-description">
+                    <h3>支援向量機 (SVM) 教學</h3>
+                    <p>透過影片快速掌握 SVM 的最大邊距概念、核函數的直覺理解，以及如何在非線性資料上建立良好分類邊界。</p>
                 </div>
             </div>
         </section>

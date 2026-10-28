@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="透過互動示範學習類別不平衡與分類閾值">
+<title>類別不平衡與分類閾值｜楠梓高中 AI 互動教學</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lesson-assets/style.css">
+</head>
+<body data-lesson="Imbalance">
+<div class="shell">
+<nav class="topline"><a class="home" href="../index.html">← 返回課程首頁</a><span>高雄市立楠梓高中 · AI 互動教學</span></nav>
+<header class="hero"><span class="eyebrow">Interactive lesson / Class Imbalance</span><h1>類別不平衡與分類閾值</h1><p class="lead">調整正樣本比例與分類閾值，比較 Accuracy、Precision 與 Recall。</p></header>
+<main>
+<div class="layout">
+<section class="card stage" aria-labelledby="stageTitle"><h2 id="stageTitle">互動觀察</h2><div id="stage" aria-live="polite"></div><div id="insight" class="callout"></div></section>
+<aside class="card"><h2>調整參數</h2><div class="controls"><div class="control"><label for="prevalence">正樣本比例 (%)<output id="prevalenceValue">20</output></label><input id="prevalence" type="range" min="1" max="50" value="20" step="1"></div><div class="control"><label for="threshold">判為正類的閾值 (%)<output id="thresholdValue">50</output></label><input id="threshold" type="range" min="5" max="95" value="50" step="5"></div></div></aside>
+</div>
+<div class="lesson"><section class="card"><h2>核心概念</h2><ul><li>當正樣本很少時，全部猜負類也可能得到很高的 Accuracy。</li><li>改變閾值通常會改變 Precision 與 Recall，但方向和幅度取決於資料分布。</li></ul></section><section class="card"><h2>閱讀圖表前</h2><p class="note">本頁以固定公式生成示意分數；正負樣本各有重疊，因此不代表任何真實診斷模型。</p><p>延伸閱讀：<a href="https://developers.google.com/machine-learning/crash-course/overfitting/imbalanced-datasets" target="_blank" rel="noopener noreferrer">官方教學文件 ↗</a></p></section></div>
+</main><footer class="footer">教學示範以理解原理為目標。數值與結果請依各頁註記解讀。</footer>
+</div><script src="../lesson-assets/lessons.js" defer></script>
+</body></html>

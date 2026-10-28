@@ -127,6 +127,35 @@ body {
     box-shadow: var(--shadow);
 }
 
+.view-toggle {
+    display: inline-flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding: 0.35rem;
+    border-radius: 999px;
+    background: var(--surface-light);
+    border: 1px solid var(--glass-border);
+}
+
+.view-btn {
+    padding: 0.4rem 0.9rem;
+    border: none;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: transparent;
+    cursor: pointer;
+    transition: var(--transition);
+    flex: 0 0 auto;
+}
+
+.view-btn.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3);
+}
+
 #svmCanvas {
     display: block;
     width: 100%;
@@ -457,6 +486,83 @@ button:hover {
 }
 
 /* ===========================
+   影片區域
+   =========================== */
+.video-section {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
+
+.video-section h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.video-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    transition: var(--transition);
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.video-card:hover {
+    border-color: rgba(139, 92, 246, 0.3);
+    box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.2);
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background: #000;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: var(--radius-sm);
+}
+
+.video-description {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+.video-description h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.video-description p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* ===========================
    頁尾
    =========================== */
 .footer {
@@ -497,6 +603,16 @@ button:hover {
 
     .info-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .video-card {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .video-description {
+        padding: 0;
     }
 }
 

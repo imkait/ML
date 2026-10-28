@@ -52,15 +52,15 @@ const BPE_VOCAB = {
 const MODE_INFO = {
     bpe: {
         description: 'BPE：使用頻率統計合併字元對',
-        vocabSize: '~50,000'
+        vocabSize: '示意詞彙表'
     },
     char: {
         description: '字元級：每個字元為一個 Token',
-        vocabSize: '~256'
+        vocabSize: '依字元集合而定'
     },
     word: {
-        description: '詞語級：以空格和標點分割',
-        vocabSize: '~100,000+'
+        description: '空白與標點切分：不含中文斷詞模型',
+        vocabSize: '依詞彙集合而定'
     }
 };
 
@@ -215,11 +215,12 @@ function tokenizeBPE(text) {
         
         // 如果沒有匹配，將單字元作為未知 Token
         if (!matched) {
-            const char = text[i];
+            const codePoint = text.codePointAt(i);
+            const char = String.fromCodePoint(codePoint);
             state.tokens.push(char);
-            // 使用字元的 Unicode 碼點作為模擬 ID
-            state.tokenIds.push(char.charCodeAt(0) + 50000);
-            i++;
+            // 使用 Unicode 碼點作為模擬 ID
+            state.tokenIds.push(codePoint + 50000);
+            i += char.length;
         }
     }
 }
@@ -233,7 +234,7 @@ function tokenizeChar(text) {
     
     for (const char of text) {
         state.tokens.push(char);
-        state.tokenIds.push(char.charCodeAt(0));
+        state.tokenIds.push(char.codePointAt(0));
     }
 }
 
@@ -307,7 +308,7 @@ function renderTokens() {
  * 更新統計資訊
  */
 function updateStats(originalText) {
-    const charCount = originalText.length;
+    const charCount = [...originalText].length;
     const tokenCount = state.tokens.length;
     const ratio = charCount > 0 ? (charCount / tokenCount).toFixed(2) : '-';
     

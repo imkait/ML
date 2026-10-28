@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>決策樹 (Decision Tree) 互動教學</title>
-    <meta name="description" content="透過互動式視覺化學習決策樹 (Decision Tree) 的運作原理">
+    <meta name="description" content="透過互動式視覺化學習決策樹 (Decision Tree) 的運作原理，支援手動加點、逐步建樹與雙向高亮連動。">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -17,24 +17,47 @@
         <!-- 頁首區塊 -->
         <header class="header">
             <h1>🌳 決策樹 (Decision Tree)</h1>
-            <p class="subtitle">互動式機器學習教學</p>
+            <p class="subtitle">互動式機器學習教學 — 手動加點、逐步建樹、雙向高亮</p>
         </header>
 
         <!-- 主要內容區 -->
         <main class="main-content">
             <!-- 左側：視覺化區域 -->
             <section class="visualization-section">
+                <!-- 畫布工具列 -->
+                <div class="canvas-toolbar">
+                    <div class="toolbar-left">
+                        <span class="toolbar-label">🖌️ 畫筆：</span>
+                        <button id="brushA" class="brush-btn brush-a active" title="左鍵點擊畫布新增類別 A 的點">
+                            <span class="brush-dot dot-a"></span> 類別 A
+                        </button>
+                        <button id="brushB" class="brush-btn brush-b" title="左鍵點擊畫布新增類別 B 的點">
+                            <span class="brush-dot dot-b"></span> 類別 B
+                        </button>
+                    </div>
+                    <div class="toolbar-right">
+                        <select id="dataTemplate" class="template-select">
+                            <option value="custom">✏️ 手動繪製</option>
+                            <option value="clusters" selected>🔵 隨機聚類 (Clusters)</option>
+                            <option value="rings">🔴 同心圓環 (Concentric Rings)</option>
+                            <option value="chessboard">♟️ 棋盤格 (Chessboard)</option>
+                            <option value="diagonal">📐 對角斜線 (Diagonal Split)</option>
+                        </select>
+                        <button id="clearBtn" class="btn-icon" title="清除所有資料點">🗑️</button>
+                    </div>
+                </div>
+
+                <!-- Canvas 決策邊界 -->
                 <div class="canvas-container">
                     <canvas id="treeCanvas" width="600" height="500"></canvas>
-                    <div class="canvas-hint">背景顏色代表決策邊界，點擊「隨機資料」生成新數據</div>
+                    <div class="canvas-hint" id="canvasHint">點擊畫布新增資料點，或選擇上方的數據模板</div>
                 </div>
 
                 <!-- 樹狀圖顯示區域 -->
                 <div class="tree-container-wrapper">
-                    <h3>🌳 決策路徑可視化</h3>
+                    <h3>🌳 決策路徑可視化 <span class="tree-hint">（懸停節點可高亮對應的畫布區域）</span></h3>
                     <div id="treeStructure" class="tree-structure"></div>
                 </div>
-
             </section>
 
             <!-- 右側：控制面板與說明 -->
@@ -45,19 +68,22 @@
                     <div class="legend-items">
                         <div class="legend-item">
                             <span class="dot class-a"></span>
-                            <span>類別 A (紅色區域)</span>
+                            <span>類別 A（紅色點 / 淡紅色區域）</span>
                         </div>
                         <div class="legend-item">
                             <span class="dot class-b"></span>
-                            <span>類別 B (藍色區域)</span>
+                            <span>類別 B（藍色點 / 淡藍色區域）</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot dot-split"></span>
+                            <span>白色虛線 = 決策分割線</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 參數設定 -->
                 <div class="card control-panel">
-                    <h3>⚙️ 參數設定</h3>
-
+                    <h3>⚙️ 模型參數</h3>
                     <!-- 樹的深度 -->
                     <div class="slider-container">
                         <label for="depthSlider">
@@ -66,29 +92,42 @@
                         </label>
                         <input type="range" id="depthSlider" min="1" max="10" value="3" step="1">
                         <div class="slider-labels">
-                            <span>1 (簡單)</span>
-                            <span>10 (複雜)</span>
+                            <span>1（簡單模型）</span>
+                            <span>10（複雜模型）</span>
                         </div>
                     </div>
-
                     <!-- 分割準則 -->
                     <div class="select-container">
                         <label for="criterionSelect" class="label-text">分割準則 (Criterion)</label>
                         <select id="criterionSelect" class="custom-select">
                             <option value="gini">Gini 不純度 (Gini Impurity)</option>
-                            <option value="entropy">熵 (Entropy)</option>
+                            <option value="entropy">資訊熵 (Entropy)</option>
                         </select>
                     </div>
-
                     <div class="button-group">
-                        <button id="resetBtn" class="btn-reset">🔄 重置</button>
-                        <button id="randomBtn" class="btn-random">🎲 隨機資料</button>
+                        <button id="resetBtn" class="btn-reset">🔄 重置參數</button>
+                        <button id="randomBtn" class="btn-random">🎲 重新生成</button>
+                    </div>
+                </div>
+
+                <!-- 逐步演練控制 -->
+                <div class="card step-panel">
+                    <h3>🎬 逐步建樹演練</h3>
+                    <p class="step-desc">觀察決策樹如何一步步切分空間</p>
+                    <div class="step-controls">
+                        <button id="stepReset" class="btn-step" title="重置至根節點">⏮️</button>
+                        <button id="stepBack" class="btn-step" title="上一步">◀️</button>
+                        <button id="stepForward" class="btn-step btn-step-primary" title="下一步">▶️</button>
+                        <button id="stepAutoplay" class="btn-step" title="自動播放">⏩</button>
+                    </div>
+                    <div class="step-status">
+                        步驟 <span id="currentStep">0</span> / <span id="totalSteps">0</span>
                     </div>
                 </div>
 
                 <!-- 當前狀態 -->
                 <div class="card result-panel">
-                    <h3>📈 當前模型狀態</h3>
+                    <h3>📈 模型狀態</h3>
                     <div class="result-details">
                         <div class="detail-item">
                             <div class="detail-label">總節點數</div>
@@ -104,6 +143,14 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 節點數學詳解卡片 -->
+                <div class="card math-card" id="nodeDetailCard">
+                    <h3>🔢 節點不純度計算</h3>
+                    <div id="mathContent" class="math-content">
+                        <p class="math-placeholder">👆 點擊樹狀圖中的任一節點，即可查看該節點的不純度計算過程</p>
+                    </div>
+                </div>
             </aside>
         </main>
 
@@ -113,50 +160,50 @@
                 <!-- 什麼是決策樹 -->
                 <div class="card info-card">
                     <h3>🌲 什麼是決策樹？</h3>
-                    <p>決策樹是一種像流程圖一樣的結構，透過一系列的<strong>「是非問答」</strong>將資料進行分類。</p>
-                    <p>每個<strong>節點</strong>代表一個特徵的判斷，<strong>葉節點</strong>代表最終的分類結果。</p>
-                </div>
-
-                <!-- 運作原理 -->
-                <div class="card steps-card">
-                    <h3>📝 運作原理</h3>
-                    <ol class="steps-list">
-                        <li>
-                            <span class="step-num">1</span>
-                            <span>從根節點開始，包含所有資料</span>
-                        </li>
-                        <li>
-                            <span class="step-num">2</span>
-                            <span>尋找最佳特徵與切分點 (如 x > 5)</span>
-                        </li>
-                        <li>
-                            <span class="step-num">3</span>
-                            <span>將資料分成兩群，使「不純度」最小</span>
-                        </li>
-                        <li>
-                            <span class="step-num">4</span>
-                            <span>重複上述步驟，直到達到最大深度</span>
-                        </li>
-                    </ol>
-                </div>
-
-                <!-- 不純度 -->
-                <div class="card formula-card">
-                    <h3>📉 Gini 不純度</h3>
-                    <div class="formula">
-                        1 - ∑(pᵢ)²
-                    </div>
-                    <p class="formula-desc">數值越小代表分類越乾淨<br>0 = 完美分類 (全屬同一類)</p>
-                </div>
-
-                <!-- 優缺點 -->
-                <div class="card tips-card">
-                    <h3>💡 優缺點分析</h3>
-                    <ul class="tips-list">
-                        <li><strong>優點</strong>：直觀易懂，可解釋性高</li>
-                        <li><strong>缺點</strong>：深度過深容易<strong>過度擬合 (Overfitting)</strong></li>
-                        <li><strong>解決</strong>：限制樹的深度 (剪枝)</li>
+                    <p>決策樹是一種像流程圖一樣的分類結構：</p>
+                    <ul class="info-list">
+                        <li>從<strong>根節點 (Root)</strong> 出發，資料會面臨一連串的<strong>「是或否」</strong>判斷。</li>
+                        <li>每次判斷對應特徵空間中的<strong>一條水平或垂直切分線</strong>。</li>
+                        <li>最終流到<strong>葉節點 (Leaf)</strong>，獲得一個分類結果。</li>
                     </ul>
+                    <p>上方的畫布展示了決策樹如何用一系列軸對齊的直線將二維空間切割為矩形區域。</p>
+                </div>
+
+                <!-- Gini 不純度 -->
+                <div class="card info-card">
+                    <h3>📉 Gini 不純度</h3>
+                    <div class="formula-block">
+                        <div class="formula">Gini = 1 − p<sub>A</sub>² − p<sub>B</sub>²</div>
+                    </div>
+                    <ul class="info-list">
+                        <li><strong>p<sub>A</sub></strong>：節點中類別 A 的比例。</li>
+                        <li><strong>值越小越好</strong>：0 = 完美分類（節點全屬同一類）；0.5 = 最差（兩類各半）。</li>
+                        <li>決策樹在每一步都會貪心地選擇「使加權 Gini 下降最多」的切分點。</li>
+                    </ul>
+                </div>
+
+                <!-- Entropy 資訊熵 -->
+                <div class="card info-card">
+                    <h3>📊 資訊熵 (Entropy)</h3>
+                    <div class="formula-block">
+                        <div class="formula">Entropy = −p<sub>A</sub> log₂(p<sub>A</sub>) − p<sub>B</sub> log₂(p<sub>B</sub>)</div>
+                    </div>
+                    <ul class="info-list">
+                        <li>衡量節點的<strong>混亂程度</strong>。</li>
+                        <li>值越小代表越「純」（0 = 完美分類；1 = 最混亂）。</li>
+                        <li>與 Gini 相比，Entropy 在資料不均勻時對少數類更敏感。</li>
+                    </ul>
+                </div>
+
+                <!-- 過度擬合 -->
+                <div class="card info-card">
+                    <h3>⚠️ 過度擬合 (Overfitting)</h3>
+                    <ul class="info-list">
+                        <li>若決策樹<strong>深度太深</strong>，它會記住每一個訓練點的位置，甚至連雜訊也記住了。</li>
+                        <li>畫布上的表現：決策邊界極度碎裂，出現大量「島嶼」般的微小矩形。</li>
+                        <li><strong>解決方法</strong>：限制最大深度（剪枝）、要求最小樣本數等正則化手段。</li>
+                    </ul>
+                    <p>💡 <strong>試試看</strong>：將深度滑桿調到 8~10，觀察「棋盤格」數據上的過度擬合現象！</p>
                 </div>
             </div>
         </section>

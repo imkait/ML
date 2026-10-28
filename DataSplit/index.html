@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="透過互動示範學習資料分割與資料洩漏">
+<title>資料分割與資料洩漏｜楠梓高中 AI 互動教學</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lesson-assets/style.css">
+</head>
+<body data-lesson="DataSplit">
+<div class="shell">
+<nav class="topline"><a class="home" href="../index.html">← 返回課程首頁</a><span>高雄市立楠梓高中 · AI 互動教學</span></nav>
+<header class="hero"><span class="eyebrow">Interactive lesson / Data Split &amp; Leakage</span><h1>資料分割與資料洩漏</h1><p class="lead">資料先分割，才能公平評估模型。試著讓測試資料參與縮放，觀察數值如何改變。</p></header>
+<main>
+<div class="layout">
+<section class="card stage" aria-labelledby="stageTitle"><h2 id="stageTitle">互動觀察</h2><div id="stage" aria-live="polite"></div><div id="insight" class="callout"></div></section>
+<aside class="card"><h2>調整參數</h2><div class="controls"><div class="control"><label for="train">訓練集比例 (%)<output id="trainValue">60</output></label><input id="train" type="range" min="40" max="80" value="60" step="10"></div><div class="control"><label for="validation">驗證集比例 (%)<output id="validationValue">20</output></label><input id="validation" type="range" min="10" max="30" value="20" step="10"></div><div class="buttons"><button class="button" id="leak" type="button">切換：錯誤地使用全部資料縮放</button></div></div></aside>
+</div>
+<div class="lesson"><section class="card"><h2>核心概念</h2><ul><li>訓練集用於學習參數；驗證集用於選擇設定；測試集保留到最後做一次評估。</li><li>縮放器的最小值、最大值或平均值只能從訓練集學得，再套用於其他資料。</li></ul></section><section class="card"><h2>閱讀圖表前</h2><p class="note">此頁用固定的 20 筆示意資料，最後一筆是極端值。改變分割比例後，觀察測試集縮放值是否可能超過 1。</p><p>延伸閱讀：<a href="https://scikit-learn.org/stable/modules/cross_validation.html" target="_blank" rel="noopener noreferrer">官方教學文件 ↗</a></p></section></div>
+</main><footer class="footer">教學示範以理解原理為目標。數值與結果請依各頁註記解讀。</footer>
+</div><script src="../lesson-assets/lessons.js" defer></script>
+</body></html>

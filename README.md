@@ -13,6 +13,7 @@
 ## 📚 課程單元目錄
 
 ### 1. 資料預處理 (Data Preprocessing)
+- **[資料分割與資料洩漏](DataSplit/index.html)** - 比較訓練、驗證、測試資料的用途，以及預處理時偷看測試資料的影響。
 - **[特徵縮放 (Feature Scaling)](FeatureScaling/index.html)** - 將不同量綱的特徵轉換至相同尺度，提升模型學習效果。
 - **[類別編碼 (Categorical Encoding)](CgEncoding/index.html)** - 將文字型態的類別特徵轉換為數值，讓模型能夠理解。
 - **[資料降維 (Dimensionality Reduction)](DimenRedu/index.html)** - 將高維資料壓縮成低維，保留最重要的特徵資訊。
@@ -25,6 +26,7 @@
 ### 3. 監督式學習演算法 (Supervised Learning)
 - **[K-最近鄰演算法 (KNN)](KNN/index.html)** - 透過「近朱者赤」的距離概念，根據鄰近點分佈進行分類。
 - **[決策樹 (Decision Tree)](DecisionTree/index.html)** - 透過樹狀結構與條件分支進行決策判斷與分類。
+- **[隨機森林與集成學習](RandomForest/index.html)** - 比較單棵樹與多棵樹投票後的決策邊界。
 - **[支援向量機 (SVM)](SVM/index.html)** - 尋找最佳超平面，以最大化邊界的方式實現高維度分類。
 
 ### 4. 非監督式學習與降維 (Unsupervised Learning)
@@ -32,6 +34,8 @@
 - **[主成分分析 (PCA)](PCA/index.html)** - 透過旋轉與投影，找出數據變異數最大的方向進行降維。
 
 ### 5. 模型評估與概念 (Model Evaluation)
+- **[類別不平衡與分類閾值](Imbalance/index.html)** - 調整正樣本比例與閾值，觀察分類指標變化。
+- **[資料偏差與模型公平性](Fairness/index.html)** - 比較整體準確率與不同群組的漏報率。
 - **[過擬合與欠擬合 (Overfitting & Underfitting)](FIT/index.html)** - 探索模型複雜度與泛化能力的平衡點。
 - **[正規化 (L1/L2 Regularization)](L1L2/index.html)** - 透過懲罰項抑制模型複雜度，藉此解決過擬合問題。
 - **[混淆矩陣與指標 (Confusion Matrix)](Matrix/index.html)** - 深入理解評估模型常用的 Accuracy, Precision, Recall 與 F1-Score 指標。
@@ -40,8 +44,11 @@
 - **[激活函數 (Activation Functions)](ActFun/index.html)** - 了解神經網路中常用的非線性激活函數及其特性。
 - **[損失函數 (Loss Functions)](LossFun/index.html)** - 評估模型預測結果誤差的各種損失函數比較。
 - **[多層感知器 (MLP)](MLP/index.html)** - 探索前饋神經網路的基礎架構與前向傳播機制。
+- **[反向傳播與鏈式法則](Backprop/index.html)** - 用單一神經元逐步計算梯度與權重更新。
 - **[Tokenizer 分詞器](Token/index.html)** - 了解大型語言模型 (LLM) 如何將文字切割成 Token 進行處理。
 - **[Embedding 詞嵌入](Embedding/index.html)** - 將文字轉換成包含語意關係的數值向量。
+- **[Self-Attention 注意力機制](Attention/index.html)** - 觀察 Token 間的注意力權重與因果遮罩。
+- **[預測下一個 Token](NextToken/index.html)** - 調整溫度，觀察候選機率與生成文字。
 
 ### 7. 進階視覺模型 (Advanced Vision Models)
 - **[CNN 卷積層 (Convolutional Neural Network)](CNN/index.html)** - 視覺化卷積運算過程，了解電腦如何「看見」圖像特徵。

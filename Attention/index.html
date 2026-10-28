@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="透過互動示範學習Self-Attention 注意力機制">
+<title>Self-Attention 注意力機制｜楠梓高中 AI 互動教學</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lesson-assets/style.css">
+</head>
+<body data-lesson="Attention">
+<div class="shell">
+<nav class="topline"><a class="home" href="../index.html">← 返回課程首頁</a><span>高雄市立楠梓高中 · AI 互動教學</span></nav>
+<header class="hero"><span class="eyebrow">Interactive lesson / Self-Attention</span><h1>Self-Attention 注意力機制</h1><p class="lead">選一個 Token，觀察它與其他 Token 的相似分數如何變成注意力權重。</p></header>
+<main>
+<div class="layout">
+<section class="card stage" aria-labelledby="stageTitle"><h2 id="stageTitle">互動觀察</h2><div id="stage" aria-live="polite"></div><div id="insight" class="callout"></div></section>
+<aside class="card"><h2>調整參數</h2><div class="controls"><div class="control"><label for="sentence">示範句子</label><select id="sentence"><option value="cat">小貓 追逐 紅色 球</option><option value="rain">今天 下雨 記得 帶傘</option></select></div><div class="control"><label for="focus">目前觀察的 Token</label><select id="focus"></select></div><div class="buttons"><button class="button" id="mask" type="button">切換因果遮罩</button></div></div></aside>
+</div>
+<div class="lesson"><section class="card"><h2>核心概念</h2><ul><li>每個 Token 產生 Query、Key、Value；示範先算 Query 與 Key 的點積，再經 softmax 轉為權重。</li><li>因果遮罩讓生成文字時的 Token 只能參照自己與之前的位置。</li></ul></section><section class="card"><h2>閱讀圖表前</h2><p class="note">此示意將 Query、Key、Value 設為同一組手工向量；真實模型會學習不同的投影矩陣，權重也會不同。</p><p>延伸閱讀：<a href="https://huggingface.co/docs/course/chapter1/4" target="_blank" rel="noopener noreferrer">官方教學文件 ↗</a></p></section></div>
+</main><footer class="footer">教學示範以理解原理為目標。數值與結果請依各頁註記解讀。</footer>
+</div><script src="../lesson-assets/lessons.js" defer></script>
+</body></html>

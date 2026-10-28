@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="透過互動示範學習隨機森林與集成學習">
+<title>隨機森林與集成學習｜楠梓高中 AI 互動教學</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lesson-assets/style.css">
+</head>
+<body data-lesson="RandomForest">
+<div class="shell">
+<nav class="topline"><a class="home" href="../index.html">← 返回課程首頁</a><span>高雄市立楠梓高中 · AI 互動教學</span></nav>
+<header class="hero"><span class="eyebrow">Interactive lesson / Random Forest</span><h1>隨機森林與集成學習</h1><p class="lead">比較單棵決策樹與多棵樹投票的分類邊界，點擊圖面查看投票。</p></header>
+<main>
+<div class="layout">
+<section class="card stage" aria-labelledby="stageTitle"><h2 id="stageTitle">互動觀察</h2><div id="stage" aria-live="polite"></div><div id="insight" class="callout"></div></section>
+<aside class="card"><h2>調整參數</h2><div class="controls"><div class="control"><label for="trees">樹的數量<output id="treesValue">5</output></label><input id="trees" type="range" min="1" max="11" value="5" step="2"></div><div class="control"><label for="noise">標籤雜訊 (%)<output id="noiseValue">8</output></label><input id="noise" type="range" min="0" max="25" value="8" step="1"></div><div class="control"><label for="pointX">測試位置 X<output id="pointXValue">64</output></label><input id="pointX" type="range" min="0" max="100" value="64"></div><div class="control"><label for="pointY">測試位置 Y<output id="pointYValue">42</output></label><input id="pointY" type="range" min="0" max="100" value="42"></div><div class="buttons"><button class="button" id="sample" type="button">重新產生資料</button></div></div></aside>
+</div>
+<div class="lesson"><section class="card"><h2>核心概念</h2><ul><li>每棵樹從訓練資料中有放回抽樣，分裂時隨機挑選一部分特徵。</li><li>分類結果由多棵樹投票決定。增加樹的數量不保證每次都進步。</li></ul></section><section class="card"><h2>閱讀圖表前</h2><p class="note">這是 2D、小樣本、淺層樹的示意實驗；點擊左圖或右圖，或使用 X／Y 滑桿，可查看同一位置的投票。</p><p>延伸閱讀：<a href="https://scikit-learn.org/stable/modules/ensemble.html" target="_blank" rel="noopener noreferrer">官方教學文件 ↗</a></p></section></div>
+</main><footer class="footer">教學示範以理解原理為目標。數值與結果請依各頁註記解讀。</footer>
+</div><script src="../lesson-assets/lessons.js" defer></script>
+</body></html>

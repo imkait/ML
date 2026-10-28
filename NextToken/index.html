@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="透過互動示範學習LLM 如何預測下一個 Token">
+<title>LLM 如何預測下一個 Token｜楠梓高中 AI 互動教學</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lesson-assets/style.css">
+</head>
+<body data-lesson="NextToken">
+<div class="shell">
+<nav class="topline"><a class="home" href="../index.html">← 返回課程首頁</a><span>高雄市立楠梓高中 · AI 互動教學</span></nav>
+<header class="hero"><span class="eyebrow">Interactive lesson / Next Token Prediction</span><h1>LLM 如何預測下一個 Token</h1><p class="lead">調整溫度並選擇下一個 Token，觀察候選機率與生成文字的變化。</p></header>
+<main>
+<div class="layout">
+<section class="card stage" aria-labelledby="stageTitle"><h2 id="stageTitle">互動觀察</h2><div id="stage" aria-live="polite"></div><div id="insight" class="callout"></div></section>
+<aside class="card"><h2>調整參數</h2><div class="controls"><div class="control"><label for="temperature">溫度<output id="temperatureValue">1</output></label><input id="temperature" type="range" min="0.3" max="2" value="1" step="0.1"></div><div class="buttons"><button class="button primary" id="greedy" type="button">選最高機率</button><button class="button" id="sampleToken" type="button">依機率抽樣</button><button class="button" id="resetText" type="button">重新開始</button></div></div></aside>
+</div>
+<div class="lesson"><section class="card"><h2>核心概念</h2><ul><li>模型輸出候選 Token 的分數；softmax 轉成總和為 1 的機率。</li><li>溫度較低時分布通常更集中；較高時分布較平坦。抽樣結果仍具有隨機性。</li></ul></section><section class="card"><h2>閱讀圖表前</h2><p class="note">本頁只用小型手工詞表展示生成機制，並非真正的 LLM 或實際 tokenizer。</p><p>延伸閱讀：<a href="https://developers.google.com/machine-learning/crash-course/llm/transformers" target="_blank" rel="noopener noreferrer">官方教學文件 ↗</a></p></section></div>
+</main><footer class="footer">教學示範以理解原理為目標。數值與結果請依各頁註記解讀。</footer>
+</div><script src="../lesson-assets/lessons.js" defer></script>
+</body></html>

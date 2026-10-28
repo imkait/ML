@@ -30,10 +30,14 @@ let state = {
     alphas: [],       // Lagrange multipliers
     b: 0,             // Bias
     isTrained: false,
+    viewMode: '2d',    // '2d' or '3d'
 
     // Canvas context
     canvas: null,
     ctx: null,
+
+    // Three.js
+    three: null,
 };
 
 // ===========================
@@ -44,6 +48,15 @@ document.addEventListener('DOMContentLoaded', () => {
     initControls();
     generateRandomData('linear'); // 預設生成線性可分資料
     render();
+
+    window.addEventListener('resize', () => {
+        if (state.viewMode === '2d') {
+            initCanvas();
+        } else {
+            updateThreeSize();
+        }
+        render();
+    });
 });
 
 function initCanvas() {
@@ -54,6 +67,7 @@ function initCanvas() {
     const rect = state.canvas.getBoundingClientRect();
     state.canvas.width = rect.width * dpr;
     state.canvas.height = rect.height * dpr;
+    state.ctx.setTransform(1, 0, 0, 1, 0, 0);
     state.ctx.scale(dpr, dpr);
 
     CONFIG.CANVAS_WIDTH = rect.width;
@@ -70,6 +84,8 @@ function initControls() {
     const trainBtn = document.getElementById('trainBtn');
     const randomBtn = document.getElementById('randomBtn');
     const resetBtn = document.getElementById('resetBtn');
+    const view2dBtn = document.getElementById('view2dBtn');
+    const view3dBtn = document.getElementById('view3dBtn');
 
     kernelSelect.addEventListener('change', (e) => {
         state.kernel = e.target.value;
@@ -109,6 +125,49 @@ function initControls() {
         updateStatus('已重置');
         render();
     });
+
+    view2dBtn.addEventListener('click', () => setViewMode('2d'));
+    view3dBtn.addEventListener('click', () => setViewMode('3d'));
+}
+
+function setViewMode(mode) {
+    state.viewMode = mode;
+
+    const view2dBtn = document.getElementById('view2dBtn');
+    const view3dBtn = document.getElementById('view3dBtn');
+    const canvas = document.getElementById('svmCanvas');
+    const viewHint = document.getElementById('viewHint');
+
+    const is3d = mode === '3d';
+    view2dBtn.classList.toggle('active', !is3d);
+    view3dBtn.classList.toggle('active', is3d);
+
+    if (is3d) {
+        viewHint.textContent = '🖱️ 拖拽旋轉 | 滾輪縮放 | 右鍵平移';
+        destroyThree();
+        replaceCanvasElement();
+        state.ctx = null;
+        ensureThree();
+        updateThreeScene();
+    } else {
+        viewHint.textContent = '實線為決策邊界，虛線為邊距 (Margin)';
+        destroyThree();
+        replaceCanvasElement();
+        initCanvas();
+    }
+
+    render();
+}
+
+function replaceCanvasElement() {
+    const oldCanvas = document.getElementById('svmCanvas');
+    if (!oldCanvas || !oldCanvas.parentElement) return;
+    const parent = oldCanvas.parentElement;
+    const newCanvas = oldCanvas.cloneNode(false);
+    newCanvas.width = oldCanvas.width || 600;
+    newCanvas.height = oldCanvas.height || 400;
+    parent.replaceChild(newCanvas, oldCanvas);
+    state.canvas = newCanvas;
 }
 
 // ===========================
@@ -341,12 +400,178 @@ function countSupportVectors() {
     document.getElementById('svCount').textContent = count;
 }
 
+function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+}
+
+function ensureThree() {
+    if (state.three) return;
+
+    const canvas = document.getElementById('svmCanvas');
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight || 350;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0f172a);
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    camera.position.set(0, -2.6, 2.2);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setSize(width, height, false);
+    renderer.setPixelRatio(window.devicePixelRatio || 1);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+
+    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+    const directional = new THREE.DirectionalLight(0xffffff, 0.7);
+    directional.position.set(2, -2, 3);
+    scene.add(ambient, directional);
+
+    const grid = new THREE.GridHelper(2.4, 12, 0x334155, 0x1f2937);
+    grid.rotation.x = Math.PI / 2;
+    grid.position.z = -1.2;
+    scene.add(grid);
+
+    const axes = new THREE.AxesHelper(1.4);
+    scene.add(axes);
+
+    state.three = {
+        canvas,
+        scene,
+        camera,
+        renderer,
+        controls,
+        pointGroup: null,
+        planeGroup: null,
+        animationId: null, // 追蹤動畫迴圈 ID，方便取消
+    };
+
+    // 3D 渲染迴圈：使用 animationId 追蹤，切換回 2D 時可正確取消
+    const animate = () => {
+        if (state.viewMode !== '3d' || !state.three) return; // 不再是 3D 模式時停止迴圈
+        state.three.animationId = requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+    };
+    animate();
+}
+
+function updateThreeSize() {
+    if (!state.three) return;
+    const { canvas, camera, renderer } = state.three;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight || 350;
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+}
+
+function destroyThree() {
+    if (!state.three) return;
+    const { renderer, controls, animationId } = state.three;
+    // 取消正在執行的動畫迴圈，避免記憶體洩漏
+    if (animationId) cancelAnimationFrame(animationId);
+    controls.dispose();
+    renderer.dispose();
+    state.three = null;
+}
+
+function updateThreeScene() {
+    if (state.viewMode !== '3d') return;
+    ensureThree();
+
+    const { scene } = state.three;
+    const planeSize = 2.4;
+    const dataDecision = state.data.map((p) => (state.isTrained ? decisionFunction(p) : 0));
+    const maxAbsDecision = dataDecision.reduce((maxVal, val) => Math.max(maxVal, Math.abs(val)), 0);
+    const zScale = 1.2 / Math.max(1, maxAbsDecision);
+    const marginZ = 1 * zScale;
+
+    if (state.three.pointGroup) {
+        scene.remove(state.three.pointGroup);
+    }
+    if (state.three.planeGroup) {
+        scene.remove(state.three.planeGroup);
+    }
+
+    const planeGroup = new THREE.Group();
+    const decisionMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.18,
+        side: THREE.DoubleSide,
+    });
+    const marginMat = new THREE.MeshBasicMaterial({
+        color: 0x94a3b8,
+        transparent: true,
+        opacity: 0.12,
+        side: THREE.DoubleSide,
+    });
+
+    const decisionPlane = new THREE.Mesh(new THREE.PlaneGeometry(planeSize, planeSize), decisionMat);
+    decisionPlane.position.z = 0;
+    planeGroup.add(decisionPlane);
+
+    const marginPlanePos = new THREE.Mesh(new THREE.PlaneGeometry(planeSize, planeSize), marginMat);
+    marginPlanePos.position.z = marginZ;
+    planeGroup.add(marginPlanePos);
+
+    const marginPlaneNeg = new THREE.Mesh(new THREE.PlaneGeometry(planeSize, planeSize), marginMat);
+    marginPlaneNeg.position.z = -marginZ;
+    planeGroup.add(marginPlaneNeg);
+
+    scene.add(planeGroup);
+    state.three.planeGroup = planeGroup;
+
+    const pointGroup = new THREE.Group();
+    const baseGeo = new THREE.SphereGeometry(0.045, 16, 16);
+    const svGeo = new THREE.SphereGeometry(0.065, 18, 18);
+
+    state.data.forEach((p, i) => {
+        const isSV = state.isTrained && state.alphas[i] > 1e-4;
+        const x = (p.x / CONFIG.CANVAS_WIDTH) * 2 - 1;
+        const y = 1 - (p.y / CONFIG.CANVAS_HEIGHT) * 2;
+        const zRaw = state.isTrained ? decisionFunction(p) : 0;
+        const z = clamp(zRaw * zScale, -1.8, 1.8);
+
+        const color = p.label === 1 ? 0xf43f5e : 0x06b6d4;
+        const material = new THREE.MeshStandardMaterial({ color });
+        const sphere = new THREE.Mesh(baseGeo, material);
+        sphere.position.set(x, y, z);
+        pointGroup.add(sphere);
+
+        if (isSV) {
+            const svMat = new THREE.MeshStandardMaterial({
+                color: 0xfbbf24,
+                emissive: 0x8a5d05,
+                emissiveIntensity: 0.6,
+            });
+            const svSphere = new THREE.Mesh(svGeo, svMat);
+            svSphere.position.set(x, y, z);
+            pointGroup.add(svSphere);
+        }
+    });
+
+    scene.add(pointGroup);
+    state.three.pointGroup = pointGroup;
+}
+
 // ===========================
 // 渲染
 // ===========================
 
 function render() {
-    state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height); // Clear physical size
+    if (state.viewMode === '3d') {
+        updateThreeScene();
+        return;
+    }
+
+    // 使用邏輯尺寸清除畫布（因為 ctx 已被 scale(dpr) 過）
+    state.ctx.clearRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
 
     // 如果已訓練，繪製決策邊界與背景
     if (state.isTrained) {
@@ -386,14 +611,14 @@ function drawDecisionBoundary() {
 
             // 1. 背景底色 (根據預測值決定紅/藍區域)
             if (val > 0) {
-                // Class A (+1) red
+                // Class A (+1) red — 紅色區域
                 r = 244; g = 63; b = 94;
-                // 減少不透明度，讓線條更明顯
-                a = 0.1 + Math.min(Math.abs(val), 1) * 0.05;
+                // 提高透明度讓學生更容易辨識分區
+                a = 0.15 + Math.min(Math.abs(val), 1) * 0.12;
             } else {
-                // Class B (-1) cyan
+                // Class B (-1) cyan — 藍色區域
                 r = 6; g = 182; b = 212;
-                a = 0.1 + Math.min(Math.abs(val), 1) * 0.05;
+                a = 0.15 + Math.min(Math.abs(val), 1) * 0.12;
             }
 
             // 2. 線條繪製

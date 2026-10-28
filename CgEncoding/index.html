@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Categorical Encoding 類別編碼互動教學</title>
-    <meta name="description" content="透過互動式視覺化學習類別編碼的概念，包含 Label、One-Hot、Ordinal、Frequency 四種方法">
+    <meta name="description" content="透過互動式視覺化學習類別編碼的概念，包含 Label、One-Hot、Ordinal、Frequency、Target 五種方法">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -92,6 +92,11 @@
                             <input type="text" id="feature2Name" placeholder="特徵名稱" value="大小" class="name-input">
                             <input type="text" id="feature2Values" placeholder="大, 中, 小, 大, 中" class="value-input">
                         </div>
+                        <div class="custom-input-group">
+                            <label for="targetValues" class="name-input">目標值 y（選填）</label>
+                            <input type="text" id="targetValues" placeholder="例如：30, 20, 40, 35, 25" class="value-input" aria-describedby="targetValuesHint">
+                        </div>
+                        <p class="custom-hint" id="targetValuesHint">每筆資料對應一個數字；填寫後可比較第五種目標編碼。</p>
                     </div>
                     <div class="button-group">
                         <button id="encodeBtn" class="btn-primary">🚀 開始編碼！</button>
@@ -108,12 +113,12 @@
         </section>
 
         <!-- ============================
-             第三步：三種編碼方法介紹與結果
+             第三步：五種編碼方法介紹與結果
              ============================ -->
         <section class="step-section" id="resultsSection" style="display: none;">
             <div class="step-header">
                 <span class="step-number">3</span>
-                <h2>四種編碼方法比較</h2>
+                <h2>五種編碼方法比較</h2>
             </div>
 
             <!-- 方法一：Label Encoding -->
@@ -311,6 +316,68 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 方法五：Target Encoding -->
+            <div class="method-section" id="targetSection">
+                <div class="method-header target-theme">
+                    <div class="method-badge target-bg">方法 5</div>
+                    <h3>Target Encoding 目標編碼</h3>
+                </div>
+                <div class="method-body">
+                    <div class="method-explain">
+                        <div class="method-idea">
+                            <span class="idea-icon">💡</span>
+                            <div>
+                                <strong>核心想法</strong>
+                                <p>利用<strong>目標值 (y)</strong> 的資訊！將每個類別替換成「該類別對應的目標值平均」</p>
+                            </div>
+                        </div>
+                        <div class="method-example-box target-border">
+                            <div class="example-title">範例（預測水果價格，y = 價格）</div>
+                            <div class="freq-example">
+                                <table class="mini-table">
+                                    <thead>
+                                        <tr>
+                                            <th>種類</th>
+                                            <th>各筆目標值 y</th>
+                                            <th>→ 編碼值（平均）</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>蘋果</td>
+                                            <td>30, 40</td>
+                                            <td class="target-val">(30+40)/2 = 35</td>
+                                        </tr>
+                                        <tr>
+                                            <td>香蕉</td>
+                                            <td>15, 20</td>
+                                            <td class="target-val">(15+20)/2 = 17.5</td>
+                                        </tr>
+                                        <tr>
+                                            <td>葡萄</td>
+                                            <td>50</td>
+                                            <td class="target-val">50/1 = 50</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="method-pros-cons">
+                            <div class="pros"><span>✅</span> 能捕捉類別與目標的關聯，高基數類別也只需一欄</div>
+                            <div class="cons"><span>⚠️</span> 有<strong>資料洩漏</strong>風險！必須搭配 K-Fold 等策略避免過度擬合</div>
+                        </div>
+                        <div class="method-target-info">
+                            <span>📊</span>
+                            <p>公式：編碼值 = 該類別對應的所有 y 值的<strong>算術平均數</strong>。若數據量少，可加入「全局平均」作為平滑處理以減少變異。</p>
+                        </div>
+                    </div>
+                    <div class="method-result">
+                        <h4>📊 編碼結果</h4>
+                        <div class="table-wrapper" id="targetTable"></div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- ============================
@@ -321,14 +388,13 @@
                 <span class="step-number">4</span>
                 <h2>該選哪一種？速查表</h2>
             </div>
-            <div class="decision-grid decision-grid-4">
+            <div class="decision-grid decision-grid-5">
                 <div class="decision-card label-border">
                     <div class="decision-icon">🏷️</div>
                     <h3>Label Encoding</h3>
                     <div class="decision-when">
                         <strong>✅ 適合使用：</strong>
                         <ul>
-                            <li>使用<strong>樹狀模型</strong>（決策樹、隨機森林、XGBoost）</li>
                             <li>類別是<strong>目標變數</strong>（y 欄位）</li>
                             <li>只有<strong>兩個類別</strong>（如：男/女、是/否）</li>
                         </ul>
@@ -348,7 +414,7 @@
                         <ul>
                             <li><strong>無序類別</strong>（顏色、血型、城市）</li>
                             <li>使用<strong>線性模型</strong>、神經網路</li>
-                            <li>類別數量<strong>不多</strong>（< 10 個）</li>
+                            <li>類別數量<strong>不多</strong>（&lt; 10 個）</li>
                         </ul>
                     </div>
                     <div class="decision-avoid">
@@ -382,14 +448,33 @@
                         <strong>✅ 適合使用：</strong>
                         <ul>
                             <li>類別數量<strong>非常多</strong>（城市、郵遞區號、商品ID）</li>
-                            <li>不需要目標存標簽 y （非監督式特徵工程）</li>
+                            <li>不需要目標標籤 y （非監督式特徵工程）</li>
                             <li>希望保留<strong>類別的個數資訊</strong></li>
                         </ul>
                     </div>
                     <div class="decision-avoid">
                         <strong>❌ 避免使用：</strong>
                         <ul>
-                            <li>多個類別<strong>頻率相同</strong>（編碼後饮辨不出）</li>
+                            <li>多個類別<strong>頻率相同</strong>（編碼後分辨不出）</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="decision-card target-border">
+                    <div class="decision-icon">🎯</div>
+                    <h3>Target Encoding</h3>
+                    <div class="decision-when">
+                        <strong>✅ 適合使用：</strong>
+                        <ul>
+                            <li>類別數量<strong>非常多</strong>（城市、商品ID、郵遞區號）</li>
+                            <li>有明確的<strong>目標變數 y</strong></li>
+                            <li>希望直接挖掘類別與目標的<strong>關聯性</strong></li>
+                        </ul>
+                    </div>
+                    <div class="decision-avoid">
+                        <strong>❌ 避免使用：</strong>
+                        <ul>
+                            <li>沒有目標值（非監督式學習）</li>
+                            <li>未做 <strong>K-Fold</strong> 處理（會資料洩漏）</li>
                         </ul>
                     </div>
                 </div>
@@ -409,12 +494,24 @@
                         <div class="fc-branch">
                             <div class="fc-label no-label">❌ 沒有（如：紅、藍、綠）</div>
                             <div class="fc-arrow">↓</div>
-                            <div class="fc-node fc-question fc-sub">類別數量多嗎？</div>
+                            <div class="fc-node fc-question fc-sub">有目標值 y 嗎？</div>
                             <div class="fc-sub-branches">
                                 <div class="fc-sub-branch">
-                                    <span class="fc-sub-label">少（< 10）</span>
-                                            <span class="fc-arrow">→</span>
-                                            <span class="fc-node fc-answer onehot-answer">One-Hot</span>
+                                    <span class="fc-sub-label">有 y</span>
+                                    <span class="fc-arrow">→</span>
+                                    <span class="fc-node fc-answer target-answer">Target Encoding</span>
+                                </div>
+                                <div class="fc-sub-branch">
+                                    <span class="fc-sub-label">沒有 y</span>
+                                    <span class="fc-arrow">→</span>
+                                    <span class="fc-node fc-question fc-sub" style="font-size:0.78rem; padding:0.35rem 0.75rem;">類別數量多嗎？</span>
+                                </div>
+                            </div>
+                            <div class="fc-sub-branches" style="margin-top:0.25rem; padding-left:2rem;">
+                                <div class="fc-sub-branch">
+                                    <span class="fc-sub-label">少（&lt; 10）</span>
+                                    <span class="fc-arrow">→</span>
+                                    <span class="fc-node fc-answer onehot-answer">One-Hot</span>
                                 </div>
                                 <div class="fc-sub-branch">
                                     <span class="fc-sub-label">多（≥ 10）</span>

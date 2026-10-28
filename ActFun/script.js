@@ -98,14 +98,13 @@ const ACTIVATION_FUNCTIONS = {
     swish: {
         name: 'Swish',
         formula: 'f(x) = x · sigmoid(x)',
-        derivativeFormula: "f'(x) = f(x) + sigmoid(x)(1 - f(x))",
+        derivativeFormula: "f'(x) = sigmoid(x) + x*sigmoid(x)*(1-sigmoid(x))",
         range: '(-∞, +∞)',
         hasParam: false,
         func: (x) => x / (1 + Math.exp(-x)),
         derivative: (x) => {
             const sigmoid = 1 / (1 + Math.exp(-x));
-            const swish = x * sigmoid;
-            return swish + sigmoid * (1 - swish);
+            return sigmoid + x * sigmoid * (1 - sigmoid);
         },
     },
 };

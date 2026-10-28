@@ -37,6 +37,7 @@
                 <!-- 分詞結果視覺化 -->
                 <div class="result-container card">
                     <h3>🎨 分詞結果視覺化</h3>
+                    <p>此頁使用簡化的分詞規則與示意 Token ID；結果不等於任何實際模型的 tokenizer。</p>
                     <div id="tokenDisplay" class="token-display">
                         <div class="placeholder-text">輸入文字後按下「開始分詞」查看結果</div>
                     </div>
@@ -44,7 +45,7 @@
 
                 <!-- Token ID 對照表 -->
                 <div class="id-container card">
-                    <h3>🔢 Token ID 序列</h3>
+                    <h3>🔢 示意 Token ID 序列</h3>
                     <div id="tokenIds" class="token-ids">
                         <div class="placeholder-text">分詞後將顯示對應的 Token ID</div>
                     </div>
@@ -75,7 +76,7 @@
                         <select id="modeSelect" class="func-select">
                             <option value="bpe" selected>BPE (Byte Pair Encoding)</option>
                             <option value="char">字元級 (Character)</option>
-                            <option value="word">詞語級 (Word)</option>
+                            <option value="word">空白與標點切分</option>
                         </select>
                     </div>
 
@@ -122,7 +123,7 @@
                         <div class="formula" id="modeDescription">BPE：使用頻率統計合併字元對</div>
                     </div>
                     <div class="output-range">
-                        <span class="range-label">詞彙表大小：</span>
+                        <span class="range-label">詞彙表大小（依模型而異）：</span>
                         <span class="range-value" id="vocabSize">~50,000</span>
                     </div>
                 </div>
@@ -153,14 +154,14 @@
                 <div class="card gradient-card">
                     <h3>⚠️ 為什麼很重要？</h3>
                     <p>Token 數量直接影響 LLM 的<strong>計算成本</strong>與處理速度。</p>
-                    <p>不同語言的分詞效率不同，中文通常需要較多 Token。</p>
+                    <p>不同語言的分詞效率不同，相同意思的文字在不同語言與分詞器下，Token 數可能不同。</p>
                 </div>
 
                 <!-- 實際應用 -->
                 <div class="card tips-card">
                     <h3>💡 實際應用</h3>
                     <ul class="tips-list">
-                        <li><strong>GPT-4</strong>：使用 cl100k_base 分詞器</li>
+                        <li><strong>模型差異</strong>：不同模型可能使用不同的分詞器與詞彙表</li>
                         <li><strong>費用計算</strong>：API 按 Token 數量收費</li>
                         <li><strong>上下文限制</strong>：模型有最大 Token 限制</li>
                     </ul>
