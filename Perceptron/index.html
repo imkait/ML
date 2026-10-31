@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="透過可調權重、決策邊界與逐步訓練，理解感知器如何發展為人工神經元。">
+  <title>從感知器到人工神經元｜互動教學</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="eyebrow">DEEP LEARNING FOUNDATIONS · 01</div>
+      <h1>從感知器到<span>人工神經元</span></h1>
+      <p class="subtitle">調整輸入、權重與偏差值，親手觀察一個神經元如何做出 0 或 1 的判斷。</p>
+      <nav class="quick-nav" aria-label="本頁導覽">
+        <a href="#playground">互動實驗</a><a href="#training">學習規則</a><a href="#next">走向神經網路</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="intro-strip" aria-label="學習路線">
+        <div><span class="step">01</span><strong>接收訊號</strong><small>x₁、x₂ 是輸入</small></div>
+        <span class="strip-arrow" aria-hidden="true">→</span>
+        <div><span class="step">02</span><strong>加權求和</strong><small>z = w₁x₁ + w₂x₂ + b</small></div>
+        <span class="strip-arrow" aria-hidden="true">→</span>
+        <div><span class="step">03</span><strong>跨過門檻</strong><small>z ≥ 0 輸出 1</small></div>
+      </section>
+
+      <section id="playground" class="playground" aria-labelledby="play-title">
+        <div class="section-heading"><div><span class="section-kicker">INTERACTIVE LAB</span><h2 id="play-title">親手控制一個感知器</h2></div><p>選擇邏輯任務，再改變輸入或參數。</p></div>
+        <div class="lab-grid">
+          <div class="lab-left">
+            <div class="card diagram-card">
+              <div class="card-heading"><h3>訊號如何流動</h3><span class="pill">單一神經元</span></div>
+              <svg class="neuron-diagram" viewBox="0 0 680 300" role="img" aria-labelledby="diagram-title diagram-desc">
+                <title id="diagram-title">兩個輸入連到一個感知器，再產生二元輸出</title>
+                <desc id="diagram-desc">連線旁顯示權重，中央顯示加權和，右側顯示輸出。</desc>
+                <defs><linearGradient id="nodeGradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#6366f1"/></linearGradient></defs>
+                <line class="wire" x1="112" y1="76" x2="320" y2="150"/><line class="wire" x1="112" y1="224" x2="320" y2="150"/>
+                <line class="wire output-wire" x1="420" y1="150" x2="560" y2="150"/>
+                <circle class="input-node" cx="86" cy="76" r="32"/><circle class="input-node" cx="86" cy="224" r="32"/>
+                <circle class="center-glow" cx="370" cy="150" r="64"/><circle class="neuron-node" cx="370" cy="150" r="51"/>
+                <circle id="outputNode" class="output-node" cx="594" cy="150" r="35"/>
+                <text id="svgX1" class="node-text" x="86" y="84" text-anchor="middle">1</text><text id="svgX2" class="node-text" x="86" y="232" text-anchor="middle">1</text>
+                <text class="node-caption" x="86" y="28" text-anchor="middle">輸入 x₁</text><text class="node-caption" x="86" y="278" text-anchor="middle">輸入 x₂</text>
+                <text id="svgW1" class="weight-label" x="208" y="79" text-anchor="middle">w₁ = 1.0</text><text id="svgW2" class="weight-label" x="208" y="235" text-anchor="middle">w₂ = 1.0</text>
+                <text class="center-symbol" x="370" y="143" text-anchor="middle">Σ</text><text id="svgZ" class="center-value" x="370" y="172" text-anchor="middle">z = 0.5</text>
+                <text id="svgY" class="node-text" x="594" y="159" text-anchor="middle">1</text><text class="node-caption" x="594" y="208" text-anchor="middle">輸出 y</text>
+                <text id="svgBias" class="bias-label" x="370" y="245" text-anchor="middle">偏差 b = −1.5</text>
+              </svg>
+              <div class="legend"><span><i class="legend-dot cyan"></i>輸入</span><span><i class="legend-dot violet"></i>加權和</span><span><i class="legend-dot pink"></i>輸出</span></div>
+            </div>
+            <div class="card math-card" aria-live="polite">
+              <div class="card-heading"><h3>把數字代入公式</h3><span class="pill muted">即時運算</span></div>
+              <div class="equation">z = <span id="term1">1.0 × 1</span> + <span id="term2">1.0 × 1</span> + <span id="biasTerm">(−1.5)</span> = <strong id="sumValue">0.5</strong></div>
+              <div class="result-row"><span id="decisionText">因為 z ≥ 0，所以輸出</span><strong id="resultBadge" class="result-badge">1 · 啟動</strong></div>
+              <p class="fine-print">偏差值 b 可把判斷門檻左右移動；此處採用 z ≥ 0 時輸出 1 的階梯函數。</p>
+            </div>
+          </div>
+
+          <aside class="card controls" aria-label="感知器控制台">
+            <div class="card-heading"><h3>實驗控制台</h3><span class="pill">可操作</span></div>
+            <label class="field-label" for="preset">邏輯任務</label>
+            <select id="preset"><option value="and">AND：兩個都為 1 才成立</option><option value="or">OR：任一個為 1 就成立</option><option value="xor">XOR：恰好一個為 1</option></select>
+            <p id="presetHint" class="control-hint">AND 的一組可行參數：w₁ = 1、w₂ = 1、b = −1.5。</p>
+            <div class="control-divider"></div>
+            <h4>選擇輸入</h4>
+            <div class="toggle-grid"><button type="button" id="input1" class="toggle on" aria-pressed="true">x₁ <strong>1</strong></button><button type="button" id="input2" class="toggle on" aria-pressed="true">x₂ <strong>1</strong></button></div>
+            <p class="control-hint">點擊輸入，可在 0 與 1 之間切換。</p>
+            <div class="control-divider"></div>
+            <h4>調整參數</h4>
+            <div class="slider-row"><label for="weight1">權重 w₁ <output id="weight1Value">1.0</output></label><input id="weight1" type="range" min="-5" max="5" step="0.5" value="1"></div>
+            <div class="slider-row"><label for="weight2">權重 w₂ <output id="weight2Value">1.0</output></label><input id="weight2" type="range" min="-5" max="5" step="0.5" value="1"></div>
+            <div class="slider-row"><label for="bias">偏差值 b <output id="biasValue">−1.5</output></label><input id="bias" type="range" min="-5" max="5" step="0.5" value="-1.5"></div>
+            <button type="button" id="resetBtn" class="secondary-button">重設此任務參數</button>
+          </aside>
+        </div>
+      </section>
+
+      <section class="analysis-grid" aria-label="決策結果與邊界">
+        <div class="card truth-card"><div class="card-heading"><h3>四種輸入，答對幾題？</h3><span id="accuracy" class="pill">4 / 4</span></div><p class="card-intro">點擊任一列，將它送進左側感知器。目標值由邏輯任務決定。</p><div class="table-wrap"><table><thead><tr><th>x₁</th><th>x₂</th><th>目標</th><th>預測</th><th>結果</th></tr></thead><tbody id="truthBody"></tbody></table></div></div>
+        <div class="card boundary-card"><div class="card-heading"><h3>看見決策邊界</h3><span class="pill muted">w₁x₁ + w₂x₂ + b = 0</span></div><p class="card-intro">線的兩側會得到不同輸出；彩色點代表目前模型預測的 0 或 1。</p><svg id="boundaryPlot" viewBox="0 0 360 255" role="img" aria-label="感知器在兩個輸入軸上的決策邊界與四筆資料"><rect class="plot-bg" x="45" y="20" width="275" height="195" rx="10"/><g id="plotRegion"></g><line class="axis" x1="45" y1="215" x2="320" y2="215"/><line class="axis" x1="45" y1="215" x2="45" y2="20"/><text class="axis-label" x="325" y="235">x₁</text><text class="axis-label" x="20" y="25">x₂</text><g id="plotLine"></g><g id="plotPoints"></g></svg></div>
+      </section>
+
+      <section id="training" class="card training-card"><div class="training-copy"><span class="section-kicker">LEARNING RULE</span><h2>猜錯時，感知器怎麼學？</h2><p>比較預測值 y 與目標值 t。若兩者不同，就用誤差調整權重與偏差；若答對，參數不變。</p><div class="rule">wᵢ ← wᵢ + η(t − y)xᵢ <span>｜</span> b ← b + η(t − y)</div><p class="fine-print">本頁固定學習率 η = 0.5。單步學習使用目前選取的輸入；完整一輪依序使用四筆資料。</p></div><div class="training-actions"><button type="button" id="trainOne" class="primary-button">用選取資料學一步</button><button type="button" id="trainEpoch" class="secondary-button">訓練完整一輪</button><div id="trainMessage" class="train-message" role="status" aria-live="polite">先選一筆資料，再觀察參數如何變化。</div></div></section>
+
+      <section id="next" class="next-section"><div class="section-heading"><div><span class="section-kicker">FROM ONE TO MANY</span><h2>從感知器，走向人工神經元</h2></div></div><div class="info-grid"><article class="card info-card"><span class="info-number">01</span><h3>單一感知器的能力</h3><p>它用一條直線分開兩類資料，因此可以學會 AND、OR 等線性可分的任務。</p></article><article class="card info-card"><span class="info-number">02</span><h3>XOR 為何卡關？</h3><p>XOR 的正例位於對角兩端，無法用單一直線分開。多訓練幾輪也無法讓單一感知器完全答對。</p></article><article class="card info-card"><span class="info-number">03</span><h3>多層神經網路</h3><p>把多個人工神經元接成隱藏層，並使用可微分的非線性激活函數（如 Sigmoid 或 ReLU），就能組合出更複雜的邊界。</p><a href="../MLP/index.html">繼續探索多層感知器 →</a></article></div></section>
+    </main>
+    <footer class="footer"><span>從一個判斷，理解神經網路的起點。</span><a href="../index.html">← 返回課程首頁</a></footer>
+  </div>
+</body>
+</html>
