@@ -43,7 +43,7 @@
             <div class="overview-stat"><strong>29</strong><span>互動單元</span></div>
             <div class="overview-stat"><strong>08</strong><span>學習領域</span></div>
         </div>
-        <nav class="jump-nav" aria-label="課程分類快速連結"><a href="#data">資料預處理</a><a href="#foundations">基礎與回歸</a><a href="#supervised">監督式學習</a><a href="#unsupervised">非監督式學習</a><a href="#evaluation">模型評估</a><a href="#deep-learning">深度學習</a><a href="#vision">電腦視覺</a><a href="#reinforcement">強化學習</a></nav>
+        <nav class="jump-nav" aria-label="課程分類快速連結"><a href="#data">資料預處理</a><a href="#foundations">基礎核心觀念</a><a href="#supervised">監督式學習</a><a href="#unsupervised">非監督式學習</a><a href="#evaluation">模型評估</a><a href="#deep-learning">深度學習</a><a href="#llm">大型語言模型（LLM）</a><a href="#vision">電腦視覺</a><a href="#reinforcement">強化學習</a></nav>
 
         <!-- 1. 資料預處理 -->
         <div class="category-section cat-data" id="data">
@@ -112,10 +112,26 @@
             </section>
         </div>
 
-        <!-- 2. 基礎核心與回歸 -->
+        <!-- 2. 基礎核心觀念 -->
         <div class="category-section cat-foundations" id="foundations">
-            <div class="category-heading"><h2 class="category-title">基礎核心與回歸 <span>Foundations & Regression</span></h2><p class="category-intro">從損失函數與梯度，理解模型如何找到規律。</p></div>
+            <div class="category-heading"><h2 class="category-title">基礎核心與回歸 <span>Foundations & Regression</span></h2><p class="category-intro">掌握模型學習與優化所需的核心概念。</p></div>
             <section class="courses-grid">
+<a href="LossFun/index.html" class="course-card lossfun">
+                    <div class="card-content">
+                        <span class="card-icon">📊</span>
+                        <h3 class="card-title">損失函數</h3>
+                        <p class="card-subtitle">評估模型預測誤差的各種損失函數比較</p>
+                        <div class="card-tags">
+                            <span class="tag">深度學習</span>
+                            <span class="tag">優化方法</span>
+                        </div>
+                        <div class="card-arrow">
+                            <span>開始學習</span>
+                            <span class="arrow">→</span>
+                        </div>
+                    </div>
+                </a>
+
                 <!-- 梯度下降 -->
                 <a href="GradientDescent/index.html" class="course-card gradient">
                     <div class="card-content">
@@ -134,7 +150,19 @@
                 </a>
 
                 <!-- 線性回歸 -->
-                <a href="LinearRegration/index.html" class="course-card linear">
+                
+
+                <!-- 邏輯回歸 -->
+                
+
+            </section>
+        </div>
+
+        <!-- 3. 監督式學習演算法 -->
+        <div class="category-section cat-supervised" id="supervised">
+            <div class="category-heading"><h2 class="category-title">監督式學習演算法 <span>Supervised Learning</span></h2><p class="category-intro">用已標記的資料，練習分類與預測。</p></div>
+            <section class="courses-grid">
+<a href="LinearRegration/index.html" class="course-card linear">
                     <div class="card-content">
                         <span class="card-icon">📈</span>
                         <h3 class="card-title">線性回歸</h3>
@@ -149,9 +177,7 @@
                         </div>
                     </div>
                 </a>
-
-                <!-- 邏輯回歸 -->
-                <a href="LogisticRegression/index.html" class="course-card logistic">
+<a href="LogisticRegression/index.html" class="course-card logistic">
                     <div class="card-content">
                         <span class="card-icon">🔀</span>
                         <h3 class="card-title">邏輯回歸</h3>
@@ -166,14 +192,6 @@
                         </div>
                     </div>
                 </a>
-
-            </section>
-        </div>
-
-        <!-- 3. 監督式學習演算法 -->
-        <div class="category-section cat-supervised" id="supervised">
-            <div class="category-heading"><h2 class="category-title">監督式學習演算法 <span>Supervised Learning</span></h2><p class="category-intro">用已標記的資料，練習分類與預測。</p></div>
-            <section class="courses-grid">
                 <!-- KNN -->
                 <a href="KNN/index.html" class="course-card knn">
                     <div class="card-content">
@@ -318,15 +336,17 @@
                     </div>
                 </a>
 
-                <!-- 正規化 (L1/L2) -->
-                <a href="L1L2/index.html" class="course-card l1l2">
+                <!-- 正則化（Regularization，L1/L2） -->
+                
+
+<a href="L1L2/index.html" class="course-card l1l2">
                     <div class="card-content">
                         <span class="card-icon">🛡️</span>
-                        <h3 class="card-title">正規化 (L1/L2)</h3>
+                        <h3 class="card-title">正則化（Regularization，L1/L2）</h3>
                         <p class="card-subtitle">透過懲罰項抑制模型複雜度，解決過擬合問題</p>
                         <div class="card-tags">
                             <span class="tag">基礎概念</span>
-                            <span class="tag">正規化</span>
+                            <span class="tag">正則化</span>
                         </div>
                         <div class="card-arrow">
                             <span>開始學習</span>
@@ -376,27 +396,13 @@
                 </a>
 
                 <!-- 損失函數 -->
-                <a href="LossFun/index.html" class="course-card lossfun">
-                    <div class="card-content">
-                        <span class="card-icon">📊</span>
-                        <h3 class="card-title">損失函數</h3>
-                        <p class="card-subtitle">評估模型預測誤差的各種損失函數比較</p>
-                        <div class="card-tags">
-                            <span class="tag">深度學習</span>
-                            <span class="tag">優化方法</span>
-                        </div>
-                        <div class="card-arrow">
-                            <span>開始學習</span>
-                            <span class="arrow">→</span>
-                        </div>
-                    </div>
-                </a>
+                
 
                 <!-- 多重感知器 -->
                 <a href="MLP/index.html" class="course-card mlp">
                     <div class="card-content">
                         <span class="card-icon">🧠</span>
-                        <h3 class="card-title">多重感知器 (MLP)</h3>
+                        <h3 class="card-title">多層感知器（MLP）</h3>
                         <p class="card-subtitle">前饋神經網路的基礎架構與前向傳播</p>
                         <div class="card-tags">
                             <span class="tag">深度學習</span>
@@ -420,13 +426,30 @@
                 </a>
 
                 <!-- Tokenizer 分詞器 -->
-                <a href="Token/index.html" class="course-card token">
+                
+
+                <!-- Embedding 詞嵌入 -->
+                
+
+                
+
+                
+
+            </section>
+        </div>
+
+
+        <!-- 7. 大型語言模型（LLM） -->
+        <div class="category-section cat-llm" id="llm">
+            <div class="category-heading"><h2 class="category-title">大型語言模型（LLM） <span>Large Language Models</span></h2><p class="category-intro">從文字切分與向量表示，理解注意力與文字生成。</p></div>
+            <section class="courses-grid">
+<a href="Token/index.html" class="course-card token">
                     <div class="card-content">
                         <span class="card-icon">🔤</span>
                         <h3 class="card-title">Tokenizer 分詞器</h3>
                         <p class="card-subtitle">了解 LLM 如何將文字切割成 Token 進行處理</p>
                         <div class="card-tags">
-                            <span class="tag">深度學習</span>
+                            <span class="tag">大型語言模型（LLM）</span>
                             <span class="tag">LLM</span>
                         </div>
                         <div class="card-arrow">
@@ -435,16 +458,14 @@
                         </div>
                     </div>
                 </a>
-
-                <!-- Embedding 詞嵌入 -->
-                <a href="Embedding/index.html" class="course-card embedding">
+<a href="Embedding/index.html" class="course-card embedding">
                     <div class="card-content">
                         <span class="card-icon">🧮</span>
                         <h3 class="card-title">Embedding 詞嵌入</h3>
                         <p class="card-subtitle">將文字轉換成數值向量，讓電腦理解語意關係</p>
                         <div class="card-tags">
-                            <span class="tag">深度學習</span>
-                            <span class="tag">NLP</span>
+                            <span class="tag">大型語言模型（LLM）</span>
+                            <span class="tag">大型語言模型（LLM）</span>
                         </div>
                         <div class="card-arrow">
                             <span>開始學習</span>
@@ -452,8 +473,7 @@
                         </div>
                     </div>
                 </a>
-
-                <a href="Attention/index.html" class="course-card">
+<a href="Attention/index.html" class="course-card">
                     <div class="card-content">
                         <span class="card-icon">🔎</span>
                         <h3 class="card-title">Self-Attention 注意力機制</h3>
@@ -462,8 +482,7 @@
                         <div class="card-arrow"><span>開始學習</span><span class="arrow">→</span></div>
                     </div>
                 </a>
-
-                <a href="NextToken/index.html" class="course-card">
+<a href="NextToken/index.html" class="course-card">
                     <div class="card-content">
                         <span class="card-icon">✍️</span>
                         <h3 class="card-title">預測下一個 Token</h3>
@@ -472,12 +491,9 @@
                         <div class="card-arrow"><span>開始學習</span><span class="arrow">→</span></div>
                     </div>
                 </a>
-
             </section>
         </div>
-
-
-        <!-- 7. 進階視覺模型 -->
+        <!-- 8. 進階視覺模型 -->
         <div class="category-section cat-vision" id="vision">
             <div class="category-heading"><h2 class="category-title">進階視覺模型 <span>Advanced Vision Models</span></h2><p class="category-intro">用卷積與池化觀察影像特徵。</p></div>
             <section class="courses-grid">
@@ -517,7 +533,7 @@
             </section>
         </div>
 
-        <!-- 7. 強化學習 -->
+        <!-- 9. 強化學習 -->
         <div class="category-section cat-reinforcement" id="reinforcement">
             <div class="category-heading"><h2 class="category-title">強化學習 <span>Reinforcement Learning</span></h2><p class="category-intro">透過試錯與獎勵，學會做下一步決定。</p></div>
             <section class="courses-grid">
