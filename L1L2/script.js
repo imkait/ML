@@ -8,13 +8,13 @@ const state = {
     trueFunc: null, // 真實函數 (如 sin(x) 等) 
     
     // 模型參數
-    degree: 10,
+    degree: 6,
     weights: [], // w0, w1, ... wn
     
     // 訓練相關
     isTraining: false,
     learningRate: 0.01,
-    lambda: 0, // 正規化強度
+    lambda: 0.025, // 正規化強度
     regType: 'none', // 'none', 'l1', 'l2'
     
     // 狀態計數
@@ -154,10 +154,7 @@ function initControls() {
     });
     
     bindSlider('lambdaSlider', 'lambdaVal', val => {
-        // 使用指數量級，讓調整範圍更廣 (0 ~ 100 -> 0.000 ~ 1.0)
-        // 為了教學直觀，我們直接線性對應 0~0.1 可能更簡單
-        // 這裡設定: val / 1000 * 5 (range 0 to 0.5) roughly
-        // 或者是直接 val / 1000
+        // 滑桿 0～100 對應 λ = 0～0.5。
         const lambda = val / 200; // 0 ~ 0.5
         state.lambda = lambda;
         document.getElementById('lambdaVal').textContent = lambda.toFixed(3);
@@ -173,7 +170,7 @@ function initControls() {
         radio.addEventListener('change', (e) => {
             state.regType = e.target.value;
             state.mainChart.data.datasets[1].borderColor = getThemeColor();
-            state.mainChart.update();
+            resetModel();
             updateRegHint();
         });
     });
@@ -214,9 +211,9 @@ function updateRegHint() {
     } else if (lam === 0) {
         hint.textContent = `已選擇 ${type.toUpperCase()}，但強度為 0 (效果同 None)。`;
     } else if (type === 'l1') {
-        hint.textContent = `L1 (Lasso) 正將不重要的權重壓縮至 0，稀疏化模型。`;
+        hint.textContent = `L1 (Lasso) 對權重絕對值加總施加懲罰，可能讓部分權重恰好歸零。`;
     } else {
-        hint.textContent = `L2 (Ridge) 正同時壓抑所有權重大小，使曲線平滑。`;
+        hint.textContent = `L2 (Ridge) 對權重平方加總施加懲罰，通常讓多個權重一起縮小。`;
     }
 }
 
@@ -250,14 +247,12 @@ function resetData() {
 }
 
 function resetModel() {
+    stopTraining();
+    document.getElementById('trainBtn').textContent = '▶ 開始訓練';
     state.epoch = 0;
     
-    // 初始化權重 (隨機小數)
-    // weights[i] corresponds to x^i
-    state.weights = new Array(state.degree + 1).fill(0).map(() => (Math.random() - 0.5) * 0.1);
-    
-    // 如果想要更容易觀察 Lasso 效果，可以把初始權重設大一點點
-    // state.weights = new Array(state.degree + 1).fill(0).map(() => (Math.random() * 2 - 1));
+    // 使用相同起點，切換正規化方式時可比較同一組資料的訓練結果。
+    state.weights = new Array(state.degree + 1).fill(0);
 
     updateLoop(false); // 更新一次畫面
 }
@@ -266,7 +261,7 @@ function predict(x) {
     let y = 0;
     for(let i=0; i < state.weights.length; i++) {
         // Feature Scaling: x^i
-        // 由於我們 x 在 0~1 之間，x^10 會變得很小，導致高階權重需要很大才能起作用
+        // 由於我們 x 在 0~1 之間，高階項會變得很小，導致高階權重需要很大才能起作用
         // 這在數值上會有問題 (Gradient Exploding/Vanishing)。
         // 簡單解法：這裡不做特別正規化，依賴數據範圍 0-1 對多項式回歸尚可接受。
         // 但為了讓 Regularization 效果在不同 degree 下均勻，通常建議對 feature 做 scaling。
@@ -428,10 +423,10 @@ function updateLoop(isAnimating) {
     
     // 3. 更新權重圖表
     if (state.weightsChart) {
-        const labels = state.weights.map((_, i) => i === 0 ? 'Bias' : `x${i}`);
+        const labels = state.weights.map((_, i) => i === 0 ? 'Bias' : `x^${i}`);
         const data = state.weights.map(w => w); // View raw values
         const colors = state.weights.map(w => {
-            if (Math.abs(w) < 0.001) return '#334155'; // Zero (Slate 700)
+            if (w === 0) return '#64748b'; // 精確為零
             return w >= 0 ? '#3b82f6' : '#ef4444'; // Blue pos, Red neg
         });
         
@@ -440,4 +435,16 @@ function updateLoop(isAnimating) {
         state.weightsChart.data.datasets[0].backgroundColor = colors;
         state.weightsChart.update('none');
     }
+
+    const featureWeights = state.weights.slice(1);
+    const zeroCount = featureWeights.filter(w => w === 0).length;
+    const penalty = state.regType === 'l1'
+        ? featureWeights.reduce((sum, w) => sum + Math.abs(w), 0)
+        : state.regType === 'l2'
+            ? featureWeights.reduce((sum, w) => sum + w * w, 0)
+            : 0;
+    const summary = document.getElementById('weightsSummary');
+    summary.textContent = state.epoch === 0
+        ? '從零權重開始；按「開始訓練」觀察變化。'
+        : `特徵權重恰好為 0：${zeroCount} / ${featureWeights.length}　｜　目前懲罰值：${penalty.toFixed(4)}（不含 λ）`;
 }

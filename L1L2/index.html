@@ -28,8 +28,10 @@
 
                 <!-- 權重視覺化 (重要！) -->
                 <div class="weights-visual">
-                    <h3>⚖️ 權重分佈 (Weights)</h3>
-                    <canvas id="weightsCanvas"></canvas>
+                    <h3>⚖️ 特徵權重（不含截距的懲罰）</h3>
+                    <div class="weights-chart"><canvas id="weightsCanvas" aria-label="各特徵權重長條圖" role="img"></canvas></div>
+                    <p class="weights-summary" id="weightsSummary">開始訓練後可觀察權重變化。</p>
+                    <p class="hint">多項式特徵未標準化；請比較同一特徵在不同方法下的權重，勿直接用長條高度判斷各特徵的重要性。</p>
                 </div>
             </section>
 
@@ -40,9 +42,9 @@
                     <h3>🛠️ 模型設定</h3>
 
                     <div class="control-group">
-                        <label>多項式階數 (Degree): <span id="degreeVal">10</span></label>
-                        <input type="range" id="degreeSlider" min="1" max="15" value="10" step="1">
-                        <p class="hint">階數越高，模型越容易過擬合</p>
+                        <label>多項式特徵階數 (Degree): <span id="degreeVal">6</span></label>
+                        <input type="range" id="degreeSlider" min="1" max="8" value="6" step="1">
+                        <p class="hint">1 階是線性模型；6 階適合觀察正規化；8 階可探索較複雜的曲線。階數 d 會使用 x、x²、…、x<sup>d</sup> 共 d 個特徵。</p>
                     </div>
 
                     <div class="control-group">
@@ -78,9 +80,10 @@
                     </div>
 
                     <div class="control-group">
-                        <label>懲罰強度 (&lambda;): <span id="lambdaVal">0.00</span></label>
-                        <input type="range" id="lambdaSlider" min="0" max="100" value="0" step="1">
+                        <label>懲罰強度 (&lambda;): <span id="lambdaVal">0.025</span></label>
+                        <input type="range" id="lambdaSlider" min="0" max="100" value="5" step="1">
                         <p class="hint" id="regHint">目前未啟用正規化，模型將盡力擬合所有噪聲。</p>
+                        <p class="hint">切換 None、L1、L2 會從相同的零權重重新訓練；資料點保持不變，方便比較。</p>
                     </div>
                 </div>
 
@@ -98,6 +101,7 @@
                             <span id="epochDisplay">0</span>
                         </div>
                     </div>
+                    <p class="hint">畫面顯示的是訓練資料的 MSE；實際訓練目標另加上 &lambda; × 懲罰值。</p>
 
                     <div class="control-group">
                         <label>學習率 (Learning Rate): <span id="lrVal">0.01</span></label>
@@ -115,17 +119,18 @@
             <div class="info-grid">
                 <div class="card info-card">
                     <h3>🔍 什麼是正規化？</h3>
-                    <p>正規化是在損失函數中加入「懲罰項 (Penalty)」，強迫模型不要過度學習雜訊，保持權重簡單。</p>
-                    <div class="formula-box">Loss = MSE + &lambda; &times; Penalty</div>
+                    <p>正規化是在訓練目標中加入「懲罰項 (Penalty)」，限制權重大小，降低過擬合的風險。</p>
+                    <div class="formula-box">訓練目標 = MSE + &lambda; &times; Penalty</div>
+                    <p class="hint">此示範只懲罰特徵權重 w<sub>1</sub>、w<sub>2</sub>…，不懲罰截距 w<sub>0</sub>（Bias）。</p>
                 </div>
 
                 <div class="card info-card">
                     <h3>💎 L1 Regularization (Lasso)</h3>
                     <p>懲罰權重的<strong>絕對值總和</strong>。</p>
-                    <div class="formula-box secondary">Penalty = &sum; |w<sub>i</sub>|</div>
+                    <div class="formula-box secondary">Penalty = &sum;<sub>i=1</sub><sup>d</sup> |w<sub>i</sub>|</div>
                     <ul class="feature-list">
                         <li>特點：傾向產生<strong>稀疏解 (Sparse Solution)</strong>。</li>
-                        <li>效果：會把不重要的特徵權重變成 <strong>0</strong> (特徵選取)。</li>
+                        <li>效果：可讓部分特徵權重<strong>恰好變成 0</strong>，相當於自動排除這些特徵。</li>
                         <li>幾何意義：解空間是菱形，容易在座標軸上相切。</li>
                         <li>使用時機：希望模型自動挑選重要特徵 (Model Selection)，或希望模型解更稀疏 (Interpretability) 時。</li>
 
@@ -138,10 +143,10 @@
                 <div class="card info-card">
                     <h3>🔵 L2 Regularization (Ridge)</h3>
                     <p>懲罰權重的<strong>平方總和</strong>。</p>
-                    <div class="formula-box primary">Penalty = &sum; w<sub>i</sub><sup>2</sup></div>
+                    <div class="formula-box primary">Penalty = &sum;<sub>i=1</sub><sup>d</sup> w<sub>i</sub><sup>2</sup></div>
                     <ul class="feature-list">
                         <li>特點：傾向產生<strong>小數值權重</strong>。</li>
-                        <li>效果：會把權重壓得很小，通常不會像 L1 那樣直接產生大量恰好為 0 的權重。</li>
+                        <li>效果：通常讓權重一起縮小，減少模型對單一特徵的過度依賴；一般不會像 L1 那樣產生大量恰好為 0 的權重。</li>
                         <li>幾何意義：解空間是圓形。</li>
                         <li>使用時機：特徵之間可能互相關聯 (共線性)，或希望保留所有特徵但減少過擬合時。</li>
 
@@ -154,10 +159,10 @@
                 <div class="card info-card">
                     <h3>💡 觀察重點</h3>
                     <ol class="steps-list">
-                        <li>設定較高的 <strong>Degree (如 10)</strong> 與少量數據。</li>
-                        <li>不開正規化時，預測曲線會劇烈震盪 (過擬合)。</li>
-                        <li>開啟 <strong>L2</strong>，曲線變平滑，權重變小。</li>
-                        <li>開啟 <strong>L1</strong>，曲線變平滑，且<strong>許多權重變成 0</strong> (看下方長條圖)。</li>
+                        <li>先用預設的 <strong>6 階</strong>和 15 筆資料比較；再將階數調到 1 或 8，觀察特徵數增加時權重與曲線如何改變。</li>
+                        <li>先選 <strong>None</strong> 並訓練，記下權重圖。曲線是否震盪會受資料、階數和訓練時間影響。</li>
+                        <li>切換 <strong>L2</strong> 後重新訓練，觀察多個權重是否一起縮小。</li>
+                        <li>切換 <strong>L1</strong> 後重新訓練，觀察有多少特徵權重<strong>恰好為 0</strong>。可調高 &lambda; 讓差異更明顯。</li>
                     </ol>
                 </div>
             </div>
